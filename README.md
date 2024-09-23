@@ -6,12 +6,14 @@ CSCI 5117, Fall 2024, [assignment description](https://canvas.umn.edu/courses/46
 
 * Team Name: Big Chungus
 * App Name: TODO
-* App Link: <https://TODO.com/>
+* App Link: [<https://TODO.com/>](https://project-1-big-chungus.onrender.com)
 
 ### Students
 
 * Daniel Bielejeski, biele026@umn.edu
 * Crystal Wen, wen00015@umn.edu
+* William Yang, yang7313@umn.edu
+* Jinming Chen, chen6386@umn.edu
 * First Last, x500@umn.edu
 * ...
 
