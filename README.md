@@ -63,6 +63,9 @@ A page for a specific game, includes different reviews and topics about the
 game
 ![Game Page](./mockups/gamepage.png?raw=true)
 
+A page for the user profile
+![User Profile](./mockups/userprofile.png?raw=true)
+
 
 
 ## External Dependencies
