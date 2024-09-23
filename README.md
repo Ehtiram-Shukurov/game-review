@@ -45,8 +45,11 @@ There are a few tools for mock-ups. Paper prototypes (low-tech, but effective an
 In this space please either provide images (around 4) showing your prototypes, OR, a link to an online hosted mock-up tool like moqups.com
 
 **[Add images/photos that show your paper prototype (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository) along with a very brief caption:**
+![Home Page](/mockups/homePage.png?raw=true )
+![Login Page](/mockups/login.png?raw=true)
+![Review Page](/mockups/reviewPage.png?raw=true)
+![Game Page](/mockups/gamepage.png?raw=true)
 
-![](https://media.giphy.com/media/26ufnwz3wDUli7GU0/giphy.gif)
 
 
 ## External Dependencies
