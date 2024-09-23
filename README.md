@@ -48,7 +48,21 @@ In this space please either provide images (around 4) showing your prototypes, O
 
 **[Add images/photos that show your paper prototype (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository) along with a very brief caption:**
 
-![](https://media.giphy.com/media/26ufnwz3wDUli7GU0/giphy.gif)
+
+The home page of the website, displaying general user content
+![Home Page](./mockups/homePage.png?raw=true)
+
+A login page for users to login
+![Login Page](./mockups/login.png?raw=true)
+
+A page for the individual reviews/topics created by the users, has
+discussion responses as well
+![Review Page](./mockups/reviewPage.png?raw=true)
+
+A page for a specific game, includes different reviews and topics about the 
+game
+![Game Page](./mockups/gamepage.png?raw=true)
+
 
 
 ## External Dependencies
