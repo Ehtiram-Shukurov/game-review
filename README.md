@@ -6,7 +6,7 @@ CSCI 5117, Fall 2024, [assignment description](https://canvas.umn.edu/courses/46
 
 * Team Name: Big Chungus
 * App Name: TODO
-* App Link: [<https://TODO.com/>](https://project-1-big-chungus.onrender.com)
+* App Link: [<https://project-1-big-chungus.onrender.com/>]()
 
 ### Students
 
@@ -64,7 +64,7 @@ game
 ![Game Page](./mockups/gamepage.png?raw=true)
 
 A page for the user profile
-![User Profile](./mockups/userprofile.png?raw=true)
+![User Profile](./mockups/userProfile.png?raw=true)
 
 
 
