@@ -69,7 +69,8 @@ A page for the user profile
 A page for the user settings
 ![User Settings](./mockups/settings.png?raw=true)
 
-
+Link to Figma project:
+https://www.figma.com/design/yl4nxmAKSPm4ww1B2vN6j5/GameReview?node-id=49-2361&t=hzYgSGKvHp1r1xso-1
 
 ## External Dependencies
 
