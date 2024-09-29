@@ -57,7 +57,7 @@ A login page for users to login or create an account if needed
 
 A page for the individual reviews/topics created by the users, has
 discussion responses as well
-![Review Page](./mockups/reviewPage.png?raw=true)
+![Review Page](./mockups/reviewandtopic.png?raw=true)
 
 A page for a specific game, includes different reviews and topics about the 
 game
@@ -65,6 +65,9 @@ game
 
 A page for the user profile
 ![User Profile](./mockups/userProfile.png?raw=true)
+
+A page for the user settings
+![User Settings](./mockups/settings.png?raw=true)
 
 
 
