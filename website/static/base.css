@@ -1,0 +1,35 @@
+.header {
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    display: flex;
+    align-items: center;
+    height: 60px;
+}
+
+.pure-form {
+    display: flex;
+    align-items: center;
+}
+.pure-form input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.pure-menu-heading img {
+    height: auto;
+    width: auto;
+    max-height: 60px;
+}
+
+.pure-button-primary {
+    background-color: #1f8dd6;
+}
+
+.pure-button-secondary {
+    background-color: #1f8dd6;
+    color: white;
+}
+.pure-button-secondary:hover {
+    background-color: #166ba1;
+}
