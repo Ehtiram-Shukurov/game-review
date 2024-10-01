@@ -20,15 +20,13 @@ def getGameID(name):
   """
   response = wrapper.api_request('games', query)
   games = json.loads(response.decode('utf-8'))
-
   if games:
     game_id = games[0]['id']
-
     return game_id
   else:
       print(f"No game found for '{name}'")
       return None
-  
+
 def getGameData(name):
   id = getGameID(name)
   query = f"""
@@ -42,9 +40,22 @@ def getGameData(name):
   games = games_message.games
   print(games)
   
+def broadSearch(name, limit=1):
+  # could be use to show the search results of incomplete search like terra for terraria 
+  query = f"""
+  fields name;
+  search "{name}";
+  limit {limit};
+  """
+  response = wrapper.api_request('games', query)
+  games = json.loads(response.decode('utf-8'))
+  # list of dict
+  return games
 
-game_name = "Cyberpunk 2077"
-getGameData(game_name)
+game_name = "Cyberpunk"
+a= broadSearch(game_name,5)
+print(a)
+#getGameData(game_name)
 
 
 
