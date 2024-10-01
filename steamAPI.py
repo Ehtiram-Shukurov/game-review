@@ -79,7 +79,8 @@ def getGameID(name):
 
 
 
-def getGameData(gameID):
+def getGameData(name):
+    gameID = getGameID(name)
 
     data= steam.apps.get_app_details(gameID)
     #cleanData = data.get(str(gameID)).get("data")
@@ -94,4 +95,3 @@ def getGameData(gameID):
 
 #"genres","screenshots","recommendations","developers","price_overview"
 
-getGameData(1172470)
