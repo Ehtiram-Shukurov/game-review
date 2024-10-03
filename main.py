@@ -23,3 +23,8 @@ def templateReveiwPage(name):
     # data.get("summary")
     # data.get("themes")
     return None
+
+@app.route('/discussion/<str:name>')
+def templateReveiwPage():
+    #TODO: replace the return with the html template 
+    return None
