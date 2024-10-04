@@ -7,6 +7,7 @@ name = "pypi"
 flask = "*"
 steam = "*"
 igdb-api-v4 = "*"
+protobuf = "*"
 
 [dev-packages]
 
