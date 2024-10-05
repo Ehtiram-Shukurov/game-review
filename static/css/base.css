@@ -5,6 +5,12 @@
     display: flex;
     align-items: center;
     height: 60px;
+    border-bottom: 1px solid dimgray;
+}
+html,body {
+    height:100%;
+    background-color: #333;
+    color: white;
 }
 
 .pure-form {

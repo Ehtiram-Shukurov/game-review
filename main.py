@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return render_template("home.html")
+    return render_template("game.html")
 
 
 @app.route('/review/<string:name>')
@@ -26,7 +26,7 @@ def template_review_page(name):
     return None
 
 
-@app.route('/discussion/<string:name>')
-def template_review_page1(name):
-    # TODO: replace the return with the html template
-    return None
+@app.route('/game/<string:name>')
+def template_game_page(name):
+    game_data = get_game_data("The Elder Scrolls V: Skyrim")
+    return render_template("game.html", game_data=game_data)
