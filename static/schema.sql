@@ -1,4 +1,4 @@
-CREATE TYPE ReplayType AS (replyid INT, authorid INT, content TEXT, created TIMESTAMP, rating INT);
+CREATE TYPE ReviewType AS (replyid INT, authorid INT, content TEXT, created TIMESTAMP, rating INT);
 CREATE TYPE TopicType AS (topicid INT, authorid INT, title TEXT, content TEXT, created TIMESTAMP, rating INT);
 
 CREATE TABLE Users (
@@ -9,6 +9,6 @@ CREATE TABLE Users (
 CREATE TABLE Page (
     pageid SERIAL PRIMARY KEY,
     gameid INT NOT NULL,
-    replies ReplayType[],
+    reviews ReviewType[],
     topics TopicType[]
 );
