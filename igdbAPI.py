@@ -60,7 +60,7 @@ def get_game_data(name):
     name = res[0].get("name")
     cover_image = "http:" + res[0].get("cover").get("url")
     # all list below here
-    cover_image_url = cover_image.replace("t_thumb", "t_1080p")
+    cover_image_url = cover_image.replace("t_thumb", "t_720p")
     game_modes = data_extractor(res[0].get("gameModes"), "name")
     #genres = data_extractor(res[0].get("genres"), "name")
     # trust. this is ugly, but it was uglier
