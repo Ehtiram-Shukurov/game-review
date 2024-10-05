@@ -1,17 +1,18 @@
-from flask import Flask
+from flask import Flask, render_template
 from igdbAPI import *
+
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return render_template("home.html")
 
 @app.route('/review/<str:name>')
 def templateReveiwPage(name):
     data = getGameData(name)
 
 
-        
+
     #TODO: replace the return with the html template with info from data
     # data.get("coverImageUrl")
     # data.get("gameModes")
@@ -26,5 +27,5 @@ def templateReveiwPage(name):
 
 @app.route('/discussion/<str:name>')
 def templateReveiwPage():
-    #TODO: replace the return with the html template 
+    #TODO: replace the return with the html template
     return None
