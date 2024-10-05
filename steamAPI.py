@@ -1,16 +1,17 @@
 import os
 from steam_web_api import Steam
-from dotenv import load_dotenv  
+from dotenv import load_dotenv
 import requests
 import json
-load_dotenv()  
+
+load_dotenv()
 
 KEY = os.environ.get("STEAM_KEY")
 
 steam = Steam(KEY)
 
 
-def steamSearch(name):
+def steam_search(name):
     """
     Sample output of code
     
@@ -67,31 +68,28 @@ def steamSearch(name):
     """
     return steam.apps.search_games(name)
 
-def getGameID(name):
+
+def get_game_id(name):
     """
     assuming the user has selected a game name with the full game title
     """
-    searchResults = steamSearch(name)
-    for data in searchResults.get("apps"):
+    search_results = steam_search(name)
+    for data in search_results.get("apps"):
         if data['name'].lower() == name.lower():
             return data['id'][0]
-    
 
 
+def get_game_data(name):
+    gameID = get_game_id(name)
 
-def getGameData(name):
-    gameID = getGameID(name)
+    data = steam.apps.get_app_details(gameID)
+    # cleanData = data.get(str(gameID)).get("data")
+    # print(cleanData.get("name"))
+    # print(cleanData.get("about_the_game"))
+    # print(cleanData.get("short_description"))
+    # print(cleanData.get("header_image"))
+    # print(cleanData.get("dlc"))
+    # a = steamSearch(str(gameID))
+    # print(a)
 
-    data= steam.apps.get_app_details(gameID)
-    #cleanData = data.get(str(gameID)).get("data")
-    #print(cleanData.get("name"))
-    #print(cleanData.get("about_the_game"))
-    #print(cleanData.get("short_description"))
-    #print(cleanData.get("header_image"))
-    #print(cleanData.get("dlc"))
-    #a = steamSearch(str(gameID))
-    #print(a)
-
-
-#"genres","screenshots","recommendations","developers","price_overview"
-
+# "genres","screenshots","recommendations","developers","price_overview"
