@@ -3,17 +3,17 @@ from igdbAPI import *
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def hello_world():
     return render_template("home.html")
 
-@app.route('/review/<str:name>')
-def templateReveiwPage(name):
-    data = getGameData(name)
 
+@app.route('/review/<string:name>')
+def template_review_page(name):
+    data = get_game_data(name)
 
-
-    #TODO: replace the return with the html template with info from data
+    # TODO: replace the return with the html template with info from data
     # data.get("coverImageUrl")
     # data.get("gameModes")
     # data.get("genres")
@@ -25,7 +25,8 @@ def templateReveiwPage(name):
     # data.get("themes")
     return None
 
-@app.route('/discussion/<str:name>')
-def templateReveiwPage():
-    #TODO: replace the return with the html template
+
+@app.route('/discussion/<string:name>')
+def template_review_page1(name):
+    # TODO: replace the return with the html template
     return None
