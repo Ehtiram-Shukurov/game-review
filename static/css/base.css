@@ -1,10 +1,17 @@
+/*  Base style, navbar  */
+body{
+    background-color: #333;
+    color: white;
+}
+
 .header {
     padding: 10px;
-    background-color: #333;
+    background-color: #222;
     color: white;
     display: flex;
     align-items: center;
-    height: 60px;
+    height: 70px;
+    justify-content: space-between;
 }
 
 .pure-form {
@@ -14,6 +21,7 @@
 .pure-form input[type="text"] {
     flex: 1;
     margin-right: 10px;
+    border-radius: 20px;
 }
 
 .pure-menu-heading img {
@@ -24,12 +32,496 @@
 
 .pure-button-primary {
     background-color: #1f8dd6;
+    color: white;
 }
 
 .pure-button-secondary {
     background-color: #1f8dd6;
     color: white;
 }
+
 .pure-button-secondary:hover {
     background-color: #166ba1;
+}
+
+
+.nav-link {
+    margin-left: 15px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    color: #00d9ff;
+}
+
+/* User Dropdown */
+.user-dropdown {
+    margin-left: 20px;
+    display: inline-block;
+    position: relative;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #333;
+    min-width: 120px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #444;
+}
+
+.user-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+/* Footer */
+.footer {
+    background-color: #222;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid #444;
+    margin-top: 40px;
+}
+
+.footer-section {
+    padding: 10px;
+}
+
+.footer-section h4 {
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+.footer-section p {
+    margin: 5px 0;
+    color: #aaa;
+}
+
+.footer-link {
+    color: #00d9ff;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer {
+        text-align: center;
+    }
+    
+    .footer-section {
+        margin-bottom: 20px;
+    }
+}
+
+
+/* Responsive header */
+@media (max-width: 768px) {
+    .header {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        height: auto;
+    }
+
+    .pure-u-1-8,
+    .navbar-content{
+        flex: 1 100%;
+        text-align: center;
+    }
+    .navbar-content{
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    .pure-u-2-5{
+        width: 100%;
+    }
+    .pure-form {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .pure-button-secondary {
+        margin-top: 10px;
+    }
+}
+
+.content{
+    margin-top:80px;
+}
+
+/* Profile */
+.user-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    max-width: 800px;
+    margin:  auto;
+}
+
+.profile-image img {
+    height: 250px;
+    width: 250px;
+    border-radius: 10px;
+}
+.profile-details {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Menu */
+.user-menu {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.menu-item {
+    margin: 0 15px;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    position: relative;
+}
+
+.menu-item.active {
+    color: white;
+    background: linear-gradient(to bottom, #00d9ff, #00ffa1);
+    border-radius: 5px 5px 0 0;
+    padding-bottom: 5px;
+}
+.pure-g {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+@media (max-width: 768px){
+.pure-u-1{
+    display: flex;
+    justify-content: center;
+}
+.review{
+    align-items: center;
+}
+}
+
+
+
+/* Settings Page Styling */
+.settings-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 800px;
+    width: 100%;                
+    margin: 20px auto;
+}
+
+
+.pure-form-aligned .pure-control-group label {
+    width: 150px;
+    color: #ddd;
+}
+
+.pure-form-aligned .pure-control-group input {
+    width: 300px;
+    background-color: #555;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.pure-form-aligned .pure-control-group span {
+    padding: 10px;
+    color: #aaa;
+}
+
+.pure-controls .delete-button {
+    background-color: #ff4136;
+    color: white;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.pure-controls .save-button {
+    background-color: #00d1b2;
+    color: white;
+    border-radius: 5px;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .pure-form-aligned .pure-control-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pure-form-aligned .pure-control-group label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .pure-form-aligned .pure-control-group input {
+        width: 100%;
+    }
+
+    .pure-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pure-controls .delete-button,
+    .pure-controls .save-button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+
+/* Home */
+
+/* Game Section Styles */
+.game-section {
+    margin: 20px auto;
+    max-width: 1200px;
+    color: #fff;
+}
+
+.section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+/* Game Card Layout */
+.game-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.game-card {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    width: 200px;
+    margin-bottom: 20px;
+    transition: transform 0.2s;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+}
+
+/* Game Cover */
+.game-cover img {
+    object-fit: cover;
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    height: 250px;
+}
+
+/* User Info */
+.game-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.title {
+    color: #00d9ff;
+    font-size: 14px;
+}
+
+
+/* Release Date */
+.release-date {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .game-card {
+        width: 45%;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-card {
+        width: 100%;
+    }
+}
+
+
+/* Recent Reviews */
+.recent-reviews-section {
+    margin: 20px auto;
+    max-width: 1200px;
+    color: #fff;
+}
+
+.section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+.review-card {
+    display: flex;
+    background-color: #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.review-card:hover {
+    background-color: #444;
+}
+
+.review-image img {
+    width: 100px;
+    height: auto;
+    border-radius: 8px;
+    margin-right: 20px;
+    object-fit: cover;
+}
+
+
+.review-content {
+    flex-grow: 1;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.username {
+    color: #00d9ff;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+.review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.game-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.review-rating {
+    color: #ffcc00;
+}
+
+.comment-count {
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* Review Text */
+.review-text {
+    margin-bottom: 15px;
+}
+
+.review-text a {
+    color: #00d9ff;
+    text-decoration: none;
+}
+
+.review-text a:hover {
+    text-decoration: underline;
+}
+
+.review-interactions {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.like-review {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.like-review:hover {
+    color: #ff69b4;
+}
+
+.like-count {
+    font-size: 14px;
+    color: #ccc;
+}
+
+/* Responsive Card */
+@media (max-width: 768px) {
+    .review-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .review-image img {
+        width: 80px;
+        margin-bottom: 10px;
+    }
 }
