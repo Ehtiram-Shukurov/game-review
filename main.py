@@ -68,7 +68,8 @@ def logout():
         + "/v2/logout?"
         + urlencode(
             {
-                "returnTo": url_for("home", _external=True),
+                # replace hello_world with actual function for homepage endpoint
+                "returnTo": url_for("hello_world", _external=True),
                 "client_id": os.environ['AUTH0_CLIENT_ID'],
             },
             quote_via=quote_plus,
