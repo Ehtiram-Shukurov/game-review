@@ -95,7 +95,3 @@ def broad_search(name, limit=1):
     # list of dict
     return games
 
-
-game_name = "The Elder Scrolls V: Skyrim"
-
-get_game_data(game_name)
