@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return render_template("home.html")
 
 
 ENV_FILE = find_dotenv()
