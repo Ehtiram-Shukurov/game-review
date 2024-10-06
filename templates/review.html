@@ -1,0 +1,65 @@
+{% extends "base.html" %} {% block title %}Game Review{% endblock %}
+{% block content %}
+    <div class="pure-g">
+        <div class="pure-u-2-24"><p>{{ review.gametitle }}</p>
+            <p>{{ review.author }}</p></div>
+        <div class="pure-u-21-24"><h1>{{ review.title }}</h1></div>
+        <div class="pure-u-1-24"><p>{{ review.rating }}</p></div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1" style="margin-left: 1em">
+            <p>Game Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare,
+                eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor
+                sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
+                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+                diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra
+                ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum
+                dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
+                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+                diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra
+                ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum
+                dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
+                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+                diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra
+                ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum
+                dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
+                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
+                diam libero vitae erat.</p>
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <form class="pure-form" action="/comment" method="POST">
+                <input
+                        type="text"
+                        class="pure-input-rounded search-input"
+                        placeholder="Add new discussion comment"
+                />
+                <button type="submit" class="pure-button pure-button-primary">
+                    Post
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="pure-g">
+        <div class="pure-u-1">
+            {{ renderComments(review.comments, 0)  }}
+        </div>
+    </div>
+{% endblock %}
+
+{% macro renderComments(comments, inset) %}
+    {%  for comment in comments %}
+        <div style="margin-left: {{ inset }}em">
+            <p>{{ comment.author }}</p>
+            <p>{{ comment.content }}</p>
+            {% set inset = inset + 1 %}
+            <p>{{renderComments(comment.replies, inset)}}</p>
+        </div>
+    {% endfor %}
+{% endmacro %}
