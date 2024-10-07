@@ -1,12 +1,23 @@
-from flask import Flask, render_template
+from flask import Flask,render_template
 from igdbAPI import *
 
 app = Flask(__name__)
 
-
 @app.route("/")
-def hello_world():
-    return render_template("home.html")
+def home():
+    return render_template('home.html', user_logged_in='user1') #user_logged_in is just for testing the navbar
+
+@app.route('/user/profile')
+def user_profile():
+    return render_template('user_profile.html', active_page='profile')
+
+@app.route('/user/reviews')
+def user_reviews():
+    return render_template('user_reviews.html', active_page='reviews')
+@app.route('/user/settings')
+def user_settings():
+    return render_template('user_settings.html', active_page='settings')
+
 
 
 @app.route('/review/<string:id>')

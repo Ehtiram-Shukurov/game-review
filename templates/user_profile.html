@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% block title %}User Profile{% endblock %} {% block
+content %}
+<div class="user-menu">
+  <a
+    href="/user/profile"
+    class="menu-item {% if active_page == 'profile' %}active{% endif %}"
+    >Profile</a
+  >
+  <a
+    href="/user/reviews"
+    class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
+    >Reviews</a
+  >
+  <a
+    href="/user/settings"
+    class="menu-item {% if active_page == 'settings' %}active{% endif %}"
+    >Settings</a
+  >
+</div>
+<div class="user-profile">
+  <div class="pure-g">
+    <div class="profile-image pure-u-1 pure-u-md-1-2">
+      <img
+        src="{{ url_for('static', filename='images/avatar.png') }}"
+        alt="Profile Image"
+      />
+    </div>
+    <div class="profile-details pure-u-1 pure-u-md-1-2">
+      <h2>Username</h2>
+      <p>
+        Profile description: Lorem ipsum dolor sit amet, consectetur adipiscing
+        elit. Suspendisse varius enim in eros elementum tristique.
+      </p>
+      <p>Number of Reviews: 2</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
