@@ -1,0 +1,78 @@
+{% extends 'base.html' %} {% block title %}Settings{% endblock %} {% block
+content %}
+<div class="user-menu">
+  <a
+    href="/user/profile"
+    class="menu-item {% if active_page == 'profile' %}active{% endif %}"
+    >Profile</a
+  >
+  <a
+    href="/user/reviews"
+    class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
+    >Reviews</a
+  >
+  <a
+    href="/user/settings"
+    class="menu-item {% if active_page == 'settings' %}active{% endif %}"
+    >Settings</a
+  >
+</div>
+<div class="settings-container">
+  <form class="pure-form pure-form-aligned">
+    <fieldset>
+      <!-- Current Username -->
+      <div class="pure-control-group">
+        <label for="current-username">Current Username:</label>
+        <span id="current-username">Username</span>
+      </div>
+
+      <!-- New Username -->
+      <div class="pure-control-group">
+        <label for="new-username">New Username:</label>
+        <input id="new-username" type="text" placeholder="New Username" />
+      </div>
+
+      <!-- Current Password -->
+      <div class="pure-control-group">
+        <label for="current-password">Current Password:</label>
+        <input
+          id="current-password"
+          type="password"
+          placeholder="Current Password"
+        />
+      </div>
+
+      <!-- New Password -->
+      <div class="pure-control-group">
+        <label for="new-password">New Password:</label>
+        <input id="new-password" type="password" placeholder="New Password" />
+      </div>
+
+      <!-- Current Email -->
+      <div class="pure-control-group">
+        <label for="current-email">Current Email:</label>
+        <span id="current-email">user@gmail.com</span>
+      </div>
+
+      <!-- New Email -->
+      <div class="pure-control-group">
+        <label for="new-email">New Email:</label>
+        <input id="new-email" type="email" placeholder="New Email" />
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="pure-controls">
+        <button type="button" class="pure-button delete-button">
+          Delete Account
+        </button>
+        <button
+          type="submit"
+          class="pure-button pure-button-primary save-button"
+        >
+          Save Changes
+        </button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{%endblock%}
