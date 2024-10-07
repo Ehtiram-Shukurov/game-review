@@ -45,3 +45,5 @@ def template_game_page(name):
     game_data = get_game_data(name)
     # reviews = get_reviews(name); TODO: implement get reviews from database
     return render_template("game.html", game_data=game_data, reviews=reviews)
+
+app.run(host='0.0.0.0', port =3000)
