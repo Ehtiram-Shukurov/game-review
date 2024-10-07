@@ -1,0 +1,71 @@
+{% extends "base.html" %} {% block title %}Game Review{% endblock %}{% block
+content %}
+<div class="game-section">
+  <h2 class="section-title">New Games</h2>
+  <div class="game-list pure-g">
+    <div class="game-card pure-u-1 pure-u-md-1-6">
+      <div class="game-cover">
+        <img src="/static/images/avatar.png" alt="Game 1" />
+      </div>
+      <div class="game-info">
+        <span class="title">The Last of Us</span>
+      </div>
+      <div class="release-date">Release Date:Oct 04</div>
+    </div>
+    <div class="game-card pure-u-1 pure-u-md-1-6">
+      <div class="game-cover">
+        <img src="/static/images/avatar.png" alt="Game 1" />
+      </div>
+      <div class="game-info">
+        <span class="title">The Last of Us</span>
+      </div>
+      <div class="release-date">Release Date:Oct 04</div>
+    </div>
+    <div class="game-card pure-u-1 pure-u-md-1-6">
+      <div class="game-cover">
+        <img src="/static/images/avatar.png" alt="Game 1" />
+      </div>
+      <div class="game-info">
+        <span class="title">The Last of Us</span>
+      </div>
+      <div class="release-date">Release Date:Oct 04</div>
+    </div>
+  </div>
+</div>
+
+<div class="recent-reviews-section">
+  <h2 class="section-title">Recent Reviews</h2>
+  <div class="reviews-list">
+    <!-- Review 1 -->
+    <div class="review-card">
+      <div class="review-image">
+        <img src="/static/images/avatar.png" alt="Game 1" />
+      </div>
+      <div class="review-content">
+        <div class="user-info">
+          <img
+            class="user-avatar"
+            src="/static/images/avatar.png"
+            alt="User 1"
+          />
+          <span class="username">Name Surname</span>
+        </div>
+        <div class="review-header">
+          <span class="game-title">The Last of Us 2024</span>
+          <span class="review-rating">★★★★☆</span>
+          <span class="comment-count">Review:104</span>
+        </div>
+        <div class="review-text">
+          <p>DESCRIPTION</p>
+          <a href="#">more</a>
+        </div>
+        <div class="review-interactions">
+          <span class="like-review">💖Like</span>
+          <span class="like-count">100 likes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

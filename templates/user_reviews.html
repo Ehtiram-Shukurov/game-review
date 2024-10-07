@@ -1,0 +1,54 @@
+{% extends 'base.html' %} {% block title %}User Reviews{% endblock %} {% block
+content %}
+<div class="user-menu">
+  <a
+    href="/user/profile"
+    class="menu-item {% if active_page == 'profile' %}active{% endif %}"
+    >Profile</a
+  >
+  <a
+    href="/user/reviews"
+    class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
+    >Reviews</a
+  >
+  <a
+    href="/user/settings"
+    class="menu-item {% if active_page == 'settings' %}active{% endif %}"
+    >Settings</a
+  >
+</div>
+<div class="recent-reviews-section">
+  <h2 class="section-title">Recent Reviews</h2>
+  <div class="reviews-list">
+    <!-- Review 1 -->
+    <div class="review-card">
+      <div class="review-image">
+        <img src="/static/images/avatar.png" alt="Game 1" />
+      </div>
+      <div class="review-content">
+        <div class="user-info">
+          <img
+            class="user-avatar"
+            src="/static/images/avatar.png"
+            alt="User 1"
+          />
+          <span class="username">Name Surname</span>
+        </div>
+        <div class="review-header">
+          <span class="game-title">The Last of Us 2024</span>
+          <span class="review-rating">★★★★☆</span>
+          <span class="comment-count">Review:104</span>
+        </div>
+        <div class="review-text">
+          <p>DESCRIPTION</p>
+          <a href="#">more</a>
+        </div>
+        <div class="review-interactions">
+          <span class="like-review">💖Like</span>
+          <span class="like-count">100 likes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'basePost.html' %}
+
+{% block title %}Post Review{% endblock %}
+
+{% block action %}{{ url_for('submitReviewPost') }}{% endblock %}
+{% block label %}Review Title: {% endblock %}
+
+{% block starRating %}
+    <div class="rating-container">
+        <p>Rating:</p>
+        <span onclick="rate(1)" class="star">★</span>
+        <span onclick="rate(2)" class="star">★</span>
+        <span onclick="rate(3)" class="star">★</span>
+        <span onclick="rate(4)" class="star">★</span>
+        <span onclick="rate(5)" class="star">★</span>
+    </div> <br>
+{% endblock %}
