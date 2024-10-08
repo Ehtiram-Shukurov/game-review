@@ -10,8 +10,8 @@ igdb-api-v4 = "*"
 authlib = "*"
 requests = "*"
 protobuf = "*"
-
 python-dotenv = "*"
+gunicorn = "*"
 
 [dev-packages]
 
