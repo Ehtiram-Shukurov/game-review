@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.secret_key = os.environ['AUTH0_SECRET_KEY']
 
 oauth = OAuth(app)
-
+domain =os.environ['AUTH0_DOMAIN']
 oauth.register(
     "auth0",
     client_id=os.environ['AUTH0_CLIENT_ID'],
@@ -23,7 +23,7 @@ oauth.register(
     client_kwargs={
         "scope": "openid profile email",
     },
-    server_metadata_url=f'https://{os.environ['AUTH0_DOMAIN']}/.well-known/openid-configuration',
+    server_metadata_url=f'https://{domain}/.well-known/openid-configuration',
 )
 
 @app.route("/")
@@ -73,7 +73,7 @@ def logout():
     session.clear()
     return redirect(
         "https://"
-        + os.environ['AUTH0_DOMAIN']
+        + domain
         + "/v2/logout?"
         + urlencode(
             {
@@ -85,9 +85,6 @@ def logout():
         )
     )
 
-@app.route('/review/<string:name>')
-def template_review_page(name):
-    data = get_game_data(name)
 
 @app.route('/review/<string:id>')
 def template_review_page(id):
