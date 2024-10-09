@@ -12,6 +12,7 @@ requests = "*"
 protobuf = "*"
 python-dotenv = "*"
 gunicorn = "*"
+psycopg2 = "*"
 
 [dev-packages]
 

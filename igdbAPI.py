@@ -38,6 +38,7 @@ def data_extractor(data, search):
 
 
 def get_game_data(name):
+    #TODO handle failure gracefully, redirect to error page
     id = get_game_id(name)
     query = f"""
   fields name, storyline, genres.name, game_modes.name, player_perspectives.name, similar_games.name, summary, themes.name, cover.url, involved_companies.company.name, artworks.url;
@@ -71,6 +72,7 @@ def get_game_data(name):
     summary = res[0].get("summary")
     themes = data_extractor(res[0].get("themes"), "name")
     data = {}
+    data["game_id"] = id
     data["coverImageUrl"] = cover_image_url
     data["game_modes"] = game_modes
     #data["genres"] = genres
