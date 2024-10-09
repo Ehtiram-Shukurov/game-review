@@ -1,33 +1,23 @@
-CREATE TYPE ReviewType AS (
-    replyid INT, 
-    authorid INT, 
-    content TEXT, 
-    created TIMESTAMP, 
-    rating INT);
-
-CREATE TYPE TopicType AS (
-    topicid INT, 
-    authorid INT, 
-    title TEXT, 
-    content TEXT, 
-    created TIMESTAMP, 
-    rating INT);
+CREATE TYPE post_type AS ENUM ('review', 'topic', 'reply');
 
 CREATE TABLE Users (
-    userid SERIAL PRIMARY KEY,
+    user_id TEXT PRIMARY KEY,
     username TEXT NOT NULL,
     email TEXT NOT NULL);
 
-CREATE TABLE Page (
-    pageid SERIAL PRIMARY KEY,
-    gameid INT NOT NULL,
-    reviews ReviewType[],
-    topics TopicType[]);
 
-CREATE TABLE Reply (
-    replyid INT,
-    authorid INT,
+CREATE TABLE POSTS (
+    post_id SERIAL PRIMARY KEY,
+    game_id INT NULL,
+    title TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    rating INT NULL,
     content TEXT,
-    created TIMESTAMP,
-    partentid INT,
-    partentTYPE TEXT);
+    post post_type,
+    parent_id INT NULL,
+    user_id TEXT REFERENCES Users(user_id)
+);
+
+
+
+
