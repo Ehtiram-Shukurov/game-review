@@ -27,7 +27,7 @@ oauth.register(
     client_kwargs={
         "scope": "openid profile email",
     },
-    #server_metadata_url=f'https://{domain}/.well-known/openid-configuration',
+    server_metadata_url=f'https://{domain}/.well-known/openid-configuration',
 )
 
 
@@ -54,13 +54,13 @@ def user_settings():
 # Controllers API
  #TODO change home page to the following
 # below is the code from the example downloaded from auth0
-@app.route("/a")
-def home():
-   return render_template(
-       "home.html",
-       session=session.get("user"),
-       pretty=json.dumps(session.get("user"), indent=4),
-   )
+#@app.route("/a")
+#def home():
+#   return render_template(
+#       "home.html",
+#       session=session.get("user"),
+#       pretty=json.dumps(session.get("user"), indent=4),
+#   )
 
 
 @app.route("/callback", methods=["GET", "POST"])
