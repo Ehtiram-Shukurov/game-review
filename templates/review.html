@@ -1,34 +1,33 @@
 {% extends "base.html" %} {% block title %}Game Review{% endblock %}
 {% block content %}
     <div class="pure-g">
-        <div class="pure-u-2-24"><p>{{ review.gametitle }}</p>
-            <p>{{ review.author }}</p></div>
-        <div class="pure-u-21-24"><h1>{{ review.title }}</h1></div>
-        <div class="pure-u-1-24"><p>{{ review.rating }}</p></div>
+        <div class="pure-u-1-24"><h1 class = "game_title">{{ review.gametitle }}</h1>
+            <p>by {{ review.author }}</p></div>
+        <div class="pure-u-20-24"><h1 class = "reveiw_title">{{ review.title }}</h1></div>
+        <div class="pure-u-2-24">
+            <p>
+            {%for n in range(review.rating) %}
+                &#9733;
+            {%endfor%}
+            {%for n in range(5 - review.rating) %}
+                &#9734;
+            {%endfor%}
+            </p>
+        </div>
     </div>
     <div class="pure-g">
         <div class="pure-u-1" style="margin-left: 1em">
-            <p>Game Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare,
-                eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor
-                sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
-                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
-                diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra
-                ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum
-                dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
-                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
-                diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra
-                ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum
-                dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
-                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
-                diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra
-                ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum
-                dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum
-                tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo
-                diam libero vitae erat.</p>
+            <p>{{review.content}}</p>
+        </div>
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                    <a href="#" id="comment" class="pure-menu-link">Options</a>
+                    <ul class="pure-menu-children">
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">Edit</a></li>
+                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">Delete</a></li>
+                    </ul>
+                </li>
         </div>
     </div>
     <div class="pure-g">
@@ -48,7 +47,7 @@
 
     <div class="pure-g">
         <div class="pure-u-1">
-            {{ renderComments(review.comments, 0)  }}
+            {{ renderComments(review.replies, 0)}}
         </div>
     </div>
 {% endblock %}
