@@ -127,9 +127,8 @@ def template_review_page(id, user):
 
     return render_template("review.html", review=review)
 
-
+@auth_aware # <---- adding this makes the user to view the end point
 @app.route('/game/<string:name>')
-#@auth_aware # <---- adding this makes the user to view the end point
 #@requires_auth <---- adding this makes the user not able to see the end point unless they are logged in
 def template_game_page(name):
     game_data = get_game_data(name)
