@@ -575,3 +575,12 @@ body{
         margin-top: 0;
         text-indent: 2em;
 }
+
+/* rating */
+.star {
+    font-size: 2em;
+    cursor: pointer;
+}
+.star.selected {
+    color: gold;
+}
