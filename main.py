@@ -3,7 +3,7 @@ import os
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for, request
 
 from db import *
 from igdbAPI import *
@@ -50,6 +50,42 @@ def user_reviews():
 def user_settings():
     return render_template('user_settings.html', active_page='settings')
 
+@app.route('/postReview')
+def postReview():
+    games = ["game1", "game2", "game3"]
+    return render_template('postReview.html', listGames=games)
+
+@app.route('/postTopic')
+def postTopic():
+    games = ["game1", "game2", "game3"]
+    return render_template('postReview.html', listGames=games)
+
+@app.route('/submitPost')
+def submitPost():
+    if request.method == 'POST':
+        title = request.form['title']
+        game_id = request.form['game']
+        content = request.form['post']
+        post_type = request.form['post_type']
+        
+        rating = None
+        if 'rating' in request.form:
+            rating = request.form['rating']
+        
+        #Change later to session.get('user')
+        user_id = "user1"
+        dt = datetime.now()
+
+        conn = psycopg2.connect(os.environ['DATABASE_URL'])
+        cur = conn.cursor()
+
+        cur.execute("INSERT INTO result (time_stamp, name, played, favClass, campaign) VALUES (%s,%s,%s,%s,%s)", 
+                    (dt, name, play, favClass, campaign))
+
+        conn.commit()
+        conn.close()
+
+        return thanks()
 
 # Controllers API
  #TODO change home page to the following
@@ -130,4 +166,7 @@ def template_game_page(name):
     reviews = retrieve_reviews_by_game_id(game_data['game_id'])
     topics = retrieve_topics_by_game_id(game_data['game_id'])
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
+
+def get_user_most_recent_post(userName):
+    return 0
 

@@ -97,4 +97,3 @@ def broad_search(name, limit=1):
     games = json.loads(response.decode('utf-8'))
     # list of dict
     return games
-
