@@ -92,9 +92,30 @@ def retrieve_topics_by_game_id(game_id):
 
 
 def retrieve_reviews_by_game_id(game_id):
-    query = "SELECT * FROM POSTS WHERE game_id = %s and post = 'review'"
+    query = "SELECT * FROM POSTS WHERE game_id = %s AND post = 'review'"
     with get_db_cursor() as cursor:
         cursor.execute(query, (game_id,))
+        return cursor.fetchall()
+    
+def retrieve_review_by_post_id(post_id):
+    query = "SELECT *, username FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post_id = %s"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (post_id,))
+        return cursor.fetchone()
+
+def retrive_replies_by_post_id(review_id):
+    query = """WITH RECURSIVE replies AS (
+    SELECT post_id, parent_id, content, user_id
+    FROM POSTS
+    WHERE parent_id = %s
+    UNION ALL
+    SELECT p.post_id, p.parent_id, p.content, p.user_id
+    FROM POSTS p
+    JOIN replies r ON p.parent_id = r.post_id)
+    SELECT replies.*, username FROM replies INNER JOIN USERS ON replies.user_id = USERS.user_id ORDER BY post_id"""
+
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (review_id,))
         return cursor.fetchall()
 
 
@@ -104,4 +125,31 @@ def retrieve_replies_by_post_id(post_id):
         cursor.execute(query, (post_id,))
         return cursor.fetchall()
 
-#TODO: get all subreplies
+## This will delete the content of the post and all of its replies
+def delete_content(post_id):
+    query = """WITH RECURSIVE posts_to_delete AS (
+    SELECT post_id
+    FROM posts
+    WHERE post_id = %s
+
+    UNION ALL
+
+    SELECT p.post_id
+    FROM posts p
+    INNER JOIN posts_to_delete pt ON p.parent_id = pt.post_id
+    )
+    DELETE FROM posts
+    WHERE post_id IN (SELECT post_id FROM posts_to_delete);"""
+
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (post_id,))
+
+def update_reviews(review_data):
+    query = "UPDATE POSTS SET title = %s, rating = %s, content = %s WHERE post_id = %s"
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (review_data['title'], review_data['rating'], review_data['content'], review_data['post_id']))
+
+def update_reply_content(reply_data):
+    query = "UPDATE POSTS SET content = %s WHERE post_id = %s"
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (reply_data['content'], reply_data['post_id']))

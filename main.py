@@ -3,10 +3,11 @@ import os
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for, request
 from functools import wraps
 from db import *
 from igdbAPI import *
+from post import *
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -110,39 +111,24 @@ def logout():
         )
     )
 
-
-@app.route('/review/<string:id>')
 @auth_aware # <---- adding this makes the user to view the end point
-#@requires_auth <---- adding this makes the user not able to see the end point unless they are logged in
+@app.route('/review/<string:id>/<string:user>')
 def template_review_page(id, user):
     if user == None: # <--- do logic here for allowing the user to post,edit,delete, etc..
         pass
-    # TODO: get real data from database
-    reply = {"author": "Fred",
-             "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor si",
-             "replies": []}
-    comments = [{"author": "dano",
-                 "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor si",
-                 "replies": [reply]}, {"author": "dano",
-                                       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Lorem ipsum dolor si",
-                                       "replies": [reply]}]
-    review = {"author": "danb", "gametitle": "test game", "title": "review page", "rating": '5', "comments": comments}
-    # comments = review['comments'];  TOOD: figure out how to best get review/comment data from DB
-    # TODO: replace the return with the html template with info from data
-    # data.get("coverImageUrl")
-    # data.get("gameModes")
-    # data.get("genres")
-    # data.get("companies")
-    # data.get("playerPerspectives")
-    # data.get("similarGames")
-    # data.get("storyline")
-    # data.get("summary")
-    # data.get("themes")
+      
+    result = retrieve_review_by_post_id(id)
+    print(result)
+    replies_data = retrive_replies_by_post_id(id)
+   
+    # recursively put relies into hierarchy structure
+    replies = build_hierarchy(replies_data,id)
+    review = {"post_id":result['post_id'],"author": result['username'], "gametitle": result['game_id'], "title": result['title'], "rating": result['rating'], "content": result['content'], "replies": replies}
+
     return render_template("review.html", review=review)
 
-
-@app.route('/game/<string:name>')
 @auth_aware # <---- adding this makes the user to view the end point
+@app.route('/game/<string:name>')
 #@requires_auth <---- adding this makes the user not able to see the end point unless they are logged in
 def template_game_page(name):
     game_data = get_game_data(name)
@@ -150,3 +136,33 @@ def template_game_page(name):
     topics = retrieve_topics_by_game_id(game_data['game_id'])
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
 
+
+@app.route('/updateReview/<int:post_id>', methods=['POST'])
+def update_review(post_id):
+    data = request.form
+    print(data)
+    update_data = {
+        'post_id': post_id,
+        'title': data['title'],
+        'rating': data['rating'],
+        'content': data['editArea']
+    }
+    update_reviews(update_data)
+    return redirect(url_for('template_review_page', id=post_id, user='user1'))
+    
+@app.route('/editReview/<string:id>')
+def edit_review(id):
+    result = retrieve_review_by_post_id(id)
+    print(result)
+    return render_template('editReview.html', result = result)
+
+@app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
+def update_reply(parent_id, post_id):
+    data = request.form
+    print(data)
+    update_data = {
+        'post_id': post_id,
+        'content': data['editArea']
+    }
+    update_reply_content(update_data)
+    return redirect(url_for('template_review_page', id=parent_id, user='user1'))
