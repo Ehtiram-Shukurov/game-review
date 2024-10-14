@@ -153,3 +153,32 @@ def update_reply_content(reply_data):
     query = "UPDATE POSTS SET content = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (reply_data['content'], reply_data['post_id']))
+
+def insert_post(title, game_id, content, post_type, rating, user_id, parent_id):
+    query = "INSERT INTO POSTS (game_id, title, rating, content, post, parent_id, user_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (game_id, title, rating, content, post_type, parent_id, user_id))
+
+def get_user_most_recent_post(user_id):
+    resultArr = []
+
+    query = "SELECT row_to_json(r) FROM POSTS as r WHERE user_id = %s ORDER BY created DESC;"
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (user_id))
+    resultArr.extend(record for record in cursor)
+
+    return resultArr[0][0]['post_id']
+
+def getPost(id):
+    query = "SELECT * FROM POSTS WHERE post_id = %s"
+
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (id))
+        post = cursor.fetchone()
+
+    return post
+
+def update_post(title, content, rating, post_id):
+    query = "UPDATE POSTS SET title = %s, content = %s, rating = %s, WHERE id = %s"
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (title, content, rating, post_id))

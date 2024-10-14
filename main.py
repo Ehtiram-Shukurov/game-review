@@ -7,7 +7,6 @@ from flask import Flask, redirect, render_template, session, url_for, request, r
 from functools import wraps
 from db import *
 from igdbAPI import *
-import psycopg2
 from post import *
 
 ENV_FILE = find_dotenv()
@@ -73,24 +72,16 @@ def submitPost():
         if post_type == 'review': rating = request.form['rating']
         
         user_id = session.get('user')
-        parent_id = -1
-        dt = datetime.now()
+        parent_id = None
 
-        conn = psycopg2.connect(os.environ['DATABASE_URL'])
-        cur = conn.cursor()
-
-        cur.execute("INSERT INTO POSTS (game_id, title, created, rating, content, post, parent_id, user_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)", 
-                    (game_id, title, dt, rating, content, post_type, parent_id, user_id))
-
-        conn.commit()
-        conn.close()
+        insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
 
         post_id = get_user_most_recent_post(user_id)
         
         #discuss possible endpoint change
         return redirect(url_for('review', id=post_id))
 
-@app.route('/updateReview/<string:id>', methods=['GET'])
+@app.route('/editReview/<string:id>', methods=['GET'])
 def updateReview(id):
     post = getPost(id)
     post_data = {
@@ -98,9 +89,9 @@ def updateReview(id):
         'title': post[2],
         'content': post[5]
     }
-    return render_template('updateReview.html', post=post_data)
+    return render_template('editReview.html', post=post_data)
 
-@app.route('/updateTopic/<string:id>', methods=['GET'])
+@app.route('/editTopic/<string:id>', methods=['GET'])
 def updateTopic(id):
     post = getPost(id)
     post_data = {
@@ -108,7 +99,7 @@ def updateTopic(id):
         'title': post[2],
         'content': post[5]
     }
-    return render_template('updateTopic.html', post=post_data)
+    return render_template('editTopic.html', post=post_data)
 
 @app.route('/updatePost')
 def updatePost():
@@ -121,16 +112,9 @@ def updatePost():
         rating = None
         if post_type == 'review': rating = request.form['rating']
 
-        conn = psycopg2.connect(os.environ['DATABASE_URL'])
-        cur = conn.cursor()
+        update_post(title, content, rating, post_id)
 
-        cur.execute("UPDATE POSTS SET title = %s, content = %s, rating = %s, WHERE id = %s", (title, content, rating, post_id))
-
-        conn.commit()
-        conn.close()
-
-    #discuss possible endpoint change
-    return redirect(url_for('review', id=post_id))
+        return redirect(url_for('review', id=post_id))
 
 # Controllers API
  #TODO change home page to the following
@@ -229,27 +213,6 @@ def games_page():
     return render_template("games.html", games=get_games)
 
 
-@app.route('/updateReview/<int:post_id>', methods=['POST'])
-def update_review(post_id):
-    data = request.form
-    print(data)
-    update_data = {
-        'post_id': post_id,
-        'title': data['title'],
-        'rating': data['rating'],
-        'content': data['editArea']
-    }
-    update_reviews(update_data)
-    return redirect(url_for('template_review_page', id=post_id, user='user1'))
-
-
-@app.route('/editReview/<string:id>')
-def edit_review(id):
-    result = retrieve_review_by_post_id(id)
-    print(result)
-    return render_template('editReview.html', result = result)
-
-
 @app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
 def update_reply(parent_id, post_id):
     data = request.form
@@ -260,30 +223,3 @@ def update_reply(parent_id, post_id):
     }
     update_reply_content(update_data)
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))
-
-
-def get_user_most_recent_post(user_id):
-    resultArr = []
-
-    conn = psycopg2.connect(os.environ['DATABASE_URL'])
-    cur = conn.cursor()
-
-    cur.execute("SELECT row_to_json(r) FROM POSTS as r WHERE user_id = %s ORDER BY created DESC;", (user_id))
-    resultArr.extend(record for record in cur)
-
-    conn.commit()
-    conn.close()
-
-    return resultArr[0][0]['post_id']
-
-def getPost(id):
-    conn = psycopg2.connect(os.environ['DATABASE_URL'])
-    cur = conn.cursor()
-
-    cur.execute("SELECT * FROM POSTS WHERE post_id = %s", (id))
-    post = cur.fetchone()
-
-    conn.commit()
-    conn.close()
-
-    return post
