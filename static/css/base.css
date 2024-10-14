@@ -178,10 +178,6 @@ body{
     }
 }
 
-.content{
-    margin-top:80px;
-}
-
 /* Profile */
 .user-profile {
     display: flex;
@@ -583,4 +579,12 @@ body{
 }
 .star.selected {
     color: gold;
+}
+
+.game-sec {
+    cursor: pointer;
+}
+
+.game-sec:hover {
+    background-color: #444;
 }

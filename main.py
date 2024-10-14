@@ -72,6 +72,7 @@ def requires_auth(f):
 
     return decorated
 
+
 # code written by Proffesor
 def auth_aware(f):
     @wraps(f)
@@ -81,11 +82,13 @@ def auth_aware(f):
 
     return decorated
 
+
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
     return redirect("/")
+
 
 @app.route("/login")
 def login():
@@ -128,12 +131,13 @@ def template_review_page(id, user):
     return render_template("review.html", review=review)
 
 @auth_aware # <---- adding this makes the user to view the end point
-@app.route('/game/<string:name>')
+@app.route('/game/<string:id>')
 #@requires_auth <---- adding this makes the user not able to see the end point unless they are logged in
-def template_game_page(name):
-    game_data = get_game_data(name)
-    reviews = retrieve_reviews_by_game_id(game_data['game_id'])
-    topics = retrieve_topics_by_game_id(game_data['game_id'])
+def template_game_page(id):
+    game_data = get_game_by_id(id)[0]
+    reviews = retrieve_reviews_by_game_id(id)
+    topics = retrieve_topics_by_game_id(id)
+    print(game_data)
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
 
 

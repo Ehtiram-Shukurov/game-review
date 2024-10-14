@@ -5,10 +5,10 @@
         <div class="pure-u-22-24">
             <div class="pure-g">
                 <div class="pure-u-1-5">
-                    <img src="{{ game_data.coverImageUrl }}" alt="Cover image for {{ game_data.name }}"
+                    <img src="http:{{ game_data.get('cover').get('url') | replace('t_thumb', 't_720p')}}" alt="Cover image for {{ game_data.name }}"
                          class="pure-img"/>
                 </div>
-                <div class="pure-u-3-5 game-info">
+                <div class="pure-u-3-5" style="margin-left: 1em;">
                     <h1>{{ game_data.name }}</h1>
                     <p>{{ game_data.summary }}</p>
                 </div>
