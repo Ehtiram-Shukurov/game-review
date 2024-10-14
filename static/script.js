@@ -1,5 +1,5 @@
-let stars = 
-    document.getElementsByClassName("star");
+let stars = document.getElementsByClassName("star");
+let rating = document.getElementById("rating");
  
 // Funtion to update rating
 function rate(n) {
@@ -13,6 +13,7 @@ function rate(n) {
         else if (n == 5) cls = "five";
         stars[i].className = "star " + cls;
     }
+    rating.value = n;
 }
  
 // To remove the pre-applied styling

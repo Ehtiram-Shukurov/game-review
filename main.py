@@ -3,7 +3,7 @@ import os
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for, request
+from flask import Flask, redirect, render_template, session, url_for, request, request
 from functools import wraps
 from db import *
 from igdbAPI import *
@@ -50,6 +50,71 @@ def user_reviews():
 def user_settings():
     return render_template('user_settings.html', active_page='settings')
 
+@app.route('/postReview')
+def postReview():
+    games = ["game1", "game2", "game3"]
+    return render_template('postReview.html', listGames=games)
+
+@app.route('/postTopic')
+def postTopic():
+    games = ["game1", "game2", "game3"]
+    return render_template('postReview.html', listGames=games)
+
+@app.route('/submitPost', methods=['POST'])
+def submitPost():
+    if request.method == 'POST':
+        title = request.form['title']
+        game_id = request.form['game']
+        content = request.form['content']
+        post_type = request.form['post_type']
+        
+        rating = None
+        if post_type == 'review': rating = request.form['rating']
+        
+        user_id = session.get('user')
+        parent_id = None
+
+        insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
+
+        post_id = get_user_most_recent_post(user_id)
+        
+        #discuss possible endpoint change
+        return redirect(url_for('review', id=post_id))
+
+@app.route('/editReview/<string:id>', methods=['GET'])
+def updateReview(id):
+    post = getPost(id)
+    post_data = {
+        'id': post[0],
+        'title': post[2],
+        'content': post[5]
+    }
+    return render_template('editReview.html', post=post_data)
+
+@app.route('/editTopic/<string:id>', methods=['GET'])
+def updateTopic(id):
+    post = getPost(id)
+    post_data = {
+        'id': post[0],
+        'title': post[2],
+        'content': post[5]
+    }
+    return render_template('editTopic.html', post=post_data)
+
+@app.route('/updatePost')
+def updatePost():
+    if request.method == 'POST':
+        post_id = request.form['post_id']
+        title = request.form['title']
+        content = request.form['content']
+        post_type = request.form['post_type']
+
+        rating = None
+        if post_type == 'review': rating = request.form['rating']
+
+        update_post(title, content, rating, post_id)
+
+        return redirect(url_for('review', id=post_id))
 
 # Controllers API
  #TODO change home page to the following
@@ -148,27 +213,6 @@ def games_page():
     return render_template("games.html", games=get_games)
 
 
-@app.route('/updateReview/<int:post_id>', methods=['POST'])
-def update_review(post_id):
-    data = request.form
-    print(data)
-    update_data = {
-        'post_id': post_id,
-        'title': data['title'],
-        'rating': data['rating'],
-        'content': data['editArea']
-    }
-    update_reviews(update_data)
-    return redirect(url_for('template_review_page', id=post_id, user='user1'))
-
-
-@app.route('/editReview/<string:id>')
-def edit_review(id):
-    result = retrieve_review_by_post_id(id)
-    print(result)
-    return render_template('editReview.html', result = result)
-
-
 @app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
 def update_reply(parent_id, post_id):
     data = request.form
@@ -179,5 +223,3 @@ def update_reply(parent_id, post_id):
     }
     update_reply_content(update_data)
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))
-
-

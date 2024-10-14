@@ -1,25 +1,24 @@
-{% extends 'baseEdit.html' %}
+{% extends 'basePost.html' %}
 
 {% block title %}Edit Review{% endblock %}
 
-{% block action %}{{ url_for('update_review', post_id=result.post_id) }}{% endblock %}
+{% block action %}{{ url_for('updatePost') }}{% endblock %}
+
 {% block label %}Review Title: {% endblock %}
+{% block postTitle %}{{ post.title }}{% endblock %}
+{% block textArea %}{{ post.content }}{% endblock %}
 
 {% block starRating %}
     <div class="rating-container">
         <p>Rating:</p>
-        <span onclick="rate(1)" class="star" id = "star1">★</span>
-        <span onclick="rate(2)" class="star" id = "star2">★</span>
-        <span onclick="rate(3)" class="star" id = "star3">★</span>
-        <span onclick="rate(4)" class="star" id = "star4">★</span>
-        <span onclick="rate(5)" class="star" id = "star5">★</span>
-    </div> 
-    <input type="hidden" id="rating" name="rating" value="{{ result.rating }}">
-    <br>
-    <script>   
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentRating = document.getElementById('rating').value;
-            rate(currentRating);
-        });
-    </script>
+        <span onclick="rate(1)" class="star">★</span>
+        <span onclick="rate(2)" class="star">★</span>
+        <span onclick="rate(3)" class="star">★</span>
+        <span onclick="rate(4)" class="star">★</span>
+        <span onclick="rate(5)" class="star">★</span>
+        <input type="hidden" name="rating" id="rating" value="0">
+    </div> <br>
 {% endblock %}
+
+{% block type %}review{% endblock %}
+{% block postID %}<input type="hidden" name="post_id" value="{{ post.id }}"> {% endblock %}

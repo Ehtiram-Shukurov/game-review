@@ -2,9 +2,18 @@
 
 {% block title %}Post Review{% endblock %}
 
-{% block action %}{{ url_for('submitReviewPost') }}{% endblock %}
-{% block label %}Review Title: {% endblock %}
 
+{% block label %}Review Title: {% endblock %}
+{% block selectGames %}
+    <div>
+        <select id="gameSelect" name="gameSelect">
+            <option disabled selected value required> -- select a game -- </option>
+            {% for game in listGames %}
+                <option name="game" value="{{ game }}">{{ game }}</option>
+            {% endfor %}
+        </select> <br>
+    </div>
+{% endblock %}
 {% block starRating %}
     <div class="rating-container">
         <p>Rating:</p>
@@ -13,5 +22,8 @@
         <span onclick="rate(3)" class="star">★</span>
         <span onclick="rate(4)" class="star">★</span>
         <span onclick="rate(5)" class="star">★</span>
+        <input type="hidden" name="rating" id="rating" value="0">
     </div> <br>
 {% endblock %}
+
+{% block type %}review{% endblock %}

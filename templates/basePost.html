@@ -13,26 +13,24 @@
 </head>
 
 <body>
-    <form class="pure-form" method="POST" action="{% block action %}{{ url_for('submit_form') }}{% endblock %}">
+    <form class="pure-form" method="POST" action="{% block action %}{{ url_for('submitPost') }} {% endblock %}">
         <div class="pure-form-stacked">
             <div>
                 <label for="title">{% block label %}Some title{% endblock %}</label>
-                <input type="text" id="title" name="title"> <br>
+                <input type="text" id="title" name="title" value="{% block postTitle %}{% endblock %}" required> <br>
             </div>
 
-            <div>
-                <select id="gameSelect" name="gameSelect">
-                    {% for game in listGames %}
-                        <option value="{{ game }}">{{ game }}</option>
-                    {% endfor %}
-                </select> <br>
-            </div>
+            {% block selectGames %}{% endblock %}
             
             <div>
-                <textarea id="postArea" name="postArea" class="pure-input-1"></textarea>
+                <textarea id="content" name="content" class="pure-input-1" value="{% block textArea %}{% endblock %}" required></textarea>
             </div><br>
 
             {% block starRating %}{% endblock %}
+
+            <input type="hidden" value="{% block type %}{% endblock %}" name="post_type">
+
+            {% block postID %}{% endblock %}
 
             <div class="button-container">
                 <input type="submit" id="submit" name="submit" class="pure-button">
@@ -41,5 +39,4 @@
         </div>
     </form>
 </body>
-
 </html>
