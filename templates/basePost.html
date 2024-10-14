@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <form class="pure-form" method="POST" action="{{ url_for('submitPost') }}">
+    <form class="pure-form" method="POST" action="{% block action %}{{ url_for('submitPost') }} {% endblock %}">
         <div class="pure-form-stacked">
             <div>
                 <label for="title">{% block label %}Some title{% endblock %}</label>
@@ -23,12 +23,14 @@
             {% block selectGames %}{% endblock %}
             
             <div>
-                <textarea id="post" name="post" class="pure-input-1" value="{% block textArea %}{% endblock %}" required></textarea>
+                <textarea id="content" name="content" class="pure-input-1" value="{% block textArea %}{% endblock %}" required></textarea>
             </div><br>
 
             {% block starRating %}{% endblock %}
 
             <input type="hidden" value="{% block type %}{% endblock %}" name="post_type">
+
+            {% block postID %}{% endblock %}
 
             <div class="button-container">
                 <input type="submit" id="submit" name="submit" class="pure-button">

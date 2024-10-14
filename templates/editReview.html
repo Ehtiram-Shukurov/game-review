@@ -2,8 +2,11 @@
 
 {% block title %}Edit Review{% endblock %}
 
-{% block action %}{{ url_for('updateReview') }}{% endblock %}
+{% block action %}{{ url_for('updatePost') }}{% endblock %}
+
 {% block label %}Review Title: {% endblock %}
+{% block postTitle %}{{ post.title }}{% endblock %}
+{% block textArea %}{{ post.content }}{% endblock %}
 
 {% block starRating %}
     <div class="rating-container">
@@ -13,5 +16,9 @@
         <span onclick="rate(3)" class="star">★</span>
         <span onclick="rate(4)" class="star">★</span>
         <span onclick="rate(5)" class="star">★</span>
+        <input type="hidden" name="rating" id="rating" value="0">
     </div> <br>
 {% endblock %}
+
+{% block type %}review{% endblock %}
+{% block postID %}<input type="hidden" name="post_id" value="{{ post.id }}"> {% endblock %}

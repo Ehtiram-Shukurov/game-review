@@ -1,6 +1,11 @@
 {% extends 'basePost.html' %}
 
-{% block title %}Post Topic{% endblock %}
+{% block title %}Edit Topic{% endblock %}
 
-{% block action %}{{ url_for('updateTopic') }}{% endblock %}
+{% block action %}{{ url_for('updatePost') }}{% endblock %}
+
 {% block label %}Topic Title: {% endblock %}
+{% block postTitle %}{{ post[2] }}{% endblock %}
+{% block textArea %}{{ post[5] }}{% endblock %}
+{% block type %}topic{% endblock %}
+{% block postID %}<input type="hidden" name="post_id" value="{{ post.id }}"> {% endblock %}
