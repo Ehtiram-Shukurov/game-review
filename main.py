@@ -89,7 +89,7 @@ def submitPost():
         #discuss possible endpoint change
         return redirect(url_for('review', id=post_id))
 
-@app.route('/updateReview/<int:id>', methods=['GET'])
+@app.route('/updateReview/<string:id>', methods=['GET'])
 def updateReview(id):
     post = getPost(id)
     post_data = {
@@ -99,7 +99,7 @@ def updateReview(id):
     }
     return render_template('updateReview.html', post=post_data)
 
-@app.route('/updateTopic/<int:id>', methods=['GET'])
+@app.route('/updateTopic/<string:id>', methods=['GET'])
 def updateTopic(id):
     post = getPost(id)
     post_data = {
