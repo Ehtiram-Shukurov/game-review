@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Edit{% endblock %}</title>
+    <link rel="stylesheet" href=
+    "https://unpkg.com/purecss@2.0.5/build/pure-min.css"
+            integrity=
+    "sha384-LTIDeidl25h2dPxrB2Ekgc9c7sEC3CWGM6HeFmuDNUjX76Ert4Z4IY714dhZHPLd"
+            crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/base.css">
+    <script src="../static/js/scripts.js"></script>
+</head>
+
+<body>
+    <form class="pure-form" method="POST" action="{% block action %}{{ url_for('submit_form') }}{% endblock %}">
+        <div class="pure-form-stacked">
+            <div>
+                <label for="title">{% block label %}Some title{% endblock %}</label>
+                <input type="text" id="title" name="title" value = "{{result.title}}"> <br>
+            </div>
+            
+            <div>
+                <textarea id="editArea" name="editArea" class="pure-input-1">{{result.content}}</textarea>
+            </div><br>
+
+            {% block starRating %}{% endblock %}
+
+            <div class="button-container">
+                <input type="submit" id="submit" name="submit" class="pure-button">
+            </div>
+            
+        </div>
+    </form>
+</body>
+
+</html>

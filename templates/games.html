@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block title %}Game Review{% endblock %}
+
+{% block content %}
+{% include 'genre_toolbar.html' %}
+
+<div id="strategyDiv">
+    {{ render_games(15)}}
+</div>
+
+<div id="rpgDiv" hidden>
+    {{ render_games(12)}}
+</div>
+
+<div id="adventureDiv" hidden>
+    {{ render_games(31)}}
+</div>
+
+<div id="fightingDiv" hidden>
+    {{ render_games(4)}}
+</div>
+
+<div id="fpsDiv" hidden>
+    {{ render_games(5)}}
+</div>
+
+<div id="platformDiv" hidden>
+    {{ render_games(8)}}
+</div>
+</div>
+
+{% endblock %}
+
+
+{% macro render_games(genre) %}
+    {% for game in games(genre) %}
+    <div class="pure-g game-info-container" >
+        <div class="pure-u-2-24"></div>
+        <div class="pure-u-20-24 game-box">
+            <div class="pure-g game-sec" onclick="location.href='/game/{{game.id}}';">
+                <div class="pure-u-1-5">
+                    <img src="http:{{ game.get('cover').get('url') | replace('t_thumb', 't_720p')}}" alt="Cover image for {{ game.name }}"
+                         class="pure-img"/>
+                </div>
+                <div class="pure-u-3-5" style="margin-left: 1em;">
+                    <h1>{{ game.name }}</h1>
+                    <p>{{ game.summary }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endfor %}
+{% endmacro %}
