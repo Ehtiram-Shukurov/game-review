@@ -8,7 +8,7 @@ CREATE TABLE Users (
 
 CREATE TABLE POSTS (
     post_id SERIAL PRIMARY KEY,
-    game_id INT NULL,
+    game_id INT NULL references Games(game_id),
     title TEXT,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     rating INT NULL,
@@ -61,6 +61,13 @@ INSERT INTO POSTS (
     'reply', 
     12,
     '2');
+
+CREATE TABLE GAMES (
+    game_id INT PRIMARY KEY,
+    image_url varchar(512),
+    summary text,
+    name varchar(256)
+)
 
 
 

@@ -54,3 +54,20 @@ function saveReply(commentId) {
 function cancelEdit(commentId, originalContent) {
     document.getElementById(`comment-content-${commentId}`).innerHTML = originalContent;
 }
+
+function clickGenre(genre) {
+    let divNames = ['strategyDiv', 'rpgDiv', 'adventureDiv', 'fightingDiv', 'fpsDiv', 'platformDiv']
+    let targetDiv = document.getElementById(genre + "Div")
+    let targetButton = document.getElementById(genre + "Button")
+    divNames.forEach(hideDiv)
+    targetDiv.removeAttribute('hidden')
+    targetButton.classList.add("pure-menu-selected");
+
+}
+
+function hideDiv(divName) {
+    let divToHide = document.getElementById(divName)
+    divToHide.setAttribute("hidden", "true");
+    let buttonToRemove = document.getElementById(divName.replace('Div', 'Button'));
+    buttonToRemove.classList.remove("pure-menu-selected");
+}

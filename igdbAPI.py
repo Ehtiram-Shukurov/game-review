@@ -98,3 +98,17 @@ def broad_search(name, limit=1):
     # list of dict
     return games
 
+
+def get_games_by_genre(genre):
+    query = f"""
+    fields name, summary, cover.url, genres;
+    where genres = ({genre}) & rating > 90;
+    limit 10;"""
+    #popularity_primitives
+    response = wrapper.api_request('games', query)
+    games = json.loads(response.decode('utf-8'))
+    return games
+
+#TODO: use popularity api?
+
+

@@ -137,6 +137,13 @@ def template_game_page(name):
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
 
 
+@app.route('/games')
+def games_page():
+    def get_games(genre):
+        return get_games_by_genre(genre)
+    return render_template("games.html", games=get_games)
+
+
 @app.route('/updateReview/<int:post_id>', methods=['POST'])
 def update_review(post_id):
     data = request.form
@@ -149,12 +156,14 @@ def update_review(post_id):
     }
     update_reviews(update_data)
     return redirect(url_for('template_review_page', id=post_id, user='user1'))
-    
+
+
 @app.route('/editReview/<string:id>')
 def edit_review(id):
     result = retrieve_review_by_post_id(id)
     print(result)
     return render_template('editReview.html', result = result)
+
 
 @app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
 def update_reply(parent_id, post_id):
@@ -166,3 +175,5 @@ def update_reply(parent_id, post_id):
     }
     update_reply_content(update_data)
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))
+
+
