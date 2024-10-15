@@ -20,6 +20,7 @@
     <div class="pure-g">
         <div class="pure-u-1-5"></div>
         <div class="pure-u-3-5">
+            {% if reviews %}
             <div id="reviews">
                 {% for review in reviews %}
                 <div>
@@ -31,6 +32,13 @@
 
             {% endfor %}
             </div>
+            {% else %}
+            <div>
+                NO REVIEWS HERE CREATE ONE!
+            </div>
+            {% endif %}
+
+            {% if topics %}
             <div id="topics" hidden>
                 {% for topic in topics %}
                 <div>
@@ -42,6 +50,9 @@
 
             {% endfor %}
             </div>
+            {% else %}
+                <div hidden> NO TOPICS EXIST YET</div>
+            {% endif %}
 
         </div>
         <div class="pure-u-1-5">
