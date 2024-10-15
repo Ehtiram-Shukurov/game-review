@@ -116,8 +116,7 @@ def update_topic(id):
     }
     return render_template('editTopic.html', post=post_data)
 
-
-@app.route('/updatePost')
+@app.route('/updatePost', methods=['POST'])
 def update_post():
     if request.method == 'POST':
         post_id = request.form['post_id']
@@ -130,7 +129,7 @@ def update_post():
 
         update_post(title, content, rating, post_id)
 
-        return redirect(url_for('review', id=post_id))
+        return redirect(url_for('template_review_page', id=post_id, user='user1'))
 
 
 def requires_auth(f):

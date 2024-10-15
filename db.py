@@ -181,7 +181,7 @@ def get_post_by_id(id):
     return post
 
 def update_post(title, content, rating, post_id):
-    query = "UPDATE POSTS SET title = %s, content = %s, rating = %s WHERE id = %s"
+    query = "UPDATE POSTS SET title = %s, content = %s, rating = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (title, content, rating, post_id))
 
