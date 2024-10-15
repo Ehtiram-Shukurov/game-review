@@ -198,7 +198,6 @@ def template_game_page(id):
     game_data = get_game_by_id(id)[0]
     reviews = retrieve_reviews_by_game_id(id)
     topics = retrieve_topics_by_game_id(id)
-    print(reviews)
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
 
 
