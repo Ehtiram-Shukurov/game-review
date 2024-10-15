@@ -142,6 +142,7 @@ def requires_auth(f):
 def auth_aware(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        print("auth_aware")
         user = session.get('user')
         return f(*args, user=user, **kwargs) #do the normal behavior -- return as it does.
 
@@ -184,16 +185,16 @@ def logout():
 def template_review_page(id, user):
     if user == None: # <--- do logic here for allowing the user to post,edit,delete, etc..
         pass
-      
+    sub = session.get("user").get("userinfo").get("sub")
     result = retrieve_review_by_post_id(id)
     print(result)
     replies_data = retrive_replies_by_post_id(id)
-   
+    print(session.get("user"))
     # recursively put relies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
-    review = {"post_id":result['post_id'],"author": result['username'], "gametitle": result['game_id'], "title": result['title'], "rating": result['rating'], "content": result['content'], "replies": replies}
+    review = {"post_id":result['post_id'],"author": result['username'], "sub":result['user_sub'],"gametitle": result['game_id'], "title": result['title'], "rating": result['rating'], "content": result['content'], "replies": replies}
 
-    return render_template("review.html", review=review)
+    return render_template("review.html", review=review, sub=sub)
 
 @auth_aware # <---- adding this makes the user to view the end point
 @app.route('/game/<string:id>')
@@ -222,4 +223,21 @@ def update_reply(parent_id, post_id):
         'content': data['editArea']
     }
     update_reply_content(update_data)
+    return redirect(url_for('template_review_page', id=parent_id, user='user1'))
+
+@app.route('/reply/<int:parent_id>', methods=['POST'])
+def reply(parent_id):
+    data = request.form
+    print(data)
+    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))
+    print(id)
+    reply_data = {
+        'title': None,
+        'rating': None,
+        'content': data['reply'],
+        'post_type': 'reply',
+        'parent_id': parent_id,
+        'user_id': id['user_id']
+    }
+    insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))

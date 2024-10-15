@@ -1,7 +1,8 @@
 CREATE TYPE post_type AS ENUM ('review', 'topic', 'reply');
 
 CREATE TABLE Users (
-    user_id TEXT PRIMARY KEY,
+    user_id PRIMARY SERIAL KEY,
+    user_sub TEXT NOT NULL,
     username TEXT NOT NULL,
     email TEXT NOT NULL);
 

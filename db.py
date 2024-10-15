@@ -76,13 +76,17 @@ def retrieve_user(user_id):
         cursor.execute(query, (user_id,))
         return cursor.fetchone()
 
-
 def retrieve_user_by_name(username):
     query = "SELECT * FROM users WHERE username = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (username,))
         return cursor.fetchone()
 
+def retrieve_user_id_by_sub(sub):
+    query = "SELECT user_id FROM users WHERE user_sub = %s"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (sub,))
+        return cursor.fetchone()
 
 def retrieve_topics_by_game_id(game_id):
     query = "SELECT * FROM POSTS WHERE game_id = %s AND post = 'topic'"
@@ -98,7 +102,7 @@ def retrieve_reviews_by_game_id(game_id):
         return cursor.fetchall()
     
 def retrieve_review_by_post_id(post_id):
-    query = "SELECT *, username FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post_id = %s"
+    query = "SELECT POSTS.*, username, user_sub FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (post_id,))
         return cursor.fetchone()
@@ -112,7 +116,7 @@ def retrive_replies_by_post_id(review_id):
     SELECT p.post_id, p.parent_id, p.content, p.user_id
     FROM POSTS p
     JOIN replies r ON p.parent_id = r.post_id)
-    SELECT replies.*, username FROM replies INNER JOIN USERS ON replies.user_id = USERS.user_id ORDER BY post_id"""
+    SELECT replies.*, username, user_sub FROM replies INNER JOIN USERS ON replies.user_id = USERS.user_id ORDER BY post_id"""
 
     with get_db_cursor() as cursor:
         cursor.execute(query, (review_id,))
