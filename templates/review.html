@@ -1,74 +1,84 @@
 {% extends "base.html" %} {% block title %}Game Review{% endblock %}
 {% block content %}
-    <div class="pure-g">
-        <div class="pure-u-1-24"><h1 class = "game_title">{{ review.gametitle }}</h1>
-            <p>by <em>{{ review.author }}</em></p></div>
-        <div class="pure-u-20-24"><h1 class = "reveiw_title">{{ review.title }}</h1></div>
-        <div class="pure-u-2-24">
-            <p>
+<div class="pure-g">
+    <div class="pure-u-2-24">
+        <p>{{ review.game_id }}</p>
+        <p>by <em>{{ review.username }}</em></p>
+    </div>
+    <div class="pure-u-18-24">
+        <h1 class="review_title">{{ review.title }}</h1>
+    </div>
+    <div class="pure-u-2-24">
+        <p>
             {%for n in range(review.rating) %}
-                &#9733;
+            &#9733;
             {%endfor%}
             {%for n in range(5 - review.rating) %}
-                &#9734;
+            &#9734;
             {%endfor%}
-            </p>
-        </div>
+        </p>
     </div>
-    <div class="pure-g">
-        <div class="pure-u-1" style="margin-left: 1em">
-            <p>{{review.content}}</p>
-        </div>
+    <div class="pure-u-2-24">
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
                 <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
                     <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
                     <ul class="pure-menu-children">
-                        <li class="pure-menu-item"><a href="{{url_for('updateReview', id=review.post_id)}}" class="pure-menu-link">Edit</a></li>
+                        <li class="pure-menu-item"><a href="{{url_for('update_review', id=review.post_id)}}"
+                                                      class="pure-menu-link">Edit</a></li>
                         <li class="pure-menu-item"><a href="#" class="pure-menu-link">Delete</a></li>
                     </ul>
                 </li>
+            </ul>
         </div>
     </div>
-    <div class="pure-g">
-        <div class="pure-u-1">
-            <form class="pure-form" action="/comment" method="POST">
-                <input
-                        type="text"
-                        class="pure-input-rounded search-input"
-                        placeholder="Add new discussion comment"
-                />
-                <button type="submit" class="pure-button pure-button-primary">
-                    Post
-                </button>
-            </form>
-        </div>
+</div>
+<div class="pure-g">
+    <div class="pure-u-1" style="margin-left: 1em">
+        <p>{{review.content}}</p>
     </div>
+</div>
+<div class="pure-g">
+    <div class="pure-u-1">
+        <form class="pure-form" action="/comment" method="POST">
+            <input
+                    type="text"
+                    class="pure-input-rounded search-input"
+                    placeholder="Add new discussion comment"
+            />
+            <button type="submit" class="pure-button pure-button-primary">
+                Post
+            </button>
+        </form>
+    </div>
+</div>
 
-    <div class="pure-g">
-        <div class="pure-u-1">
-            {{ renderComments(review.replies, 0)}}
-        </div>
+<div class="pure-g">
+    <div class="pure-u-1">
+        {{ renderComments(review.replies, 1)}}
     </div>
+</div>
 {% endblock %}
 
 {% macro renderComments(comments, inset) %}
-    {%  for comment in comments %}
-        <div style="margin-left: {{ inset }}em">
-            <p><em>{{ comment.author }}</em></p>
-            <p id = "comment-content-{{comment.post_id}}">{{ comment.content }}</p>
-            <div class="pure-menu pure-menu-horizontal">
-                <ul class="pure-menu-list">
-                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-                        <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
-                        <ul class="pure-menu-children">
-                            <li class="pure-menu-item"><a href="#" onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})" class="pure-menu-link">Edit</a></li>
-                            <li class="pure-menu-item"><a href="#" class="pure-menu-link">Delete</a></li>
-                        </ul>
-                    </li>
-            </div>
-            {% set inset = inset + 1 %}
-            <p>{{renderComments(comment.replies, inset)}}</p>
-        </div>
-    {% endfor %}
+{%  for comment in comments %}
+<div style="margin-left: {{ inset }}em">
+    <p><em>{{ comment.author_id }}</em></p>
+    <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
+    <div class="pure-menu pure-menu-horizontal">
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
+                <ul class="pure-menu-children">
+                    <li class="pure-menu-item"><a href="#"
+                                                  onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
+                                                  class="pure-menu-link">Edit</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Delete</a></li>
+                </ul>
+            </li>
+    </div>
+    {% set inset = inset + 1 %}
+    <p>{{renderComments(comment.replies, inset)}}</p>
+</div>
+{% endfor %}
 {% endmacro %}

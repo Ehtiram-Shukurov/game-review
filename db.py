@@ -6,7 +6,7 @@ from flask import current_app, g
 import os
 import datetime
 from psycopg2.pool import ThreadedConnectionPool
-from psycopg2.extras import DictCursor
+from psycopg2.extras import RealDictCursor
 
 pool = None
 
@@ -29,7 +29,7 @@ def get_db_connection():
 @contextmanager
 def get_db_cursor(commit=False):
     with get_db_connection() as connection:
-        cursor = connection.cursor(cursor_factory=DictCursor)
+        cursor = connection.cursor(cursor_factory=RealDictCursor)
         # cursor = connection.cursor()
         try:
             yield cursor
@@ -41,7 +41,7 @@ def get_db_cursor(commit=False):
 
 
 def insert_user(user_data):
-    query = "INSERT INTO users (userid, username, email) VALUES (%s, %s)"
+    query = "INSERT INTO users (user_sub, username, email) VALUES (%s, %s, %s)"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (user_data['sub'], user_data['username'], user_data['email']))
 
@@ -92,18 +92,20 @@ def retrieve_topics_by_game_id(game_id):
 
 
 def retrieve_reviews_by_game_id(game_id):
-    query = "SELECT * FROM POSTS WHERE game_id = %s AND post = 'review'"
+    query = "SELECT *, username FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post = 'review' AND game_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (game_id,))
         return cursor.fetchall()
-    
+
+
 def retrieve_review_by_post_id(post_id):
     query = "SELECT *, username FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (post_id,))
         return cursor.fetchone()
 
-def retrive_replies_by_post_id(review_id):
+
+def retrieve_replies_by_post_id(review_id):
     query = """WITH RECURSIVE replies AS (
     SELECT post_id, parent_id, content, user_id
     FROM POSTS
@@ -119,11 +121,6 @@ def retrive_replies_by_post_id(review_id):
         return cursor.fetchall()
 
 
-def retrieve_replies_by_post_id(post_id):
-    query = "SELECT * FROM POSTS WHERE parent_id = %s"
-    with get_db_cursor() as cursor:
-        cursor.execute(query, (post_id,))
-        return cursor.fetchall()
 
 ## This will delete the content of the post and all of its replies
 def delete_content(post_id):
@@ -144,20 +141,24 @@ def delete_content(post_id):
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (post_id,))
 
+
 def update_reviews(review_data):
     query = "UPDATE POSTS SET title = %s, rating = %s, content = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (review_data['title'], review_data['rating'], review_data['content'], review_data['post_id']))
+
 
 def update_reply_content(reply_data):
     query = "UPDATE POSTS SET content = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (reply_data['content'], reply_data['post_id']))
 
+
 def insert_post(title, game_id, content, post_type, rating, user_id, parent_id):
     query = "INSERT INTO POSTS (game_id, title, rating, content, post, parent_id, user_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (game_id, title, rating, content, post_type, parent_id, user_id))
+
 
 def get_user_most_recent_post(user_id):
     resultArr = []
@@ -169,7 +170,8 @@ def get_user_most_recent_post(user_id):
 
     return resultArr[0][0]['post_id']
 
-def getPost(id):
+
+def get_post_by_id(id):
     query = "SELECT * FROM POSTS WHERE post_id = %s"
 
     with get_db_cursor(commit=True) as cursor:
@@ -182,3 +184,8 @@ def update_post(title, content, rating, post_id):
     query = "UPDATE POSTS SET title = %s, content = %s, rating = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (title, content, rating, post_id))
+
+def get_user_by_sub(sub):
+    query = "SELECT * FROM Users where user_sub = (%s)"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (sub,))
