@@ -30,6 +30,7 @@ oauth.register(
     },
     server_metadata_url=f'https://{domain}/.well-known/openid-configuration',
 )
+
 # code written by Proffesor
 def auth_aware(f):
     @wraps(f)
@@ -59,15 +60,18 @@ def user_reviews():
 def user_settings():
     return render_template('user_settings.html', active_page='settings')
 
+
 @app.route('/postReview')
 def post_review():
     games = ["game1", "game2", "game3"]
     return render_template('postReview.html', listGames=games)
 
+
 @app.route('/postTopic')
 def post_topic():
     games = ["game1", "game2", "game3"]
     return render_template('postReview.html', listGames=games)
+
 
 @app.route('/submitPost', methods=['POST'])
 def submit_post():
@@ -189,7 +193,7 @@ def template_review_page(id):
     review = retrieve_review_by_post_id(id)
 
     replies_data = retrieve_replies_by_post_id(id)
-    # recursively put relies into hierarchy structure
+    # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
     review['replies'] = replies
 
@@ -202,9 +206,8 @@ def template_review_page(id):
 def template_game_page(id):
     game_data = get_game_by_id(id)[0]
     reviews = retrieve_reviews_by_game_id(id)
-    print(reviews)
     topics = retrieve_topics_by_game_id(id)
-    print(game_data)
+    print(reviews)
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
 
 

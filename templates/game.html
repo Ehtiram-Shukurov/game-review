@@ -23,9 +23,9 @@
             {% if reviews %}
             <div id="reviews">
                 {% for review in reviews %}
-                <div>
+                <div class="game-sec" onclick="location.href='/review/{{review.post_id}}';">
                     <h2 style="margin-bottom: .2em">{{ review.title }} {{ review.rating }}</h2>
-                    <h6 class="author">By: {{ review.author }}</h6>
+                    <h6 class="author">By: {{ review.username }}</h6>
                     <p style="text-indent: 3em;">{{ review.description }}</p>
                     <p style="text-indent: 3em;">{{ review.likes }}</p>
                 </div>
