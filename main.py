@@ -132,16 +132,6 @@ def update_post():
 
         return redirect(url_for('review', id=post_id))
 
-# Controllers API
- #TODO change home page to the following
-# below is the code from the example downloaded from auth0
-#@app.route("/a")
-#def home():
-#   return render_template(
-#       "home.html",
-#       session=session.get("user"),
-#       pretty=json.dumps(session.get("user"), indent=4),
-#   )
 
 def requires_auth(f):
     @wraps(f)
@@ -152,7 +142,6 @@ def requires_auth(f):
         return f(*args, **kwargs) #do the normal behavior -- return as it does.
 
     return decorated
-
 
 
 @app.route("/callback", methods=["GET", "POST"])
@@ -168,6 +157,7 @@ def login():
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
+
 
 @app.route("/logout")
 def logout():
@@ -186,6 +176,7 @@ def logout():
             quote_via=quote_plus,
         )
     )
+
 
 @app.route('/review/<string:id>')
 def template_review_page(id):
