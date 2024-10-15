@@ -101,7 +101,7 @@ def updateTopic(id):
     }
     return render_template('editTopic.html', post=post_data)
 
-@app.route('/updatePost')
+@app.route('/updatePost', methods=['POST'])
 def updatePost():
     if request.method == 'POST':
         post_id = request.form['post_id']
@@ -114,7 +114,7 @@ def updatePost():
 
         update_post(title, content, rating, post_id)
 
-        return redirect(url_for('review', id=post_id))
+        return redirect(url_for('template_review_page', id=post_id, user='user1'))
 
 # Controllers API
  #TODO change home page to the following

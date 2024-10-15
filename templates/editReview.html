@@ -11,11 +11,11 @@
 {% block starRating %}
     <div class="rating-container">
         <p>Rating:</p>
-        <span onclick="rate(1)" class="star">★</span>
-        <span onclick="rate(2)" class="star">★</span>
-        <span onclick="rate(3)" class="star">★</span>
-        <span onclick="rate(4)" class="star">★</span>
-        <span onclick="rate(5)" class="star">★</span>
+        <span onclick="rate(1)" class="star" id="star1">★</span>
+        <span onclick="rate(2)" class="star" id="star2">★</span>
+        <span onclick="rate(3)" class="star" id="star3">★</span>
+        <span onclick="rate(4)" class="star" id="star4">★</span>
+        <span onclick="rate(5)" class="star" id="star5">★</span>
         <input type="hidden" name="rating" id="rating" value="0">
     </div> <br>
 {% endblock %}
