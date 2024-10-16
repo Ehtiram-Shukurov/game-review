@@ -118,6 +118,7 @@ def update_topic(id):
 @app.route('/updatePost', methods=['POST'])
 def update_post():
     if request.method == 'POST':
+        print(request.form)
         post_id = request.form['post_id']
         title = request.form['title']
         content = request.form['content']
