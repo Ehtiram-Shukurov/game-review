@@ -31,6 +31,15 @@ oauth.register(
     server_metadata_url=f'https://{domain}/.well-known/openid-configuration',
 )
 
+# code written by Proffesor
+def auth_aware(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        user = session.get('user')
+        return f(*args, user=user, **kwargs) #do the normal behavior -- return as it does.
+    return decorated
+
+
 @app.route("/")
 def home():
     return render_template('home.html', user_logged_in='user1')  # user_logged_in is just for testing the navbar
@@ -50,40 +59,45 @@ def user_reviews():
 def user_settings():
     return render_template('user_settings.html', active_page='settings')
 
-@app.route('/postReview')
-def postReview():
+
+@app.route('/postReview/<int:gameid>')
+def post_review(gameid):
     games = ["game1", "game2", "game3"]
-    return render_template('postReview.html', listGames=games)
+    return render_template('postReview.html', listGames=games, game_id=gameid)
+
 
 @app.route('/postTopic')
-def postTopic():
+def post_topic():
     games = ["game1", "game2", "game3"]
     return render_template('postReview.html', listGames=games)
 
+
 @app.route('/submitPost', methods=['POST'])
-def submitPost():
+def submit_post():
     if request.method == 'POST':
         title = request.form['title']
-        game_id = request.form['game']
+        game_id = request.form['game_id']
         content = request.form['content']
         post_type = request.form['post_type']
         
         rating = None
         if post_type == 'review': rating = request.form['rating']
         
-        user_id = session.get('user')
+        user_id = get_user_by_sub(session.get('user').get('sub'))
         parent_id = None
+
+        save_game(game_id)
 
         insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
 
         post_id = get_user_most_recent_post(user_id)
-        
-        #discuss possible endpoint change
-        return redirect(url_for('review', id=post_id))
+
+        return redirect(url_for('template_review_page', id=post_id))
+
 
 @app.route('/editReview/<string:id>', methods=['GET'])
-def updateReview(id):
-    post = getPost(id)
+def update_review(id):
+    post = get_post_by_id(id)
     post_data = {
         'id': post[0],
         'title': post[2],
@@ -91,9 +105,10 @@ def updateReview(id):
     }
     return render_template('editReview.html', post=post_data)
 
+
 @app.route('/editTopic/<string:id>', methods=['GET'])
-def updateTopic(id):
-    post = getPost(id)
+def update_topic(id):
+    post = get_post_by_id(id)
     post_data = {
         'id': post[0],
         'title': post[2],
@@ -101,8 +116,9 @@ def updateTopic(id):
     }
     return render_template('editTopic.html', post=post_data)
 
+
 @app.route('/updatePost', methods=['POST'])
-def updatePost():
+def update_post():
     if request.method == 'POST':
         post_id = request.form['post_id']
         title = request.form['title']
@@ -116,16 +132,6 @@ def updatePost():
 
         return redirect(url_for('template_review_page', id=post_id, user='user1'))
 
-# Controllers API
- #TODO change home page to the following
-# below is the code from the example downloaded from auth0
-#@app.route("/a")
-#def home():
-#   return render_template(
-#       "home.html",
-#       session=session.get("user"),
-#       pretty=json.dumps(session.get("user"), indent=4),
-#   )
 
 def requires_auth(f):
     @wraps(f)
@@ -134,16 +140,6 @@ def requires_auth(f):
         # Redirect to Login page here or maybe something else
             redirect("/login")
         return f(*args, **kwargs) #do the normal behavior -- return as it does.
-
-    return decorated
-
-
-# code written by Proffesor
-def auth_aware(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        user = session.get('user')
-        return f(*args, user=user, **kwargs) #do the normal behavior -- return as it does.
 
     return decorated
 
@@ -184,11 +180,11 @@ def logout():
 def template_review_page(id, user):
     if user == None: # <--- do logic here for allowing the user to post,edit,delete, etc..
         pass
-      
+
     result = retrieve_review_by_post_id(id)
     print(result)
     replies_data = retrive_replies_by_post_id(id)
-   
+
     # recursively put relies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
     review = {"post_id":result['post_id'],"author": result['username'], "gametitle": result['game_id'], "title": result['title'], "rating": result['rating'], "content": result['content'], "replies": replies}
@@ -202,7 +198,6 @@ def template_game_page(id):
     game_data = get_game_by_id(id)[0]
     reviews = retrieve_reviews_by_game_id(id)
     topics = retrieve_topics_by_game_id(id)
-    print(game_data)
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
 
 
