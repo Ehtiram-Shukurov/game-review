@@ -100,9 +100,9 @@ def submit_post():
 def update_review(id):
     post = get_post_by_id(id)
     post_data = {
-        'id': post[0],
-        'title': post[2],
-        'content': post[5]
+        'id': post['post_id'],
+        'title': post['title'],
+        'content': post['content']
     }
     return render_template('editReview.html', post=post_data)
 
@@ -111,9 +111,9 @@ def update_review(id):
 def update_topic(id):
     post = get_post_by_id(id)
     post_data = {
-        'id': post[0],
-        'title': post[2],
-        'content': post[5]
+        'id': post['post_id'],
+        'title': post['title'],
+        'content': post['content']
     }
     return render_template('editTopic.html', post=post_data)
 
@@ -121,6 +121,7 @@ def update_topic(id):
 @app.route('/updatePost', methods=['POST'])
 def update_post():
     if request.method == 'POST':
+        print(request.form)
         post_id = request.form['post_id']
         title = request.form['title']
         content = request.form['content']
@@ -129,7 +130,7 @@ def update_post():
         rating = None
         if post_type == 'review': rating = request.form['rating']
 
-        update_post(title, content, rating, post_id)
+        update_post_db(title, content, rating, post_id)
 
         return redirect(url_for('template_review_page', id=post_id, user='user1'))
 
@@ -181,15 +182,13 @@ def logout():
 
 @app.route('/review/<string:id>')
 def template_review_page(id):
-
     review = retrieve_review_by_post_id(id)
-
+    sub=session.get('user').get('userinfo').get('sub')
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
     review['replies'] = replies
-
-    return render_template("review.html", review=review)
+    return render_template("review.html", review=review, sub=sub)
 
 
 @auth_aware # <---- adding this makes the user to view the end point
@@ -212,10 +211,24 @@ def games_page():
 @app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
 def update_reply(parent_id, post_id):
     data = request.form
-    print(data)
     update_data = {
         'post_id': post_id,
         'content': data['editArea']
     }
     update_reply_content(update_data)
+    return redirect(url_for('template_review_page', id=parent_id, user='user1'))
+
+@app.route('/reply/<int:parent_id>', methods=['POST'])
+def reply(parent_id):
+    data = request.form
+    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))
+    reply_data = {
+        'title': None,
+        'rating': None,
+        'content': data['reply'],
+        'post_type': 'reply',
+        'parent_id': parent_id,
+        'user_id': id['user_id']
+    }
+    insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))

@@ -19,6 +19,7 @@
         </p>
     </div>
     <div class="pure-u-2-24">
+        {% if sub == review.user_sub %}
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
                 <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
@@ -31,6 +32,7 @@
                 </li>
             </ul>
         </div>
+        {%endif%}
     </div>
 </div>
 <div class="pure-g">
@@ -40,10 +42,11 @@
 </div>
 <div class="pure-g">
     <div class="pure-u-1">
-        <form class="pure-form" action="/comment" method="POST">
+        <form class="pure-form" action="/reply/{{review.post_id}}" method="POST">
             <input
                     type="text"
                     class="pure-input-rounded search-input"
+                        name = "reply"
                     placeholder="Add new discussion comment"
             />
             <button type="submit" class="pure-button pure-button-primary">
@@ -63,8 +66,9 @@
 {% macro renderComments(comments, inset) %}
 {%  for comment in comments %}
 <div style="margin-left: {{ inset }}em">
-    <p><em>{{ comment.author_id }}</em></p>
+    <p><em>{{ comment.username }}</em></p>
     <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
+    {% if sub == comment.user_sub %}
     <div class="pure-menu pure-menu-horizontal">
         <ul class="pure-menu-list">
             <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
@@ -77,6 +81,7 @@
                 </ul>
             </li>
     </div>
+    {%endif%}
     {% set inset = inset + 1 %}
     <p>{{renderComments(comment.replies, inset)}}</p>
 </div>
