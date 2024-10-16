@@ -31,9 +31,18 @@ oauth.register(
     server_metadata_url=f'https://{domain}/.well-known/openid-configuration',
 )
 
+# code written by Proffesor
+def auth_aware(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        user = session.get('user')
+        return f(*args, user=user, **kwargs) #do the normal behavior -- return as it does.
+    return decorated
+
+
 @app.route("/")
 def home():
-    return render_template('home.html', user_logged_in='user1')  # user_logged_in is just for testing the navbar
+    return render_template('home.html', user_logged_in=session.get('user'))  # user_logged_in is just for testing the navbar
 
 
 @app.route('/user/profile')
@@ -50,58 +59,69 @@ def user_reviews():
 def user_settings():
     return render_template('user_settings.html', active_page='settings')
 
-@app.route('/postReview')
-def postReview():
-    return render_template('postReview.html')
+
+@app.route('/postReview/<int:gameid>')
+def post_review(gameid):
+    games = ["game1", "game2", "game3"]
+    return render_template('postReview.html', listGames=games, game_id=gameid)
+
+
 
 @app.route('/postTopic')
 def postTopic():
-    return render_template('postTopic.html')
+    games = ["game1", "game2", "game3"]
+    return render_template('postReview.html', listGames=games)
+
 
 @app.route('/submitPost', methods=['POST'])
-def submitPost():
+def submit_post():
     if request.method == 'POST':
         title = request.form['title']
-        game_id = request.form['game']
+        game_id = request.form['game_id']
         content = request.form['content']
         post_type = request.form['post_type']
         
         rating = None
         if post_type == 'review': rating = request.form['rating']
         
-        user_id = session.get('user')
+        user_id = get_user_by_sub(session.get('user').get('sub'))
         parent_id = None
+
+        save_game(game_id)
 
         insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
 
         post_id = get_user_most_recent_post(user_id)
-        
-        #discuss possible endpoint change
-        return redirect(url_for('review', id=post_id))
+
+        return redirect(url_for('template_review_page', id=post_id))
+
 
 @app.route('/editReview/<string:id>', methods=['GET'])
-def updateReview(id):
-    post = getPost(id)
+def update_review(id):
+    post = get_post_by_id(id)
     post_data = {
-        'id': post[0],
-        'title': post[2],
-        'content': post[5]
+        'id': post['post_id'],
+        'title': post['title'],
+        'content': post['content']
     }
     return render_template('editReview.html', post=post_data)
 
+
 @app.route('/editTopic/<string:id>', methods=['GET'])
-def updateTopic(id):
-    post = getPost(id)
+def update_topic(id):
+    post = get_post_by_id(id)
     post_data = {
-        'id': post[0],
-        'title': post[2],
-        'content': post[5]
+        'id': post['post_id'],
+        'title': post['title'],
+        'content': post['content']
     }
     return render_template('editTopic.html', post=post_data)
 
+
 @app.route('/updatePost', methods=['POST'])
-def updatePost():
+def update_post():
     if request.method == 'POST':
+        print(request.form)
         post_id = request.form['post_id']
         title = request.form['title']
         content = request.form['content']
@@ -110,20 +130,10 @@ def updatePost():
         rating = None
         if post_type == 'review': rating = request.form['rating']
 
-        update_post(title, content, rating, post_id)
+        update_post_db(title, content, rating, post_id)
 
         return redirect(url_for('template_review_page', id=post_id, user='user1'))
 
-# Controllers API
- #TODO change home page to the following
-# below is the code from the example downloaded from auth0
-#@app.route("/a")
-#def home():
-#   return render_template(
-#       "home.html",
-#       session=session.get("user"),
-#       pretty=json.dumps(session.get("user"), indent=4),
-#   )
 
 def requires_auth(f):
     @wraps(f)
@@ -136,20 +146,11 @@ def requires_auth(f):
     return decorated
 
 
-# code written by Proffesor
-def auth_aware(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        user = session.get('user')
-        return f(*args, user=user, **kwargs) #do the normal behavior -- return as it does.
-
-    return decorated
-
-
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
+
     return redirect("/")
 
 
@@ -158,6 +159,7 @@ def login():
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
+
 
 @app.route("/logout")
 def logout():
@@ -177,21 +179,17 @@ def logout():
         )
     )
 
-@auth_aware # <---- adding this makes the user to view the end point
-@app.route('/review/<string:id>/<string:user>')
-def template_review_page(id, user):
-    if user == None: # <--- do logic here for allowing the user to post,edit,delete, etc..
-        pass
-      
-    result = retrieve_review_by_post_id(id)
-    print(result)
-    replies_data = retrive_replies_by_post_id(id)
-   
-    # recursively put relies into hierarchy structure
-    replies = build_hierarchy(replies_data,id)
-    review = {"post_id":result['post_id'],"author": result['username'], "gametitle": result['game_id'], "title": result['title'], "rating": result['rating'], "content": result['content'], "replies": replies}
 
-    return render_template("review.html", review=review)
+@app.route('/review/<string:id>')
+def template_review_page(id):
+    review = retrieve_review_by_post_id(id)
+    sub=session.get('user').get('userinfo').get('sub')
+    replies_data = retrieve_replies_by_post_id(id)
+    # recursively put replies into hierarchy structure
+    replies = build_hierarchy(replies_data,id)
+    review['replies'] = replies
+    return render_template("review.html", review=review, sub=sub)
+
 
 @auth_aware # <---- adding this makes the user to view the end point
 @app.route('/game/<string:id>')
@@ -202,7 +200,7 @@ def template_game_page(id):
     reviews = retrieve_reviews_by_game_id(id)
     topics = retrieve_topics_by_game_id(id)
     print(game_data)
-    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics, game_id=game_id)
+    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
 
 
 @app.route('/games')
@@ -215,10 +213,24 @@ def games_page():
 @app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
 def update_reply(parent_id, post_id):
     data = request.form
-    print(data)
     update_data = {
         'post_id': post_id,
         'content': data['editArea']
     }
     update_reply_content(update_data)
+    return redirect(url_for('template_review_page', id=parent_id, user='user1'))
+
+@app.route('/reply/<int:parent_id>', methods=['POST'])
+def reply(parent_id):
+    data = request.form
+    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))
+    reply_data = {
+        'title': None,
+        'rating': None,
+        'content': data['reply'],
+        'post_type': 'reply',
+        'parent_id': parent_id,
+        'user_id': id['user_id']
+    }
+    insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))

@@ -1,9 +1,9 @@
 let stars = document.getElementsByClassName("star");
-let rating = document.getElementById("rating");
- 
+
 // Funtion to update rating
 function rate(n) {
     remove();
+    var rating = document.getElementById("rating");
     for (let i = 0; i < n; i++) {
         console.log("here")
         if (n == 1) cls = "one";
