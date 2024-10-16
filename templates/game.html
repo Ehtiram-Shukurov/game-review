@@ -20,8 +20,8 @@
     <div class="pure-g" id="btn-container">
 
         <div class="post-btn-container">
-            <a id="post-button-reviews" href="{{ url_for("postReview/{{ game_id }}")}}" class="post-button">+Post Review</a>
-            <a id="post-button-topics" href="{{ url_for("postTopic/{{ game_id }}")}}" class="post-button">+Post Topic</a>
+            <a id="post-button-reviews" href="{{ url_for("post_review", gameid=game_data.id)}}" class="post-button">+Post Review</a>
+            <a id="post-button-topics" href="{{ url_for("post_topic", gameid=game_data.id)}}" class="post-button">+Post Topic</a>
         </div>
         
         <div class="pure-u-1-5"></div>

@@ -62,15 +62,13 @@ def user_settings():
 
 @app.route('/postReview/<int:gameid>')
 def post_review(gameid):
-    games = ["game1", "game2", "game3"]
     return render_template('postReview.html', listGames=games, game_id=gameid)
 
 
 
-@app.route('/postTopic')
-def postTopic():
-    games = ["game1", "game2", "game3"]
-    return render_template('postReview.html', listGames=games)
+@app.route('/postTopic/<int:gameid>')
+def post_topic(gameid):
+    return render_template('postReview.html', game_id=gameid)
 
 
 @app.route('/submitPost', methods=['POST'])
