@@ -36,7 +36,6 @@ def get_db_cursor(commit=False):
             if commit:
                 connection.commit()
         finally:
-            current_app.logger.info(f"closing db cursor")
             cursor.close()
 
 

@@ -8,6 +8,7 @@ from functools import wraps
 from db import *
 from igdbAPI import *
 from post import *
+import threading
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -31,7 +32,19 @@ oauth.register(
     server_metadata_url=f'https://{domain}/.well-known/openid-configuration',
 )
 
-# code written by Proffesor
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'user' not in session:
+        # Redirect to Login page here or maybe something else
+            return redirect("/login")
+        return f(*args, **kwargs) #do the normal behavior -- return as it does.
+
+    return decorated
+
+#TODO: add redirect page to see what the user wants to do if they try to access a forbidden page
+
 def auth_aware(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -46,34 +59,37 @@ def home():
 
 
 @app.route('/user/profile')
+@requires_auth
 def user_profile():
     return render_template('user_profile.html', active_page='profile')
 
 
 @app.route('/user/reviews')
+@requires_auth
 def user_reviews():
     return render_template('user_reviews.html', active_page='reviews')
 
 
 @app.route('/user/settings')
+@requires_auth
 def user_settings():
     return render_template('user_settings.html', active_page='settings')
 
 
 @app.route('/postReview/<int:gameid>')
+@requires_auth
 def post_review(gameid):
-    games = ["game1", "game2", "game3"]
-    return render_template('postReview.html', listGames=games, game_id=gameid)
+    return render_template('postReview.html', game_id=gameid)
 
 
-
-@app.route('/postTopic')
-def post_topic():
-    games = ["game1", "game2", "game3"]
-    return render_template('postReview.html', listGames=games)
+@app.route('/postTopic/<int:gameid>')
+@requires_auth
+def post_topic(gameid):
+    return render_template('postReview.html', game_id=gameid)
 
 
 @app.route('/submitPost', methods=['POST'])
+@requires_auth
 def submit_post():
     if request.method == 'POST':
         title = request.form['title']
@@ -87,7 +103,7 @@ def submit_post():
         user_id = get_user_by_sub(session.get('user').get('sub'))
         parent_id = None
 
-        save_game(game_id)
+        save_game_by_game_id(game_id)
 
         insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
 
@@ -97,6 +113,7 @@ def submit_post():
 
 
 @app.route('/editReview/<string:id>', methods=['GET'])
+@requires_auth
 def update_review(id):
     post = get_post_by_id(id)
     post_data = {
@@ -108,6 +125,7 @@ def update_review(id):
 
 
 @app.route('/editTopic/<string:id>', methods=['GET'])
+@requires_auth
 def update_topic(id):
     post = get_post_by_id(id)
     post_data = {
@@ -119,9 +137,9 @@ def update_topic(id):
 
 
 @app.route('/updatePost', methods=['POST'])
+@requires_auth
 def update_post():
     if request.method == 'POST':
-        print(request.form)
         post_id = request.form['post_id']
         title = request.form['title']
         content = request.form['content']
@@ -133,17 +151,6 @@ def update_post():
         update_post_db(title, content, rating, post_id)
 
         return redirect(url_for('template_review_page', id=post_id, user='user1'))
-
-
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if 'user' not in session:
-        # Redirect to Login page here or maybe something else
-            redirect("/login")
-        return f(*args, **kwargs) #do the normal behavior -- return as it does.
-
-    return decorated
 
 
 @app.route("/callback", methods=["GET", "POST"])
@@ -188,27 +195,31 @@ def template_review_page(id):
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
     review['replies'] = replies
+
     return render_template("review.html", review=review, sub=sub)
 
 
-@auth_aware # <---- adding this makes the user to view the end point
 @app.route('/game/<string:id>')
-#@requires_auth <---- adding this makes the user not able to see the end point unless they are logged in
+@requires_auth
 def template_game_page(id):
     game_data = get_game_by_id(id)[0]
     reviews = retrieve_reviews_by_game_id(id)
     topics = retrieve_topics_by_game_id(id)
-    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
+    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics, user=session.get('user'))
 
 
 @app.route('/games')
 def games_page():
     def get_games(genre):
-        return get_games_by_genre(genre)
+        games = get_games_by_genre(genre)
+        thread = threading.Thread(target = save_games_by_game_data, args = (games,))
+        thread.start()
+        return games
     return render_template("games.html", games=get_games)
 
 
 @app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
+@requires_auth
 def update_reply(parent_id, post_id):
     data = request.form
     update_data = {
@@ -216,7 +227,7 @@ def update_reply(parent_id, post_id):
         'content': data['editArea']
     }
     update_reply_content(update_data)
-    return redirect(url_for('template_review_page', id=parent_id, user='user1'))
+    return redirect(url_for('template_review_page', id=parent_id, user=session.get('user')))
 
 @app.route('/reply/<int:parent_id>', methods=['POST'])
 def reply(parent_id):
