@@ -589,18 +589,18 @@ body{
     background-color: #444;
 }
 
-#btn-container {
+.btn-container {
     position: relative;
-    min-height: 200px; /* Adjust this height to make room for the button */
+    min-height: 3em; /* Adjust this height to make room for the button */
 }
 
-.post-btn-container {
+#post-btn-container {
     position: absolute;
-    top: 20px; /* Position buttons at the top */
+    top: 1em; /* Position buttons at the top */
     left: 50%; /* Center the buttons */
     transform: translateX(-50%); /* Adjust for centering */
     display: flex; /* Use flexbox to align buttons side by side */
-    gap: 10px; /* Space between buttons */
+    gap: 0.5em; /* Space between buttons */
 }
 
 .post-button {
