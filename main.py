@@ -42,7 +42,6 @@ def auth_aware(f):
 
 @app.route("/")
 def home():
-    print(session.get('user'))
     return render_template('home.html', user_logged_in=session.get('user'))  # user_logged_in is just for testing the navbar
 
 
@@ -61,10 +60,11 @@ def user_settings():
     return render_template('user_settings.html', active_page='settings')
 
 
-@app.route('/postReview')
-def post_review():
+@app.route('/postReview/<int:gameid>')
+def post_review(gameid):
     games = ["game1", "game2", "game3"]
-    return render_template('postReview.html', listGames=games)
+    return render_template('postReview.html', listGames=games, game_id=gameid)
+
 
 
 @app.route('/postTopic')
@@ -77,22 +77,23 @@ def post_topic():
 def submit_post():
     if request.method == 'POST':
         title = request.form['title']
-        game_id = request.form['game']
+        game_id = request.form['game_id']
         content = request.form['content']
         post_type = request.form['post_type']
         
         rating = None
         if post_type == 'review': rating = request.form['rating']
         
-        user_id = session.get('user')
+        user_id = get_user_by_sub(session.get('user').get('sub'))
         parent_id = None
+
+        save_game(game_id)
 
         insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
 
         post_id = get_user_most_recent_post(user_id)
-        
-        #discuss possible endpoint change
-        return redirect(url_for('review', id=post_id))
+
+        return redirect(url_for('template_review_page', id=post_id))
 
 
 @app.route('/editReview/<string:id>', methods=['GET'])
@@ -115,6 +116,7 @@ def update_topic(id):
         'content': post[5]
     }
     return render_template('editTopic.html', post=post_data)
+
 
 @app.route('/updatePost', methods=['POST'])
 def update_post():

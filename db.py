@@ -161,14 +161,10 @@ def insert_post(title, game_id, content, post_type, rating, user_id, parent_id):
 
 
 def get_user_most_recent_post(user_id):
-    resultArr = []
-
-    query = "SELECT row_to_json(r) FROM POSTS as r WHERE user_id = %s ORDER BY created DESC;"
+    query = "SELECT post_id FROM POSTS WHERE user_id = %s ORDER BY created DESC;"
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (user_id))
-    resultArr.extend(record for record in cursor)
-
-    return resultArr[0][0]['post_id']
+        cursor.execute(query, (user_id,))
+        return cursor.fetchone()
 
 
 def get_post_by_id(id):
@@ -189,3 +185,16 @@ def get_user_by_sub(sub):
     query = "SELECT * FROM Users where user_sub = (%s)"
     with get_db_cursor() as cursor:
         cursor.execute(query, (sub,))
+
+
+def get_game_by_id_database(game_id):
+    query = "SELECT * FROM Games where game_id = (%s)"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (game_id,))
+        return cursor.fetchone()
+
+
+def save_game_data(game_data):
+    query = "INSERT INTO GAMES (game_id, image_url, summary, name) VALUES (%s, %s, %s, %s);"
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (game_data.get('id'), game_data.get('cover').get('url'), game_data.get('summary'), game_data.get('name')))
