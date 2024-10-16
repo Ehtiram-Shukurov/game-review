@@ -20,17 +20,25 @@
     <div class="pure-g">
         <div class="pure-u-1-5"></div>
         <div class="pure-u-3-5">
+            {% if reviews %}
             <div id="reviews">
                 {% for review in reviews %}
-                <div>
+                <div class="game-sec" onclick="location.href='/review/{{review.post_id}}';">
                     <h2 style="margin-bottom: .2em">{{ review.title }} {{ review.rating }}</h2>
-                    <h6 class="author">By: {{ review.author }}</h6>
+                    <h6 class="author">By: {{ review.username }}</h6>
                     <p style="text-indent: 3em;">{{ review.description }}</p>
                     <p style="text-indent: 3em;">{{ review.likes }}</p>
                 </div>
 
             {% endfor %}
             </div>
+            {% else %}
+            <div>
+                NO REVIEWS HERE CREATE ONE!
+            </div>
+            {% endif %}
+
+            {% if topics %}
             <div id="topics" hidden>
                 {% for topic in topics %}
                 <div>
@@ -42,6 +50,9 @@
 
             {% endfor %}
             </div>
+            {% else %}
+                <div hidden> NO TOPICS EXIST YET</div>
+            {% endif %}
 
         </div>
         <div class="pure-u-1-5">

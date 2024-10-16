@@ -42,7 +42,7 @@ def auth_aware(f):
 
 @app.route("/")
 def home():
-    return render_template('home.html', user_logged_in='user1')  # user_logged_in is just for testing the navbar
+    return render_template('home.html', user_logged_in=session.get('user'))  # user_logged_in is just for testing the navbar
 
 
 @app.route('/user/profile')
@@ -64,6 +64,7 @@ def user_settings():
 def post_review(gameid):
     games = ["game1", "game2", "game3"]
     return render_template('postReview.html', listGames=games, game_id=gameid)
+
 
 
 @app.route('/postTopic')
@@ -148,6 +149,7 @@ def requires_auth(f):
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
+
     return redirect("/")
 
 
@@ -156,6 +158,7 @@ def login():
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
+
 
 @app.route("/logout")
 def logout():
@@ -175,21 +178,19 @@ def logout():
         )
     )
 
-@auth_aware # <---- adding this makes the user to view the end point
-@app.route('/review/<string:id>/<string:user>')
-def template_review_page(id, user):
-    if user == None: # <--- do logic here for allowing the user to post,edit,delete, etc..
-        pass
 
-    result = retrieve_review_by_post_id(id)
-    print(result)
-    replies_data = retrive_replies_by_post_id(id)
+@app.route('/review/<string:id>')
+def template_review_page(id):
 
-    # recursively put relies into hierarchy structure
+    review = retrieve_review_by_post_id(id)
+
+    replies_data = retrieve_replies_by_post_id(id)
+    # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
-    review = {"post_id":result['post_id'],"author": result['username'], "gametitle": result['game_id'], "title": result['title'], "rating": result['rating'], "content": result['content'], "replies": replies}
+    review['replies'] = replies
 
     return render_template("review.html", review=review)
+
 
 @auth_aware # <---- adding this makes the user to view the end point
 @app.route('/game/<string:id>')
