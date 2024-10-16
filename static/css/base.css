@@ -588,3 +588,32 @@ body{
 .game-sec:hover {
     background-color: #444;
 }
+
+#btn-container {
+    position: relative;
+    min-height: 200px; /* Adjust this height to make room for the button */
+}
+
+.post-btn-container {
+    position: absolute;
+    top: 20px; /* Position buttons at the top */
+    left: 50%; /* Center the buttons */
+    transform: translateX(-50%); /* Adjust for centering */
+    display: flex; /* Use flexbox to align buttons side by side */
+    gap: 10px; /* Space between buttons */
+}
+
+.post-button {
+    padding: 10px 20px; /* Adjust padding for rectangular shape */
+    background-color: #00d9ff;
+    border-radius: 25px; /* Rounded edges for circular rectangle */
+    color: black;
+    text-decoration: none;
+    font-size: 16px; /* Font size for button text */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.post-button:hover {
+    background-color: #02bdde; /* Darker shade on hover */
+}

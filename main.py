@@ -52,13 +52,11 @@ def user_settings():
 
 @app.route('/postReview')
 def postReview():
-    games = ["game1", "game2", "game3"]
-    return render_template('postReview.html', listGames=games)
+    return render_template('postReview.html')
 
 @app.route('/postTopic')
 def postTopic():
-    games = ["game1", "game2", "game3"]
-    return render_template('postReview.html', listGames=games)
+    return render_template('postTopic.html')
 
 @app.route('/submitPost', methods=['POST'])
 def submitPost():
@@ -199,11 +197,12 @@ def template_review_page(id, user):
 @app.route('/game/<string:id>')
 #@requires_auth <---- adding this makes the user not able to see the end point unless they are logged in
 def template_game_page(id):
+    game_id = id
     game_data = get_game_by_id(id)[0]
     reviews = retrieve_reviews_by_game_id(id)
     topics = retrieve_topics_by_game_id(id)
     print(game_data)
-    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics)
+    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics, game_id=game_id)
 
 
 @app.route('/games')
