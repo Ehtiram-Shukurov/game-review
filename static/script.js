@@ -14,6 +14,7 @@ function rate(n) {
         stars[i].className = "star " + cls;
     }
     rating.value = n;
+    console.log(document.getElementById("game_id"))
 }
  
 // To remove the pre-applied styling
