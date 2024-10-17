@@ -36,7 +36,6 @@ def get_db_cursor(commit=False):
             if commit:
                 connection.commit()
         finally:
-            current_app.logger.info(f"closing db cursor")
             cursor.close()
 
 
@@ -76,13 +75,17 @@ def retrieve_user(user_id):
         cursor.execute(query, (user_id,))
         return cursor.fetchone()
 
-
 def retrieve_user_by_name(username):
     query = "SELECT * FROM users WHERE username = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (username,))
         return cursor.fetchone()
 
+def retrieve_user_id_by_sub(sub):
+    query = "SELECT user_id FROM users WHERE user_sub = %s"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (sub,))
+        return cursor.fetchone()
 
 def retrieve_topics_by_game_id(game_id):
     query = "SELECT * FROM POSTS WHERE game_id = %s AND post = 'topic'"
@@ -99,7 +102,7 @@ def retrieve_reviews_by_game_id(game_id):
 
 
 def retrieve_review_by_post_id(post_id):
-    query = "SELECT *, username FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post_id = %s"
+    query = "SELECT POSTS.*, username, user_sub FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (post_id,))
         return cursor.fetchone()
@@ -114,7 +117,7 @@ def retrieve_replies_by_post_id(review_id):
     SELECT p.post_id, p.parent_id, p.content, p.user_id
     FROM POSTS p
     JOIN replies r ON p.parent_id = r.post_id)
-    SELECT replies.*, username FROM replies INNER JOIN USERS ON replies.user_id = USERS.user_id ORDER BY post_id"""
+    SELECT replies.*, username, user_sub FROM replies INNER JOIN USERS ON replies.user_id = USERS.user_id ORDER BY post_id"""
 
     with get_db_cursor() as cursor:
         cursor.execute(query, (review_id,))
@@ -161,14 +164,10 @@ def insert_post(title, game_id, content, post_type, rating, user_id, parent_id):
 
 
 def get_user_most_recent_post(user_id):
-    resultArr = []
-
-    query = "SELECT row_to_json(r) FROM POSTS as r WHERE user_id = %s ORDER BY created DESC;"
+    query = "SELECT post_id FROM POSTS WHERE user_id = %s ORDER BY created DESC;"
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (user_id))
-    resultArr.extend(record for record in cursor)
-
-    return resultArr[0][0]['post_id']
+        cursor.execute(query, (user_id,))
+        return cursor.fetchone()
 
 
 def get_post_by_id(id):
@@ -180,7 +179,7 @@ def get_post_by_id(id):
 
     return post
 
-def update_post(title, content, rating, post_id):
+def update_post_db(title, content, rating, post_id):
     query = "UPDATE POSTS SET title = %s, content = %s, rating = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (title, content, rating, post_id))
@@ -203,4 +202,18 @@ def retrieve_all_post(type,search):
             if tmp.find(search):
                 res[d["post_id"]] =d["title"]
         return res
-    
+
+
+
+def get_game_by_id_database(game_id):
+    query = "SELECT * FROM Games where game_id = (%s)"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (game_id,))
+        return cursor.fetchone()
+
+
+def save_game_data(game_data):
+    query = "INSERT INTO GAMES (game_id, image_url, summary, name) VALUES (%s, %s, %s, %s);"
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (game_data.get('id'), game_data.get('cover').get('url'), game_data.get('summary'), game_data.get('name')))
+

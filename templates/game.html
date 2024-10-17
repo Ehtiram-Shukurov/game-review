@@ -17,6 +17,12 @@
         </div>
     </div>
     {% include 'game_toolbar.html' %}
+    <div class="pure-g btn-container">
+        <div id="post-btn-container">
+            <a id="post-button-reviews" href="{{ url_for("post_review", gameid=game_data.id)}}" class="post-button">+Post Review</a>
+            <a id="post-button-topics" href="{{ url_for("post_topic", gameid=game_data.id)}}" class="post-button">+Post Topic</a>
+        </div>
+    </div>
     <div class="pure-g">
         <div class="pure-u-1-5"></div>
         <div class="pure-u-3-5">
@@ -53,10 +59,11 @@
             {% else %}
                 <div hidden> NO TOPICS EXIST YET</div>
             {% endif %}
-
         </div>
         <div class="pure-u-1-5">
         </div>
+        <div class="pure-u-1-5"></div>
+        
     </div>
-
+    
 {% endblock %}

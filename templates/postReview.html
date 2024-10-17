@@ -2,18 +2,8 @@
 
 {% block title %}Post Review{% endblock %}
 
-
 {% block label %}Review Title: {% endblock %}
-{% block selectGames %}
-    <div>
-        <select id="gameSelect" name="gameSelect">
-            <option disabled selected value required> -- select a game -- </option>
-            {% for game in listGames %}
-                <option name="game" value="{{ game }}">{{ game }}</option>
-            {% endfor %}
-        </select> <br>
-    </div>
-{% endblock %}
+
 {% block starRating %}
     <div class="rating-container">
         <p>Rating:</p>
