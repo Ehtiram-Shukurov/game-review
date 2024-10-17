@@ -189,3 +189,18 @@ def get_user_by_sub(sub):
     query = "SELECT * FROM Users where user_sub = (%s)"
     with get_db_cursor() as cursor:
         cursor.execute(query, (sub,))
+        
+def retrieve_all_post(type,search):
+    query = "SELECT * FROM POSTS WHERE post = %s"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (type,))
+        data = cursor.fetchall()
+        res = {}
+        search = search.lower()
+        
+        for d in data:
+            tmp = d["title"].lower()
+            if tmp.find(search):
+                res[d["post_id"]] =d["title"]
+        return res
+    

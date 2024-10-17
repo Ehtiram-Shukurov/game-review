@@ -3,7 +3,7 @@ import os
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for, request, request
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify
 from functools import wraps
 from db import *
 from igdbAPI import *
@@ -181,7 +181,6 @@ def logout():
 def template_review_page(id):
 
     review = retrieve_review_by_post_id(id)
-
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
@@ -217,3 +216,33 @@ def update_reply(parent_id, post_id):
     }
     update_reply_content(update_data)
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))
+
+@app.route('/results', methods=['POST'])
+def results():
+    # TODO: currently there is a bug with review/post where only parent review/post have a valid link/id
+    filter = request.form.get("searchOption")
+    query = request.form.get('query')
+    if filter =="Topic":
+        results=retrieve_all_post("topic",query)
+    if filter =="Game":
+        data = broad_search(query)
+        results={}
+        for d in data:
+            results[d["id"]] =d["name"].replace(" ","")
+    if filter =="Review":
+        results=retrieve_all_post("review",query)
+    return render_template("results.html",results=results,filter=filter)
+
+@app.route('/redirects', methods=['POST'])
+def redirects():
+    # TODO: probally not needed as ID will be sufficient to redirect user
+    #search = request.form.get("selection")
+    filter = request.form.get("filter")
+    id = request.form.get("selectedResult")
+    if filter =="Topic":
+        #TODO: does not look like we have one for topic
+        pass
+    if filter =="Game":
+        return redirect(url_for('template_game_page', id=id))
+    if filter =="Review":
+        return redirect(url_for('template_review_page', id=id))

@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block title %}Game Review{% endblock %}{% block
+    content %}
+    <style>
+        .custom-restricted-width {
+            display: inline-block;
+            width: 30%;
+        }
+        .pure-menu-link {
+            background: none;
+            border: none;
+            color: antiquewhite;
+        }
+        .pure-menu-heading {
+            font-size: 3.25rem;
+            padding: 0.75rem;
+            color: antiquewhite;
+        }
+    </style>
+    <div class="results-section" style="display: flex; justify-content: center; align-items: center;">
+        <form class="pure-form" id="resultsForm" method = "post" action="/redirects" style="text-align: center;" >
+            <div class="pure-menu custom-restricted-width">
+                <span class="pure-menu-heading">Search Results</span>
+                <ul class="pure-menu-list">
+                    {% for key, value in results.items() %}    
+                    <li class="pure-menu-item">
+                        <button type="submit" 
+                        class="pure-menu-link" 
+                        name="selection" 
+                        value ={{value}} 
+                        onclick="submitResult({{key}})">{{value}}</button>
+                    </li>
+                    {% endfor%}
+                </ul>
+                <input type="hidden" name="selectedResult" id="selectedResult">
+                <input type="hidden" name="filter" id="filter" value={{filter}}>
+            </div>
+          </form>
+    </div>   
+
+    <script>
+        function submitResult(key) {
+            document.getElementById('selectedResult').value = key; 
+            document.getElementById('resultsForm').submit(); 
+        }
+    </script>
+
+    {% endblock %}    

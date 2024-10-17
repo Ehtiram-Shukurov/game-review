@@ -4,7 +4,7 @@ body {
 }
 
 label {
-    color:antiquewhite
+    color:antiquewhite;
 }
 
 .pure-form {
@@ -71,3 +71,4 @@ p{
   .five {
     color: rgb(24, 159, 14);
   }
+
