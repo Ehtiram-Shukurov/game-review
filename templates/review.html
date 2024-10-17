@@ -68,20 +68,25 @@
 <div style="margin-left: {{ inset }}em">
     <p><em>{{ comment.username }}</em></p>
     <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
-    {% if sub == comment.user_sub %}
+    <div id="comment-reply-{{comment.post_id}}"></div>
     <div class="pure-menu pure-menu-horizontal">
         <ul class="pure-menu-list">
             <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
                 <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
                 <ul class="pure-menu-children">
+                    {% if sub == comment.user_sub %}
                     <li class="pure-menu-item"><a href="#"
                                                   onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
                                                   class="pure-menu-link">Edit</a></li>
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Delete</a></li>
+                    <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id=review.post_id, delete_id = comment.post_id)}}" class="pure-menu-link">Delete</a></li>
+                    {%endif%}
+                    <li class="pure-menu-item"><a href="#"
+                                                  onclick="replyTo({{review.post_id}}, {{comment.post_id}})"
+                                                  class="pure-menu-link">Reply</a></li>
                 </ul>
             </li>
     </div>
-    {%endif%}
+
     {% set inset = inset + 1 %}
     <p>{{renderComments(comment.replies, inset)}}</p>
 </div>
