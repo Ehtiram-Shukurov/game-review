@@ -55,6 +55,11 @@ function cancelEdit(commentId, originalContent) {
     document.getElementById(`comment-content-${commentId}`).innerHTML = originalContent;
 }
 
+function cancelReply(post_id){ 
+    const replyBox = document.getElementById(`comment-reply-${post_id}`);
+    replyBox.innerHTML = '';
+}
+
 function clickGenre(genre) {
     let divNames = ['strategyDiv', 'rpgDiv', 'adventureDiv', 'fightingDiv', 'fpsDiv', 'platformDiv']
     let targetDiv = document.getElementById(genre + "Div")
@@ -70,4 +75,15 @@ function hideDiv(divName) {
     divToHide.setAttribute("hidden", "true");
     let buttonToRemove = document.getElementById(divName.replace('Div', 'Button'));
     buttonToRemove.classList.remove("pure-menu-selected");
+}
+
+function replyTo(review_id, parent_id){
+    const replyBox = document.getElementById(`comment-reply-${parent_id}`);
+    replyBox.innerHTML = `
+        <form class = "pure-form" method="POST" action="/inlineReply/${review_id}/${parent_id}">
+        <textarea type="text" id="inline_reply" name="reply"></textarea>
+        <button class="pure-button pure-button-primary" onclick="cancelReply(${parent_id})">Cancel</button>
+        <input class="pure-button pure-button-primary" type="submit" id="submit" name="submit" value="Reply">
+        </form>
+    `;
 }
