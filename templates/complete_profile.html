@@ -1,0 +1,52 @@
+{% extends 'base.html' %} {% block title %}Complete Your Profile{% endblock %}
+{% block content %}
+
+<h2 class="profile-title">Complete Profile</h2>
+
+<div class="profile-completion-container">
+  <form
+    action="{{ url_for('complete_profile') }}"
+    method="post"
+    class="profile-completion-form"
+    enctype="multipart/form-data"
+  >
+    <fieldset>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          placeholder="Enter your username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="descript">Profile Description:</label>
+        <textarea
+          id="descript"
+          name="descript"
+          placeholder="Tell us about yourself"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="profile_image">Profile Image:</label>
+        <input
+          id="profile_image"
+          name="profile_image"
+          type="file"
+          accept="image/*"
+        />
+      </div>
+
+      <div class="form-group controls">
+        <button type="submit" class="save-button">Save Profile</button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+
+{% endblock %}

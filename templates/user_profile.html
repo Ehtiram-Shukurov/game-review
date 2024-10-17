@@ -2,37 +2,32 @@
 content %}
 <div class="user-menu">
   <a
-    href="/user/profile"
+    href="/user/profile/{{ user_sub }}"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews"
+    href="/user/reviews/{{ user_sub }}"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
   <a
-    href="/user/settings"
+    href="/user/settings/{{ user_sub }}"
     class="menu-item {% if active_page == 'settings' %}active{% endif %}"
     >Settings</a
   >
 </div>
 <div class="user-profile">
-  <div class="pure-g">
-    <div class="profile-image pure-u-1 pure-u-md-1-2">
-      <img
-        src="{{ url_for('static', filename='images/avatar.png') }}"
-        alt="Profile Image"
-      />
-    </div>
-    <div class="profile-details pure-u-1 pure-u-md-1-2">
-      <h2>Username</h2>
-      <p>
-        Profile description: Lorem ipsum dolor sit amet, consectetur adipiscing
-        elit. Suspendisse varius enim in eros elementum tristique.
-      </p>
-      <p>Number of Reviews: 2</p>
-    </div>
+  <div class="profile-image">
+    <img
+      src="{{ url_for('static', filename='images/avatar.png') }}"
+      alt="Profile Image"
+    />
+  </div>
+  <div class="profile-details">
+    <h2>{{ username }}</h2>
+    <p>Profile description: {{ descript or "No description available." }}</p>
+    <p>Number of Reviews: 2</p>
   </div>
 </div>
 

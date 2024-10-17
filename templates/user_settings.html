@@ -1,66 +1,83 @@
 {% extends 'base.html' %} {% block title %}Settings{% endblock %} {% block
 content %}
+
 <div class="user-menu">
   <a
-    href="/user/profile"
+    href="/user/profile/{{ user_sub }}"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews"
+    href="/user/reviews/{{ user_sub }}"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
   <a
-    href="/user/settings"
+    href="/user/settings/{{ user_sub }}"
     class="menu-item {% if active_page == 'settings' %}active{% endif %}"
     >Settings</a
   >
 </div>
+
 <div class="settings-container">
-  <form class="pure-form pure-form-aligned">
+  <div
+    class="profile-image-container"
+    style="text-align: center; margin-bottom: 20px"
+  >
+    <img
+      id="profile-image-preview"
+      src="{{ url_for('static', filename=profile_image) }}"
+      alt="Profile Image"
+      class="profile-image"
+    />
+  </div>
+
+  <form
+    class="pure-form pure-form-aligned"
+    method="POST"
+    enctype="multipart/form-data"
+    action="{{ url_for('user_settings', user_sub=user_sub) }}"
+  >
     <fieldset>
-      <!-- Current Username -->
       <div class="pure-control-group">
-        <label for="current-username">Current Username:</label>
-        <span id="current-username">Username</span>
-      </div>
-
-      <!-- New Username -->
-      <div class="pure-control-group">
-        <label for="new-username">New Username:</label>
-        <input id="new-username" type="text" placeholder="New Username" />
-      </div>
-
-      <!-- Current Password -->
-      <div class="pure-control-group">
-        <label for="current-password">Current Password:</label>
+        <label for="profile_image">Change Profile Image:</label>
         <input
-          id="current-password"
-          type="password"
-          placeholder="Current Password"
+          id="profile_image"
+          name="profile_image"
+          type="file"
+          accept="image/*"
         />
       </div>
 
-      <!-- New Password -->
       <div class="pure-control-group">
-        <label for="new-password">New Password:</label>
-        <input id="new-password" type="password" placeholder="New Password" />
+        <label for="new-username">Username:</label>
+        <input
+          id="new-username"
+          name="new-username"
+          type="text"
+          value="{{ username }}"
+          required
+        />
       </div>
 
-      <!-- Current Email -->
       <div class="pure-control-group">
-        <label for="current-email">Current Email:</label>
-        <span id="current-email">user@gmail.com</span>
+        <label for="new-email">Email:</label>
+        <input
+          id="new-email"
+          name="new-email"
+          type="email"
+          value="{{ email }}"
+          required
+        />
       </div>
 
-      <!-- New Email -->
       <div class="pure-control-group">
-        <label for="new-email">New Email:</label>
-        <input id="new-email" type="email" placeholder="New Email" />
+        <label for="descript">Description:</label>
+        <textarea id="descript" name="descript" rows="4" cols="50">
+{{ descript }}</textarea
+        >
       </div>
 
-      <!-- Action Buttons -->
       <div class="pure-controls">
         <button type="button" class="pure-button delete-button">
           Delete Account
@@ -75,4 +92,5 @@ content %}
     </fieldset>
   </form>
 </div>
-{%endblock%}
+
+{% endblock %}

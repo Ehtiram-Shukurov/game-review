@@ -2,17 +2,17 @@
 content %}
 <div class="user-menu">
   <a
-    href="/user/profile"
+    href="/user/profile/{{ user_sub }}"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews"
+    href="/user/reviews/{{ user_sub }}"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
   <a
-    href="/user/settings"
+    href="/user/settings/{{ user_sub }}"
     class="menu-item {% if active_page == 'settings' %}active{% endif %}"
     >Settings</a
   >
@@ -20,7 +20,7 @@ content %}
 <div class="recent-reviews-section">
   <h2 class="section-title">Recent Reviews</h2>
   <div class="reviews-list">
-    <!-- Review 1 -->
+    <!-- Review -->
     <div class="review-card">
       <div class="review-image">
         <img src="/static/images/avatar.png" alt="Game 1" />

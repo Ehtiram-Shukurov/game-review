@@ -7,7 +7,8 @@ CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
     user_sub TEXT not null UNIQUE,
     username TEXT NOT NULL,
-    email TEXT NOT NULL);
+    email TEXT NOT NULL,
+    descript TEXT);
 
 
 CREATE TABLE GAMES (
