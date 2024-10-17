@@ -178,26 +178,134 @@ body{
     }
 }
 
+.content{
+    margin-top:50px;
+}
+
+
+.profile-completion-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1c1c1c;
+}
+
+.profile-completion-form {
+    width: 500px;
+    max-width: 100%;
+    padding: 30px;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.profile-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #e0e0e0;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+    color: #e0e0e0;
+}
+
+.form-group input[type="text"],
+.form-group input[type="file"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #555555;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #333333;
+    color: #e0e0e0;
+    box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    border-color: #66b2ff;
+}
+
+.form-group textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+
+.controls .save-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #5c8a8a;
+    color: #ffffff;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.controls .save-button:hover {
+    background-color: #4a6b6b;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .profile-completion-form {
+        padding: 20px;
+    }
+    
+    .controls .save-button {
+        font-size: 1rem;
+    }
+}
+
+
+
 /* Profile */
 .user-profile {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    background-color: #333;
+    padding: 30px 0;
     color: white;
     max-width: 800px;
-    margin:  auto;
+    margin: 20px auto;
 }
 
 .profile-image img {
-    height: 250px;
-    width: 250px;
-    border-radius: 10px;
+    height: 220px;
+    width: 220px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 50px;
 }
+
 .profile-details {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+}
+
+.profile-details h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.profile-details p {
+    font-size: 1.2em;
+    color: #ccc;
 }
 
 /* Menu */
@@ -239,88 +347,128 @@ body{
 }
 }
 
-
-
-/* Settings Page Styling */
+/* Settings Page */
 .settings-container {
+    font-size: 18px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    padding: 20px;
+    padding: 30px;
     border-radius: 5px;
-    max-width: 800px;
-    width: 100%;                
+    max-width: 600px;
+    width: 100%;
     margin: 20px auto;
+    background-color: #2a2a2a;
 }
 
+
+.profile-image-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-image-container .profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #00d1b2;
+}
+
+.pure-form-aligned .pure-control-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
 
 .pure-form-aligned .pure-control-group label {
-    width: 150px;
+    width: 40%;
     color: #ddd;
+    font-weight: bold;
+    margin-right: 10px;
+    text-align: left;
 }
 
-.pure-form-aligned .pure-control-group input {
-    width: 300px;
+.pure-form-aligned .pure-control-group input,
+.pure-form-aligned .pure-control-group span {
+    width: 60%;
     background-color: #555;
     border: none;
     color: #fff;
     padding: 10px;
     border-radius: 3px;
+    box-sizing: border-box;
+    text-align: left;
 }
 
 .pure-form-aligned .pure-control-group span {
-    padding: 10px;
     color: #aaa;
+    background-color: #444;
 }
 
-.pure-controls .delete-button {
+.pure-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pure-controls .delete-button,
+.pure-controls .save-button {
     background-color: #ff4136;
     color: white;
     border-radius: 5px;
-    margin-right: 10px;
+    padding: 10px 20px;
 }
 
 .pure-controls .save-button {
     background-color: #00d1b2;
-    color: white;
-    border-radius: 5px;
 }
 
-/* Responsive Design for Smaller Screens */
+.pure-controls .delete-button:hover {
+    background-color: #e03830;
+}
+
+.pure-controls .save-button:hover {
+    background-color: #00bfa0;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
+    .settings-container {
+        padding: 20px;
+    }
+
     .pure-form-aligned .pure-control-group {
-        display: flex;
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .pure-form-aligned .pure-control-group label {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-
+    .pure-form-aligned .pure-control-group label,
     .pure-form-aligned .pure-control-group input {
         width: 100%;
+        text-align: left;
     }
 
     .pure-controls {
-        display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        width: 100%;
     }
 
     .pure-controls .delete-button,
     .pure-controls .save-button {
         width: 100%;
-        margin-bottom: 10px;
     }
 }
 
 
+
 /* Home */
 
-/* Game Section Styles */
+/* Game Section */
 .game-section {
     margin: 20px auto;
     max-width: 1200px;
@@ -333,7 +481,7 @@ body{
     color: #ccc;
 }
 
-/* Game Card Layout */
+/* Game Card */
 .game-list {
     display: flex;
     flex-wrap: wrap;
@@ -351,10 +499,11 @@ body{
 }
 
 .game-card:hover {
+    cursor: pointer;
     transform: scale(1.05);
 }
 
-/* Game Cover */
+
 .game-cover img {
     object-fit: cover;
     max-width: 100%;
@@ -364,7 +513,7 @@ body{
 }
 
 /* User Info */
-.game-info {
+.game_info {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -377,7 +526,6 @@ body{
 }
 
 
-/* Release Date */
 .release-date {
     font-size: 12px;
     color: #aaa;
@@ -477,7 +625,6 @@ body{
     color: #aaa;
 }
 
-/* Review Text */
 .review-text {
     margin-bottom: 15px;
 }

@@ -40,10 +40,9 @@ def get_db_cursor(commit=False):
 
 
 def insert_user(user_data):
-    query = "INSERT INTO users (user_sub, username, email) VALUES (%s, %s, %s)"
+    query = "INSERT INTO users (user_sub, username, email,descript) VALUES (%s, %s, %s,%s)"
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (user_data['sub'], user_data['username'], user_data['email']))
-
+        cursor.execute(query, (user_data['user_sub'], user_data['username'], user_data['email'],user_data['descript']))
 
 def insert_review(review_data):
     game_id = review_data['game_id']
@@ -69,10 +68,10 @@ def insert_reply(reply_data):
         reply_data['user_id']))
 
 
-def retrieve_user(user_id):
-    query = "SELECT * FROM users where user_id = %s"
+def retrieve_user(user_sub):
+    query = "SELECT * FROM users where user_sub = %s"
     with get_db_cursor() as cursor:
-        cursor.execute(query, (user_id,))
+        cursor.execute(query, (user_sub,))
         return cursor.fetchone()
 
 def retrieve_user_by_name(username):
@@ -201,3 +200,21 @@ def save_game_data(game_data):
     query = "INSERT INTO GAMES (game_id, image_url, summary, name) VALUES (%s, %s, %s, %s);"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (game_data.get('id'), game_data.get('cover').get('url'), game_data.get('summary'), game_data.get('name')))
+
+
+
+def retrieve_all_users():
+    query = "SELECT * FROM Users"
+    with get_db_cursor() as cursor:
+        cursor.execute(query)
+        return cursor.fetchall()
+    
+    
+def update_user_profile(user_sub, username, email, descript):
+    query = """
+        UPDATE users
+        SET username = %s, email = %s, descript = %s
+        WHERE user_sub = %s
+    """
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (username, email, descript, user_sub))
