@@ -86,9 +86,7 @@ def get_game_data(name):
     return data
 
 
-def broad_search(name, limit=30):
-    #TODO: need to fix the issue of invalid game ids and displaying all relevant results
-    # or make user have a better search result
+def broad_search(name, limit=99):
     query = f"""
     fields name;
     search "{name}";
@@ -121,6 +119,5 @@ def get_games_by_genre(genre):
     games = json.loads(response.decode('utf-8'))
     return games
 
-#TODO: use popularity api?
 
 
