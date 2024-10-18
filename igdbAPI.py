@@ -86,13 +86,15 @@ def get_game_data(name):
     return data
 
 
-def broad_search(name, limit=1):
-    # could be use to show the search results of incomplete search like terra for terraria
+def broad_search(name, limit=30):
+    #TODO: need to fix the issue of invalid game ids and displaying all relevant results
+    # or make user have a better search result
     query = f"""
-  fields name;
-  search "{name}";
-  limit {limit};
+    fields name;
+    search "{name}";
+    limit {limit};
   """
+  #limit {limit};
     response = wrapper.api_request('games', query)
     games = json.loads(response.decode('utf-8'))
     # list of dict

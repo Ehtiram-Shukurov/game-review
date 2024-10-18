@@ -188,6 +188,21 @@ def get_user_by_sub(sub):
     query = "SELECT * FROM Users where user_sub = (%s)"
     with get_db_cursor() as cursor:
         cursor.execute(query, (sub,))
+        
+def retrieve_all_post(type,search):
+    query = "SELECT * FROM POSTS WHERE post = %s"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (type,))
+        data = cursor.fetchall()
+        res = {}
+        search = search.lower()
+        
+        for d in data:
+            tmp = d["title"].lower()
+            if tmp.find(search):
+                res[d["post_id"]] =d["title"]
+        return res
+
 
 
 def get_game_by_id_database(game_id):
@@ -201,3 +216,4 @@ def save_game_data(game_data):
     query = "INSERT INTO GAMES (game_id, image_url, summary, name) VALUES (%s, %s, %s, %s);"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (game_data.get('id'), game_data.get('cover').get('url'), game_data.get('summary'), game_data.get('name')))
+
