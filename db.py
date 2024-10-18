@@ -197,10 +197,8 @@ def retrieve_all_post(type,search):
         cursor.execute(query, (type,fuzzy,fuzzy))
         data = cursor.fetchall()
         res = {}
-        print(len(data))
         for d in data:
             parent = d["parent_id"]
-            print(parent)
             # checks for none i.e. parent post
             if parent == None:
                 res[d["post_id"]] =d["title"]
