@@ -320,7 +320,14 @@ def template_game_page(id,user=None):
     game_data = get_game_by_id(id)[0]
     reviews = retrieve_reviews_by_game_id(id)
     topics = retrieve_topics_by_game_id(id)
-    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics,user = user)
+    valid = game_data.get('cover')
+    # no cover image check
+    if valid is None or valid.get("url") is None:
+        valid = False
+    else:
+        valid = True
+    return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics, user=session.get('user'),valid= valid)
+
 
 @app.route('/games')
 @auth_aware
@@ -363,7 +370,6 @@ def reply(parent_id):
 
 @app.route('/results', methods=['POST'])
 def results():
-    # TODO: currently there is a bug with review/post where only parent review/post have a valid link/id
     filter = request.form.get("searchOption")
     query = request.form.get('query')
     if filter =="Topic":
@@ -372,15 +378,13 @@ def results():
         data = broad_search(query)
         results={}
         for d in data:
-            results[d["id"]] =d["name"].replace(" ","")
+            results[d["id"]] =d["name"]
     if filter =="Review":
         results=retrieve_all_post("review",query)
     return render_template("results.html",results=results,filter=filter)
 
 @app.route('/redirects', methods=['POST'])
 def redirects():
-    # TODO: probally not needed as ID will be sufficient to redirect user
-    #search = request.form.get("selection")
     filter = request.form.get("filter")
     id = request.form.get("selectedResult")
     if filter =="Topic":

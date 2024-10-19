@@ -5,8 +5,12 @@
         <div class="pure-u-22-24">
             <div class="pure-g">
                 <div class="pure-u-1-5">
-                    <img src="http:{{ game_data.get('cover').get('url') | replace('t_thumb', 't_720p')}}" alt="Cover image for {{ game_data.name }}"
-                         class="pure-img"/>
+                    {% if valid %}
+                        <img src="http:{{ game_data.get('cover').get('url') | replace('t_thumb', 't_720p') }}" alt="Cover image for {{ game_data.name }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/null.png') }}"alt="nullImage"/>
+                        <p>No images available</p>
+                    {% endif %}
                 </div>
                 <div class="pure-u-3-5" style="margin-left: 1em;">
                     <h1>{{ game_data.name }}</h1>
