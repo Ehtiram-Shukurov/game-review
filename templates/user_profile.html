@@ -2,17 +2,17 @@
 content %}
 <div class="user-menu">
   <a
-    href="/user/profile/{{ user_sub }}"
+    href="/user/profile"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews/{{ user_sub }}"
+    href="/user/reviews"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
   <a
-    href="/user/settings/{{ user_sub }}"
+    href="/user/settings"
     class="menu-item {% if active_page == 'settings' %}active{% endif %}"
     >Settings</a
   >
@@ -25,9 +25,9 @@ content %}
     />
   </div>
   <div class="profile-details">
-    <h2>{{ username }}</h2>
-    <p>Profile description: {{ descript or "No description available." }}</p>
-    <p>Number of Reviews: 2</p>
+    <h2>{{ profile_info.get('username') }}</h2>
+    <p>Profile description: {{ profile_info.get('descript') or "No description available." }}</p>
+    <p>#TODO NUMBER OF REVIEWS FOR THE USER</p>
   </div>
 </div>
 

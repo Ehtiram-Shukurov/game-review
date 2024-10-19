@@ -3,17 +3,17 @@ content %}
 
 <div class="user-menu">
   <a
-    href="/user/profile/{{ user_sub }}"
+    href="/user/profile"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews/{{ user_sub }}"
+    href="/user/reviews"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
   <a
-    href="/user/settings/{{ user_sub }}"
+    href="/user/settings"
     class="menu-item {% if active_page == 'settings' %}active{% endif %}"
     >Settings</a
   >
@@ -36,7 +36,7 @@ content %}
     class="pure-form pure-form-aligned"
     method="POST"
     enctype="multipart/form-data"
-    action="{{ url_for('user_settings', user_sub=user_sub) }}"
+    action="{{ url_for('user_settings')}}"
   >
     <fieldset>
       <div class="pure-control-group">
@@ -55,7 +55,7 @@ content %}
           id="new-username"
           name="new-username"
           type="text"
-          value="{{ username }}"
+          value="{{ profile_info.get('username') }}"
           required
         />
       </div>
@@ -66,7 +66,7 @@ content %}
           id="new-email"
           name="new-email"
           type="email"
-          value="{{ email }}"
+          value="{{ profile_info.get('email') }}"
           required
         />
       </div>
@@ -74,7 +74,7 @@ content %}
       <div class="pure-control-group">
         <label for="descript">Description:</label>
         <textarea id="descript" name="descript" rows="4" cols="50">
-{{ descript }}</textarea
+{{ profile_info.get('descript') }}</textarea
         >
       </div>
 

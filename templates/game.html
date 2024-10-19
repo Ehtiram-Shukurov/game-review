@@ -6,9 +6,9 @@
             <div class="pure-g">
                 <div class="pure-u-1-5">
                     {% if valid %}
-                        <img src="http:{{ game_data.get('cover').get('url') | replace('t_thumb', 't_720p') }}" alt="Cover image for {{ game_data.name }}">
+                        <img class="pure-img" src="http:{{ game_data.get('cover').get('url') | replace('t_thumb', 't_720p') }}" alt="Cover image for {{ game_data.name }}">
                     {% else %}
-                        <img src="{{ url_for('static', filename='images/null.png') }}"alt="nullImage"/>
+                        <img class="pure-img" src="{{ url_for('static', filename='images/null.png') }}"alt="No cover image available for game"/>
                         <p>No images available</p>
                     {% endif %}
                 </div>

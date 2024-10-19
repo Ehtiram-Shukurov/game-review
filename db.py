@@ -156,7 +156,7 @@ def get_post_by_id(id):
     query = "SELECT * FROM POSTS WHERE post_id = %s"
 
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (id))
+        cursor.execute(query, (id,))
         post = cursor.fetchone()
 
     return post
