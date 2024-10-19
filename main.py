@@ -370,6 +370,36 @@ def inline_reply(review_id, parent_id):
     insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
     return redirect(url_for('template_review_page', id=review_id, user='user1'))
 
+@app.route('/results', methods=['POST'])
+def results():
+    # TODO: currently there is a bug with review/post where only parent review/post have a valid link/id
+    filter = request.form.get("searchOption")
+    query = request.form.get('query')
+    if filter =="Topic":
+        results=retrieve_all_post("topic",query)
+    if filter =="Game":
+        data = broad_search(query)
+        results={}
+        for d in data:
+            results[d["id"]] =d["name"].replace(" ","")
+    if filter =="Review":
+        results=retrieve_all_post("review",query)
+    return render_template("results.html",results=results,filter=filter)
+
+@app.route('/redirects', methods=['POST'])
+def redirects():
+    # TODO: probally not needed as ID will be sufficient to redirect user
+    #search = request.form.get("selection")
+    filter = request.form.get("filter")
+    id = request.form.get("selectedResult")
+    if filter =="Topic":
+        #TODO: does not look like we have one for topic
+        pass
+    if filter =="Game":
+        return redirect(url_for('template_game_page', id=id))
+    if filter =="Review":
+        return redirect(url_for('template_review_page', id=id))
+
 @app.route('/deletePost/<int:post_id>/<int:delete_id>')
 @requires_auth
 def delete_post(post_id, delete_id):
