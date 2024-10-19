@@ -57,10 +57,19 @@ def requires_auth(f):
         # Redirect to Login page here or maybe something else
             return redirect("/login")
         return f(*args, **kwargs) #do the normal behavior -- return as it does.
-
     return decorated
 
+# all error will be redirected here
+@app.errorhandler(Exception)
+def basic_error(e):
+    return redirect(url_for('error'))
+
+
 #TODO: add redirect page to see what the user wants to do if they try to access a forbidden page
+@app.route('/error')
+def error():
+    return render_template("error.html")
+
 
 
 @app.route('/postReview/<int:gameid>')
@@ -212,7 +221,7 @@ def home():
         review_data = get_game_data(name)
         if review_data:
             recent_reviews.append(review_data)
-    print(session.get('user'))
+
     return render_template('home.html',new_games=new_games, recent_reviews=recent_reviews, user=session.get('user'))
 
 
@@ -253,7 +262,6 @@ def user_settings():
                            active_page='settings')
 
 
-
 @app.route('/review/<string:id>')
 def template_review_page(id):
     review = retrieve_review_by_post_id(id)
@@ -263,6 +271,18 @@ def template_review_page(id):
     replies = build_hierarchy(replies_data,id)
     if replies:
      review['replies'] = replies
+    return render_template("review.html", review=review, user=session.get('user'))
+
+
+@app.route('/topic/<string:id>')
+@auth_aware
+def template_topic_page(id, user=None):
+    topic = retrieve_post_by_post_id(id,"topic")
+    replies_data = retrieve_replies_by_post_id(id)
+    # recursively put replies into hierarchy structure
+    replies = build_hierarchy(replies_data,id)
+    if replies:
+     topic['replies'] = replies
     return render_template("review.html", review=review, user=session.get('user'))
 
 
