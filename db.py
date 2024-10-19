@@ -36,9 +36,9 @@ def get_db_cursor(commit=False):
             cursor.close()
 
 def insert_user(user_data):
-    query = "INSERT INTO users (user_sub, username, email,descript) VALUES (%s, %s, %s,%s)"
+    query = "INSERT INTO users (user_sub, username, email,descript, picture) VALUES (%s, %s, %s,%s, %s)"
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (user_data['user_sub'], user_data['username'], user_data['email'],user_data['descript']))
+        cursor.execute(query, (user_data['user_sub'], user_data['username'], user_data['email'], user_data['descript'], user_data['picture']))
 
 def insert_review(review_data):
     game_id = review_data['game_id']

@@ -70,7 +70,7 @@
         <!-- Logged-in version -->
         <div class="user-dropdown">
           <img
-            src="{{url_for('static', filename='images/avatar.png') }}"
+            src="{{ user.get('picture') }}"
             alt="User Avatar"
             class="user-avatar"
           />
