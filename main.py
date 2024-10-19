@@ -157,13 +157,17 @@ def callback():
     user_sub = user_info.get("sub")
     username = user_info.get("name", "")  
     email = user_info.get("email", "")  
-
     if not user_sub:
         return "User ID is missing", 400
-
-    if not retrieve_user(user_sub):
+    saved_user_info = retrieve_user(user_sub)
+    if not saved_user_info:
+        session["user"] = {
+            "user_sub": user_sub,
+            "username": username,
+            "email": email
+        }
         return redirect(url_for("complete_profile", user=session.get('user')))
-
+    session['user'] = saved_user_info
     return redirect("/")
 
 
@@ -179,7 +183,7 @@ def complete_profile():
         }
         insert_user(user_data)
 
-        return redirect(url_for("user_profile", user_sub=session.get('user').get('user_sub'), user=session.get('user')))
+        return redirect(url_for("user_profile", user=session.get('user')))
 
     return render_template("complete_profile.html")
 

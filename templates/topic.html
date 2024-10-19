@@ -9,7 +9,7 @@
         <h1 class="topic_title">{{ topic.title }}</h1>
     </div>
     <div class="pure-u-2-24">
-        {% if sub == topic.user_sub %}
+        {% if user_sub == topic.user_sub %}
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
                 <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
@@ -65,7 +65,7 @@
             <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
                 <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
                 <ul class="pure-menu-children">
-                    {% if sub == comment.user_sub %}
+                    {% if user_sub == comment.user_sub %}
                     <li class="pure-menu-item"><a href="#"
                                                   onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
                                                   class="pure-menu-link">Edit</a></li>

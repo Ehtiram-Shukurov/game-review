@@ -9,6 +9,7 @@ CREATE TABLE Users (
     username TEXT NOT NULL,
     email TEXT NOT NULL,
     descript TEXT);
+-- TODO: add picture to users?
 
 
 CREATE TABLE GAMES (
