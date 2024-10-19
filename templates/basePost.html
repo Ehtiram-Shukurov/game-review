@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Post{% endblock %}</title>
-    <link rel="stylesheet" href=
-    "https://unpkg.com/purecss@2.0.5/build/pure-min.css"
-            integrity=
-    "sha384-LTIDeidl25h2dPxrB2Ekgc9c7sEC3CWGM6HeFmuDNUjX76Ert4Z4IY714dhZHPLd"
-            crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/style.css">
-    <script src="../static/script.js"></script>
-</head>
+{% extends "base.html" %}
+{% block additionalHeaders %}
+ <script src="../static/js/script.js"></script>
+{% endblock %}
+{% block title %}Game Review{% endblock %}
 
-<body>
+{% block content %}
     <form class="pure-form" method="POST" action="{% block action %}{{ url_for('submit_post') }} {% endblock %}">
         <div class="pure-form-stacked">
             <div>
@@ -35,5 +27,4 @@
             
         </div>
     </form>
-</body>
-</html>
+{% endblock %}

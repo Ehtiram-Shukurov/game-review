@@ -28,6 +28,7 @@
       href="{{ url_for('static', filename='css/base.css') }}"
     />
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    {% block additionalHeaders %} {% endblock %}
   </head>
   <body>
     <!-- Header -->
@@ -41,7 +42,7 @@
         /></a>
       </div>
 
-      <div class="pure-u-2-5">
+      <div class="pure-u-2-5>
         <form class="pure-form" action="/results" id ="searchForm" method = "post">
           <select id="stacked-state" name ="searchOption" required>
             <option value="">--Select--</option>
@@ -74,7 +75,7 @@
             class="user-avatar"
           />
           <div class="dropdown-content">
-            <a href="/user/profile/{{user.get('user_sub')}}">Profile</a>
+            <a href="/user/profile">Profile</a>
             <a href="/logout">Log Out</a>
             <a href="/review">Post Review</a>
             <a href="/topic">Post Topic</a>

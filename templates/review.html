@@ -19,11 +19,11 @@
         </p>
     </div>
     <div class="pure-u-2-24">
-        {% if sub == review.user_sub %}
+        {% if user_sub == review.user_sub %}
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
                 <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-                    <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
+                    <a href="#" id="comment-form" class="pure-menu-link">&#10247;</a>
                     <ul class="pure-menu-children">
                         <li class="pure-menu-item"><a href="{{url_for('update_review', id=review.post_id)}}"
                                                       class="pure-menu-link">Edit</a></li>
@@ -74,7 +74,7 @@
             <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
                 <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
                 <ul class="pure-menu-children">
-                    {% if sub == comment.user_sub %}
+                    {% if user_sub == comment.user_sub %}
                     <li class="pure-menu-item"><a href="#"
                                                   onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
                                                   class="pure-menu-link">Edit</a></li>
