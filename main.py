@@ -39,7 +39,6 @@ def inject_user_sub():
     user_sub = user_info.get("sub") if user_info else None
     return {"user_sub": user_sub}  # Make user_sub available in all templates
 
-
 @app.template_filter('format_date')
 def format_date(value):
     try:
@@ -50,7 +49,6 @@ def format_date(value):
         # Return a fallback message in case of conversion issues
         return "Unknown"
 
-
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -58,10 +56,19 @@ def requires_auth(f):
         # Redirect to Login page here or maybe something else
             return redirect("/login")
         return f(*args, **kwargs) #do the normal behavior -- return as it does.
-
     return decorated
 
+# all error will be redirected here
+@app.errorhandler(Exception)          
+def basic_error(e):          
+    return redirect(url_for('error'))
+
+
 #TODO: add redirect page to see what the user wants to do if they try to access a forbidden page
+@app.route('/error')
+def error():
+    return render_template("error.html")
+
 
 
 @app.route('/postReview/<int:gameid>')
@@ -69,12 +76,10 @@ def requires_auth(f):
 def post_review(gameid):
     return render_template('postReview.html', game_id=gameid,user = session.get('user'))
 
-
 @app.route('/postTopic/<int:gameid>')
 @requires_auth
 def post_topic(gameid):
     return render_template('postReview.html', game_id=gameid, user = session.get('user'))
-
 
 @app.route('/submitPost', methods=['POST'])
 @requires_auth
@@ -98,7 +103,6 @@ def submit_post():
 
         return redirect(url_for('template_review_page', id=post_id))
 
-
 @app.route('/editReview/<string:id>', methods=['GET'])
 @requires_auth
 def update_review(id):
@@ -110,7 +114,6 @@ def update_review(id):
     }
     return render_template('editReview.html', post=post_data,user = session.get('user'))
 
-
 @app.route('/editTopic/<string:id>', methods=['GET'])
 @requires_auth
 def update_topic(id):
@@ -121,8 +124,6 @@ def update_topic(id):
         'content': post['content']
     }
     return render_template('editTopic.html', post=post_data, user=session.get('user'))
-
-
 
 @app.route('/updatePost', methods=['POST'])
 @requires_auth
@@ -139,7 +140,6 @@ def update_post():
         update_post_db(title, content, rating, post_id)
 
         return redirect(url_for('template_review_page', id=post_id, user=session.get('user')))
-
 
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
@@ -158,7 +158,6 @@ def callback():
 
     return redirect("/")
 
-
 @app.route("/complete_profile", methods=["GET", "POST"])
 def complete_profile():
     if request.method == "POST":
@@ -175,13 +174,11 @@ def complete_profile():
 
     return render_template("complete_profile.html")
 
-
 @app.route("/login")
 def login():
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
-
 
 @app.route("/logout")
 def logout():
@@ -201,11 +198,9 @@ def logout():
         )
     )
 
-
 @app.route("/")
 def home():
     new_games = get_recent_games(limit=10)
-
     recent_reviews = []
     game_names = ["The Last of Us", "Cyberpunk 2077", "God of War"]  #TODO; Replace with dynamic data
 
@@ -213,30 +208,24 @@ def home():
         review_data = get_game_data(name)
         if review_data:
             recent_reviews.append(review_data)
-    print(session.get('user'))
+
     return render_template('home.html',new_games=new_games, recent_reviews=recent_reviews, user=session.get('user'))
 
 
-@app.route("/user/profile/<user_sub>")
-def user_profile(user_sub):
-    if user_sub != session.get('user').get('user_sub'):
-        return "Not authorized for this page", 403
-    profile_info = retrieve_user(user_sub)
+@app.route("/user/profile")
+@requires_auth
+def user_profile():
+    profile_info = retrieve_user(session.get('user').get('user_sub'))
     if not profile_info:
         return "User not found", 404
-    #TODO just get stuff from db and then send wholet hing to front end
-    return render_template("user_profile.html",user=session.get('user'),
-                           username=profile_info["username"], 
-                           descript=profile_info.get("descript", "No description available."),
-                           profile_image=profile_info.get("profile_image_path", "images/avatar.png"),active_page='profile')
+    return render_template("user_profile.html",user=session.get('user'), profile_info=profile_info,
+                           active_page='profile')
 
-
-@app.route('/user/reviews/<user_sub>')
+@app.route('/user/reviews')
+@requires_auth
 #TODO: not sure if we should be sending user sub like this
-def user_reviews(user_sub,user = None):
+def user_reviews():
     return render_template('user_reviews.html',user=session.get('user'), active_page='reviews')
-
-
 
 @app.route('/user/settings/<user_sub>', methods=['GET', 'POST'])
 #TODO: not sure if user sub should get passed like this
@@ -261,22 +250,29 @@ def user_settings(user_sub):
                            profile_image=profile_info.get("profile_image_path", "images/avatar.png"),
                            active_page='settings')
 
-
-
 @app.route('/review/<string:id>')
 def template_review_page(id):
     review = retrieve_review_by_post_id(id)
+    sub = session.get('user').get('user_sub')
 
-    sub = session.get('user').get('userinfo').get('sub')
-
-    sub=session.get('user').get('sub')
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
     if replies:
      review['replies'] = replies
-    return render_template("review.html", review=review, sub=sub)
+    return render_template("review.html", review=review, user=session.get('user'))
 
+@app.route('/topic/<string:id>')
+@auth_aware
+def template_topic_page(id, user=None):
+    topic = retrieve_post_by_post_id(id,"topic")
+    sub=session.get('user').get('sub')
+    replies_data = retrieve_replies_by_post_id(id)
+    # recursively put replies into hierarchy structure
+    replies = build_hierarchy(replies_data,id)
+    if replies:
+        topic['replies'] = replies
+    return render_template("topic.html", topic=topic, sub=sub)
 
 @app.route('/game/<string:id>')
 def template_game_page(id):
@@ -290,7 +286,6 @@ def template_game_page(id):
     else:
         valid = True
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics, user=session.get('user'),valid= valid)
-
 
 @app.route('/games')
 def games_page():
@@ -321,6 +316,13 @@ def reply(parent_id):
     insert_post(None, None, data['reply'], 'reply', None, id,parent_id)
     return redirect(url_for('template_review_page', id=parent_id, user=session.get('user')))
 
+@app.route('/inlineReply/<int:review_id>/<int:parent_id>', methods=['POST'])
+@requires_auth
+def inline_reply(review_id, parent_id):
+    data = request.form
+    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))['user_id']
+    insert_post(None, None, data['reply'], 'reply', None, id, parent_id)
+    return redirect(url_for('template_review_page', id=review_id, user=session.get('user')))
 
 @app.route('/inlineReply/<int:review_id>/<int:parent_id>', methods=['POST'])
 @requires_auth
