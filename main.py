@@ -258,7 +258,6 @@ def user_settings():
 @app.route('/review/<string:id>')
 def template_review_page(id):
     review = retrieve_review_by_post_id(id)
-    sub = session.get('user').get('user_sub')
 
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
