@@ -213,11 +213,14 @@ def home():
         review_data = get_game_data(name)
         if review_data:
             recent_reviews.append(review_data)
+    print(session.get('user'))
     return render_template('home.html',new_games=new_games, recent_reviews=recent_reviews, user=session.get('user'))
 
 
 @app.route("/user/profile/<user_sub>")
 def user_profile(user_sub):
+    if user_sub != session.get('user').get('user_sub'):
+        return "Not authorized for this page", 403
     profile_info = retrieve_user(user_sub)
     if not profile_info:
         return "User not found", 404
