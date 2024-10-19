@@ -228,7 +228,6 @@ def user_profile():
 
 @app.route('/user/reviews')
 @requires_auth
-#TODO: not sure if we should be sending user sub like this
 def user_reviews():
     return render_template('user_reviews.html',user=session.get('user'), active_page='reviews')
 
