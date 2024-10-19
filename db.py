@@ -187,6 +187,7 @@ def get_user_by_sub(sub):
     query = "SELECT * FROM Users where user_sub = (%s)"
     with get_db_cursor() as cursor:
         cursor.execute(query, (sub,))
+        return cursor.fetchone()
         
 def retrieve_all_post(type,search):
     fuzzy = f"%{search}%"

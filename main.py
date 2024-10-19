@@ -3,7 +3,6 @@ import os
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-
 from flask import Flask, redirect, render_template, session, url_for, request, jsonify
 from functools import wraps
 from db import *
@@ -98,14 +97,13 @@ def submit_post():
         rating = None
         if post_type == 'review': rating = request.form['rating']
         
-        user_id = get_user_by_sub(session.get('user').get('sub'))
+        user_id = get_user_by_sub(session.get('user').get('sub'))['user_id']
         parent_id = None
 
         save_game_by_game_id(game_id)
 
         insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
-
-        post_id = get_user_most_recent_post(user_id)
+        post_id = get_user_most_recent_post(user_id)['post_id']
 
         return redirect(url_for('template_review_page', id=post_id))
 
@@ -299,18 +297,15 @@ def user_settings(user_sub, user=None):
 @app.route('/review/<string:id>')
 @auth_aware
 
-def template_review_page(id,user = None):
+def template_review_page(id, user=None):
     review = retrieve_review_by_post_id(id)
-
-    sub=session.get('user').get('userinfo').get('sub')
-
+    sub=session.get('user').get('sub')
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
-
     if replies:
      review['replies'] = replies
-    return render_template("review.html", review=review, sub=sub,user=user)
+    return render_template("review.html", review=review, sub=sub)
 
 
 @app.route('/game/<string:id>')
@@ -349,8 +344,7 @@ def update_reply(parent_id, post_id,user=None):
         'content': data['editArea']
     }
     update_reply_content(update_data)
-
-    return redirect(url_for('template_review_page', id=parent_id, user=user))
+    return redirect(url_for('template_review_page', id=parent_id, user=session.get('user')))
 
 @app.route('/reply/<int:parent_id>', methods=['POST'])
 def reply(parent_id):
@@ -367,6 +361,21 @@ def reply(parent_id):
     insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
     return redirect(url_for('template_review_page', id=parent_id, user='user1'))
 
+@app.route('/inlineReply/<int:review_id>/<int:parent_id>', methods=['POST'])
+@requires_auth
+def inline_reply(review_id, parent_id):
+    data = request.form
+    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))
+    reply_data = {
+        'title': None,
+        'rating': None,
+        'content': data['reply'],
+        'post_type': 'reply',
+        'parent_id': parent_id,
+        'user_id': id['user_id']
+    }
+    insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
+    return redirect(url_for('template_review_page', id=review_id, user='user1'))
 
 @app.route('/results', methods=['POST'])
 def results():
@@ -394,21 +403,6 @@ def redirects():
         return redirect(url_for('template_game_page', id=id))
     if filter =="Review":
         return redirect(url_for('template_review_page', id=id))
-
-@app.route('/inlineReply/<int:review_id>/<int:parent_id>', methods=['POST'])
-def inline_reply(review_id, parent_id):
-    data = request.form
-    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))
-    reply_data = {
-        'title': None,
-        'rating': None,
-        'content': data['reply'],
-        'post_type': 'reply',
-        'parent_id': parent_id,
-        'user_id': id['user_id']
-    }
-    insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
-    return redirect(url_for('template_review_page', id=review_id, user='user1'))
 
 @app.route('/deletePost/<int:post_id>/<int:delete_id>')
 @requires_auth
