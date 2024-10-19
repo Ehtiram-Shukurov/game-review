@@ -123,4 +123,33 @@ def get_games_by_genre(genre):
 
 #TODO: use popularity api?
 
+from datetime import datetime
 
+def get_recent_games(limit=10):
+    current_timestamp = int(datetime.now().timestamp())
+    
+    query = f"""
+    fields name, cover.url, first_release_date;
+    sort first_release_date desc;
+    where first_release_date <= {current_timestamp};
+    limit {limit};
+    """
+    
+    response = wrapper.api_request('games', query)
+    games = json.loads(response.decode('utf-8'))
+    
+    game_data = []
+    for game in games:
+        release_date = game.get("first_release_date")
+        
+        if release_date:
+            release_date = int(release_date)
+        game_info = {
+            "name": game.get("name"),
+            "id": game.get("id"),
+            "cover": "http:" + game.get("cover", {}).get("url", "").replace("t_thumb", "t_cover_big"),
+            "release_date": release_date
+        }
+        game_data.append(game_info)
+    
+    return game_data
