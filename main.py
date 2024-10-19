@@ -3,7 +3,8 @@ import os
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for, request
+
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify
 from functools import wraps
 from db import *
 from igdbAPI import *
@@ -300,13 +301,16 @@ def user_settings(user_sub, user=None):
 
 def template_review_page(id,user = None):
     review = retrieve_review_by_post_id(id)
+
     sub=session.get('user').get('userinfo').get('sub')
+
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
-    review['replies'] = replies
 
-    return render_template("review.html",user = user,review=review, sub=sub)
+    if replies:
+     review['replies'] = replies
+    return render_template("review.html", review=review, sub=sub,user=user)
 
 
 @app.route('/game/<string:id>')
@@ -338,4 +342,75 @@ def update_reply(parent_id, post_id,user=None):
         'content': data['editArea']
     }
     update_reply_content(update_data)
+
     return redirect(url_for('template_review_page', id=parent_id, user=user))
+
+@app.route('/reply/<int:parent_id>', methods=['POST'])
+def reply(parent_id):
+    data = request.form
+    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))
+    reply_data = {
+        'title': None,
+        'rating': None,
+        'content': data['reply'],
+        'post_type': 'reply',
+        'parent_id': parent_id,
+        'user_id': id['user_id']
+    }
+    insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
+    return redirect(url_for('template_review_page', id=parent_id, user='user1'))
+
+
+@app.route('/results', methods=['POST'])
+def results():
+    # TODO: currently there is a bug with review/post where only parent review/post have a valid link/id
+    filter = request.form.get("searchOption")
+    query = request.form.get('query')
+    if filter =="Topic":
+        results=retrieve_all_post("topic",query)
+    if filter =="Game":
+        data = broad_search(query)
+        results={}
+        for d in data:
+            results[d["id"]] =d["name"].replace(" ","")
+    if filter =="Review":
+        results=retrieve_all_post("review",query)
+    return render_template("results.html",results=results,filter=filter)
+
+@app.route('/redirects', methods=['POST'])
+def redirects():
+    # TODO: probally not needed as ID will be sufficient to redirect user
+    #search = request.form.get("selection")
+    filter = request.form.get("filter")
+    id = request.form.get("selectedResult")
+    if filter =="Topic":
+        #TODO: does not look like we have one for topic
+        pass
+    if filter =="Game":
+        return redirect(url_for('template_game_page', id=id))
+    if filter =="Review":
+        return redirect(url_for('template_review_page', id=id))
+
+@app.route('/inlineReply/<int:review_id>/<int:parent_id>', methods=['POST'])
+def inline_reply(review_id, parent_id):
+    data = request.form
+    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))
+    reply_data = {
+        'title': None,
+        'rating': None,
+        'content': data['reply'],
+        'post_type': 'reply',
+        'parent_id': parent_id,
+        'user_id': id['user_id']
+    }
+    insert_post(None, None, reply_data['content'], reply_data['post_type'], None, reply_data['user_id'], reply_data['parent_id'])
+    return redirect(url_for('template_review_page', id=review_id, user='user1'))
+
+@app.route('/deletePost/<int:post_id>/<int:delete_id>')
+@requires_auth
+def delete_post(post_id, delete_id):
+    delete_content(delete_id)
+    if post_id == delete_id:
+        return redirect(url_for('home'))
+    
+    return redirect(url_for('template_review_page', id=post_id))
