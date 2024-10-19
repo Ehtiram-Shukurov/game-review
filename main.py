@@ -264,26 +264,24 @@ def user_settings():
 
 @app.route('/review/<string:id>')
 def template_review_page(id):
-    review = retrieve_review_by_post_id(id)
-
+    review = retrieve_post_by_post_id(id,"review")
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
     if replies:
-     review['replies'] = replies
+        review['replies'] = replies
     return render_template("review.html", review=review, user=session.get('user'))
 
 
 @app.route('/topic/<string:id>')
-@auth_aware
 def template_topic_page(id, user=None):
     topic = retrieve_post_by_post_id(id,"topic")
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
     if replies:
-     topic['replies'] = replies
-    return render_template("review.html", review=review, user=session.get('user'))
+        topic['replies'] = replies
+    return render_template("review.html", topic=topic, user=session.get('user'))
 
 
 @app.route('/game/<string:id>')
