@@ -8,7 +8,8 @@ CREATE TABLE Users (
     user_sub TEXT not null UNIQUE,
     username TEXT NOT NULL,
     email TEXT NOT NULL,
-    descript TEXT);
+    descript TEXT,
+    picture TEXT);
 
 
 CREATE TABLE GAMES (
@@ -105,3 +106,5 @@ WITH RECURSIVE posts_to_delete AS (
 DELETE FROM posts
 WHERE post_id IN (SELECT post_id FROM posts_to_delete);
 
+alter table Users
+add picture text;
