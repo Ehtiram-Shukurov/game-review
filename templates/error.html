@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block title %}Game Review{% endblock %}{% block
+    content %}
+
+    <style>
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+          }
+    </style>
+    <div>
+        <img
+            src="{{ url_for('static', filename='images/sadDog.jpg') }}"
+            alt="sadDog"
+            class="center"
+        />
+        <p class ="center">Looks like there is nothing here</p>
+    </div>
+{% endblock %}    
