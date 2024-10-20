@@ -175,7 +175,6 @@ def get_user_by_sub(sub):
 def retrieve_all_post(type,search):
     fuzzy = f"%{search}%"
     query = "SELECT * FROM POSTS WHERE post = %s AND (title ILIKE %s OR content ILIKE %s)"
-    # TODO: bug where some parent post/review do not have a template.
     with get_db_cursor() as cursor:
         cursor.execute(query, (type,fuzzy,fuzzy))
         data = cursor.fetchall()
