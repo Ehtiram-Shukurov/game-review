@@ -38,7 +38,6 @@ def inject_user_sub():
     user_sub = user_info.get("user_sub") if user_info else None
     return {"user_sub": user_sub}  # Make user_sub available in all templates
 
-
 @app.template_filter('format_date')
 def format_date(value):
     try:
@@ -49,7 +48,6 @@ def format_date(value):
         # Return a fallback message in case of conversion issues
         return "Unknown"
 
-
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -59,24 +57,16 @@ def requires_auth(f):
         return f(*args, **kwargs) #do the normal behavior -- return as it does.
     return decorated
 
-# all error will be redirected here
 @app.errorhandler(Exception)
-def basic_error(e):
-    return redirect(url_for('error'))
-
-
-#TODO: add redirect page to see what the user wants to do if they try to access a forbidden page
 @app.route('/error')
-def error():
-    return render_template("error.html")
-
-
+def basic_error(e):
+    message = str(e)
+    return render_template("error.html",message =message)
 
 @app.route('/postReview/<int:gameid>')
 @requires_auth
 def post_review(gameid):
     return render_template('postReview.html', game_id=gameid,user = session.get('user'))
-
 
 @app.route('/postTopic/<int:gameid>')
 @requires_auth
@@ -366,8 +356,7 @@ def redirects():
     filter = request.form.get("filter")
     id = request.form.get("selectedResult")
     if filter =="Topic":
-        #TODO: does not look like we have one for topic
-        pass
+        return redirect(url_for("template_topic_page",id=id))
     if filter =="Game":
         return redirect(url_for('template_game_page', id=id))
     if filter =="Review":
@@ -381,3 +370,7 @@ def delete_post(post_id, delete_id):
         return redirect(url_for('home'))
     
     return redirect(url_for('template_review_page', id=post_id))
+
+
+
+app.run(host='0.0.0.0', port =2000)
