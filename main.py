@@ -364,6 +364,3 @@ def delete_post(post_id, delete_id):
     
     return redirect(url_for('template_review_page', id=post_id))
 
-
-
-app.run(host='0.0.0.0', port =2000)
