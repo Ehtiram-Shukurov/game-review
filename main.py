@@ -60,7 +60,6 @@ def requires_auth(f):
 @app.errorhandler(Exception)
 @app.route('/error')
 def basic_error(e):
-    print(e)
     message = str(e)
     return render_template("error.html",message =message)
 
@@ -331,10 +330,7 @@ def reply(parent_id):
 @requires_auth
 def inline_reply(review_id, parent_id):
     data = request.form
-    print("inline")
-    print(session)
     id = retrieve_user_id_by_sub(session.get('user').get('user_sub'))['user_id']
-    print("id: ", id)
     insert_post(None, None, data['reply'], 'reply', None, id, parent_id)
     return redirect(url_for('template_review_page', id=review_id))
 
