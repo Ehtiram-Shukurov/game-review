@@ -66,12 +66,12 @@ def basic_error(e):
 @app.route('/postReview/<int:gameid>')
 @requires_auth
 def post_review(gameid):
-    return render_template('postReview.html', game_id=gameid,user = session.get('user'))
+    return render_template('postReview.html', game_id=gameid)
 
 @app.route('/postTopic/<int:gameid>')
 @requires_auth
 def post_topic(gameid):
-    return render_template('postTopic.html', game_id=gameid, user = session.get('user'))
+    return render_template('postTopic.html', game_id=gameid)
 
 
 @app.route('/submitPost', methods=['POST'])
@@ -373,4 +373,4 @@ def delete_post(post_id, delete_id):
 
 
 
-app.run(host='0.0.0.0', port =2000)
+# app.run(host='0.0.0.0', port =2000)
