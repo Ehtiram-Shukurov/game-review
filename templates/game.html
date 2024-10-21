@@ -51,7 +51,7 @@
             {% if topics %}
             <div id="topics" hidden>
                 {% for topic in topics %}
-                <div>
+                <div class="game-sec" onclick="location.href='/topic/{{topic.post_id}}';">
                     <h2 style="margin-bottom: .2em">{{ topic.title }}</h2>
                     <h6 class="author">By: {{ topic.author }}</h6>
                     <p style="text-indent: 3em;">{{ topic.description }}</p>

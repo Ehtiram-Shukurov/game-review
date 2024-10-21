@@ -70,13 +70,12 @@ def basic_error(e):
 @app.route('/postReview/<int:gameid>')
 @requires_auth
 def post_review(gameid):
-    return render_template('postReview.html', game_id=gameid)
+    return render_template('postReview.html', game_id=gameid, user=session.get('user'))
 
 @app.route('/postTopic/<int:gameid>')
 @requires_auth
 def post_topic(gameid):
-    return render_template('postTopic.html', game_id=gameid)
-
+    return render_template('postTopic.html', game_id=gameid, user=session.get('user'))
 
 @app.route('/submitPost', methods=['POST'])
 @requires_auth
@@ -123,7 +122,6 @@ def edit_topic(id):
         'content': post['content']
     }
     return render_template('editTopic.html', post=post_data, user=session.get('user'))
-
 
 
 @app.route('/updatePost', methods=['POST'])
@@ -267,7 +265,6 @@ def user_reviews(user_id):
 
 
 
-
 @app.route('/user/settings', methods=['GET', 'POST'])
 @requires_auth
 def user_settings():
@@ -309,7 +306,6 @@ def user_settings():
     return render_template("user_settings.html", user=session.get('user'), profile_info=profile_info,
                            active_page='settings')
 
-
 @app.route('/review/<string:id>')
 def template_review_page(id):
     review = retrieve_post_by_post_id(id,"review")
@@ -320,7 +316,6 @@ def template_review_page(id):
         review['replies'] = replies
     return render_template("review.html", review=review, user=session.get('user'))
 
-
 @app.route('/topic/<string:id>')
 def template_topic_page(id, user=None):
     topic = retrieve_post_by_post_id(id,"topic")
@@ -329,8 +324,7 @@ def template_topic_page(id, user=None):
     replies = build_hierarchy(replies_data,id)
     if replies:
         topic['replies'] = replies
-    return render_template("review.html", topic=topic, user=session.get('user'))
-
+    return render_template("topic.html", topic=topic, user=session.get('user'))
 
 @app.route('/game/<string:id>')
 def template_game_page(id):
@@ -344,7 +338,6 @@ def template_game_page(id):
     else:
         valid = True
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics, user=session.get('user'),valid= valid)
-
 
 @app.route('/games')
 def games_page():
@@ -398,7 +391,7 @@ def results():
     if filter =="Review":
         results=retrieve_all_post("review",query)
         #TODO: IDK THIS is a mess
-    return render_template("results.html",results=results,filter=filter)
+    return render_template("results.html",results=results,filter=filter, user=session.get('user'))
 
 #TODO: IDK IF WE NEED FILTERS
 @app.route('/redirects', methods=['POST'])
@@ -421,6 +414,3 @@ def delete_post(post_id, delete_id):
     
     return redirect(url_for('template_review_page', id=post_id))
 
-
-
-# app.run(host='0.0.0.0', port =2000)
