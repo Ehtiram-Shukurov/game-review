@@ -3,12 +3,12 @@ content %}
 
 <div class="user-menu">
   <a
-    href="/user/profile"
+    href="{{ url_for('user_profile', user_id=user.get('user_id')) }}"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews"
+    href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
@@ -25,8 +25,7 @@ content %}
     style="text-align: center; margin-bottom: 20px"
   >
     <img
-      id="profile-image-preview"
-      src="{{ url_for('static', filename=profile_image) }}"
+      src="{% if profile_info.picture %}data:image/jpeg;base64,{{ profile_info.picture }}{% else %}/static/images/avatar.png{% endif %}"
       alt="Profile Image"
       class="profile-image"
     />
@@ -40,13 +39,8 @@ content %}
   >
     <fieldset>
       <div class="pure-control-group">
-        <label for="profile_image">Change Profile Image:</label>
-        <input
-          id="profile_image"
-          name="profile_image"
-          type="file"
-          accept="image/*"
-        />
+        <label for="picture">Change Profile Image:</label>
+        <input id="picture" name="picture" type="file" accept="image/*" />
       </div>
 
       <div class="pure-control-group">
@@ -74,7 +68,7 @@ content %}
       <div class="pure-control-group">
         <label for="descript">Description:</label>
         <textarea id="descript" name="descript" rows="4" cols="50">
-{{ profile_info.get('descript') }}</textarea
+  {{ profile_info.get('descript') }}</textarea
         >
       </div>
 

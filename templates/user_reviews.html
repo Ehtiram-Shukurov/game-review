@@ -2,53 +2,62 @@
 content %}
 <div class="user-menu">
   <a
-    href="/user/profile"
+    href="{{ url_for('user_profile', user_id=user.get('user_id')) }}"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews"
+    href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
+  {% if is_own_profile %}
   <a
     href="/user/settings"
     class="menu-item {% if active_page == 'settings' %}active{% endif %}"
     >Settings</a
   >
+  {% endif %}
 </div>
 <div class="recent-reviews-section">
   <h2 class="section-title">Recent Reviews</h2>
   <div class="reviews-list">
-    <!-- Review -->
+    {% for review in reviews %}
     <div class="review-card">
       <div class="review-image">
-        <img src="/static/images/avatar.png" alt="Game 1" />
+        <img src="{{ review.game_image }}" alt="{{ review.game_name }}" />
       </div>
       <div class="review-content">
         <div class="user-info">
+          {% if review.user_picture %}
+          <img
+            class="user-avatar"
+            src="data:image/jpeg;base64,{{ review.user_picture }}"
+            alt="User Avatar"
+          />
+          {% else %}
           <img
             class="user-avatar"
             src="/static/images/avatar.png"
-            alt="User 1"
+            alt="Default User Avatar"
           />
-          <span class="username">Name Surname</span>
+          {% endif %}
+          <span class="username">{{ review.username }}</span>
         </div>
         <div class="review-header">
-          <span class="game-title">The Last of Us 2024</span>
-          <span class="review-rating">★★★★☆</span>
-          <span class="comment-count">Review:104</span>
+          <span class="game-title">{{ review.game_name }}</span>
+          <span class="review-rating">
+            {% for n in range(review.rating) %} ★ {% endfor %} {% for n in
+            range(5 - review.rating) %} ☆ {% endfor %}
+          </span>
         </div>
         <div class="review-text">
-          <p>DESCRIPTION</p>
-          <a href="#">more</a>
-        </div>
-        <div class="review-interactions">
-          <span class="like-review">💖Like</span>
-          <span class="like-count">100 likes</span>
+          <p>{{ review.content[:100] }}...</p>
+          <a href="/review/{{ review.post_id }}">Read more</a>
         </div>
       </div>
     </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

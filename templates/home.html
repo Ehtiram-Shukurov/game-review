@@ -27,29 +27,41 @@ content %}
     {% for review in recent_reviews %}
     <div class="review-card">
       <div class="review-image">
-        <img src="{{ review.coverImageUrl }}" alt="{{ review.name }}" />
+        <img src="{{ review.game_image }}" alt="{{ review.game_name }}" />
       </div>
       <div class="review-content">
         <div class="user-info">
+          {% if review.user_picture %}
+          <img
+            class="user-avatar"
+            src="data:image/jpeg;base64,{{ review.user_picture }}"
+            alt="{{ review.username }}"
+          />
+          {% else %}
           <img
             class="user-avatar"
             src="/static/images/avatar.png"
-            alt="User 1"
+            alt="Default Avatar"
           />
-          <span class="username">Username</span>
+          {% endif %}
+          <a
+            href="{{ url_for('user_profile', user_id=review.user_id) }}"
+            class="username"
+            >{{ review.username }}</a
+          >
         </div>
         <div class="review-header">
-          <span class="game-title">{{ review.name }}</span>
-          <span class="review-rating">★★★★☆</span>
-          <span class="comment-count">Review Count</span>
+          <span class="game-title">{{ review.game_name }}</span>
+          <span class="review-rating">
+            {% for n in range(review.rating) %} ★ {% endfor %} {% for n in
+            range(5 - review.rating) %} ☆ {% endfor %}
+          </span>
+          <span class="comment-count">{{ review.comment_count }} reviews</span>
+          <!-- Replace this with actual comment count if available -->
         </div>
         <div class="review-text">
-          <p>{{ review.summary | truncate(100) }}</p>
-          <a href="#">more</a>
-        </div>
-        <div class="review-interactions">
-          <span class="like-review">💖Like</span>
-          <span class="like-count">100 likes</span>
+          <p>{{ review.content[:100] }}...</p>
+          <a href="/review/{{ review.post_id }}">Read more</a>
         </div>
       </div>
     </div>

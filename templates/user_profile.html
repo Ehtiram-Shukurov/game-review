@@ -2,32 +2,41 @@
 content %}
 <div class="user-menu">
   <a
-    href="/user/profile"
+    href="{{ url_for('user_profile', user_id=user.get('user_id')) }}"
     class="menu-item {% if active_page == 'profile' %}active{% endif %}"
     >Profile</a
   >
   <a
-    href="/user/reviews"
+    href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
     class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
     >Reviews</a
   >
+  {% if is_own_profile %}
   <a
     href="/user/settings"
     class="menu-item {% if active_page == 'settings' %}active{% endif %}"
     >Settings</a
   >
+  {% endif %}
 </div>
 <div class="user-profile">
   <div class="profile-image">
+    {%if profile_info.picture %}
     <img
-      src="{{ url_for('static', filename='images/avatar.png') }}"
+      src="data:image/jpeg;base64,{{ profile_info.picture}}"
       alt="Profile Image"
     />
+    {%else%}
+    <img src="/static/images/avatar.png" alt="Profile Image" />
+    {%endif%}
   </div>
   <div class="profile-details">
     <h2>{{ profile_info.get('username') }}</h2>
-    <p>Profile description: {{ profile_info.get('descript') or "No description available." }}</p>
-    <p>#TODO NUMBER OF REVIEWS FOR THE USER</p>
+    <p>
+      Profile description: {{ profile_info.get('descript') or "No description
+      available." }}
+    </p>
+    <p>Reviews: {{review_count}}</p>
   </div>
 </div>
 
