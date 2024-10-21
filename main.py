@@ -373,7 +373,7 @@ def reply(parent_id):
 @requires_auth
 def inline_reply(review_id, parent_id):
     data = request.form
-    id = retrieve_user_id_by_sub(session.get('user').get('userinfo').get('sub'))['user_id']
+    id = retrieve_user_id_by_sub(session.get('user').get('user_sub'))['user_id']
     insert_post(None, None, data['reply'], 'reply', None, id, parent_id)
     return redirect(url_for('template_review_page', id=review_id))
 
@@ -413,4 +413,3 @@ def delete_post(post_id, delete_id):
         return redirect(url_for('home'))
     
     return redirect(url_for('template_review_page', id=post_id))
-
