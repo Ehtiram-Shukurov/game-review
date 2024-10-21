@@ -5,7 +5,7 @@
 {% block title %}Game Review{% endblock %}
 
 {% block content %}
-    <form class="pure-form" method="POST" action="{% block action %}{{ url_for('submit_post') }} {% endblock %}">
+    <form class="pure-form post-form" method="POST" action="{% block action %}{{ url_for('submit_post') }} {% endblock %}">
         <div class="pure-form-stacked">
             <div>
                 <label for="title">{% block label %}Some title{% endblock %}</label>
