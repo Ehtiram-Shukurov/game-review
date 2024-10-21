@@ -43,8 +43,8 @@
       </div>
 
       <div class="pure-u-2-5">
-        <form class="pure-form" action="/results" id ="searchForm" method = "post">
-          <select id="stacked-state" name ="searchOption" required>
+        <form class="pure-form" action="/results" id="searchForm" method="post">
+          <select id="stacked-state" name="searchOption" required>
             <option value="">--Select--</option>
             <option>Topic</option>
             <option>Review</option>
@@ -53,11 +53,15 @@
           <input
             type="text"
             class="pure-input-rounded search-input"
-            placeholder="Search games..."  
+            placeholder="Search games..."
             name="query"
             id="query"
           />
-          <button type="submit" class="pure-button pure-button-primary" id = "submit-btn">
+          <button
+            type="submit"
+            class="pure-button pure-button-primary"
+            id="submit-btn"
+          >
             Search
           </button>
         </form>
@@ -70,15 +74,16 @@
         <!-- Logged-in version -->
         <div class="user-dropdown">
           <img
-            src="{{ user.get('picture') }}"
+            src="{% if user_picture %}data:image/jpeg;base64,{{ user_picture }}{% else %}/static/images/avatar.png{% endif %}"
             alt="User Avatar"
             class="user-avatar"
           />
+
           <div class="dropdown-content">
-            <a href="/user/profile">Profile</a>
+            <a href="{{ url_for('user_profile', user_id=user.get('user_id')) }}"
+              >Profile</a
+            >
             <a href="/logout">Log Out</a>
-            <a href="/review">Post Review</a>
-            <a href="/topic">Post Topic</a>
           </div>
         </div>
         {% else %}

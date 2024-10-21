@@ -33,19 +33,23 @@ oauth.register(
 )
 
 @app.context_processor
-def inject_user_sub():
+def inject_user_info():
     user_info = session.get("user")
     user_sub = user_info.get("user_sub") if user_info else None
-    return {"user_sub": user_sub}  # Make user_sub available in all templates
+    if user_sub:
+        picture = get_user_picture(user_sub)
+    else:
+        picture = None
+    
+    return {"user_sub": user_sub, "user_picture": picture}
+
 
 @app.template_filter('format_date')
 def format_date(value):
     try:
-        # Convert to integer if the value is a string
         timestamp = int(value)
         return datetime.fromtimestamp(timestamp).strftime('%d %b %Y')
     except (ValueError, TypeError):
-        # Return a fallback message in case of conversion issues
         return "Unknown"
 
 def requires_auth(f):
@@ -66,13 +70,12 @@ def basic_error(e):
 @app.route('/postReview/<int:gameid>')
 @requires_auth
 def post_review(gameid):
-    return render_template('postReview.html', game_id=gameid)
+    return render_template('postReview.html', game_id=gameid, user=session.get('user'))
 
 @app.route('/postTopic/<int:gameid>')
 @requires_auth
 def post_topic(gameid):
-    return render_template('postTopic.html', game_id=gameid)
-
+    return render_template('postTopic.html', game_id=gameid, user=session.get('user'))
 
 @app.route('/submitPost', methods=['POST'])
 @requires_auth
@@ -121,7 +124,6 @@ def edit_topic(id):
     return render_template('editTopic.html', post=post_data, user=session.get('user'))
 
 
-
 @app.route('/updatePost', methods=['POST'])
 @requires_auth
 def update_post():
@@ -166,17 +168,28 @@ def callback():
 
 @app.route("/complete_profile", methods=["GET", "POST"])
 def complete_profile():
+    user_sub = session["user"]["user_sub"]
+
+    existing_user = retrieve_user(user_sub)
+    if existing_user:
+        return redirect(url_for("user_profile", user_id=existing_user["user_id"]))
     if request.method == "POST":
+        picture = None
+        if 'picture' in request.files:
+            image_file = request.files['picture']
+            if image_file.filename != '':
+                picture = image_file.read()
         user_data = {
             "user_sub": session["user"]["user_sub"],
             "username": request.form.get("username"),
             "email":session["user"]["email"],
             "descript": request.form.get("descript"),
-            "picture": request.form.get("profile_image_path") #TODO save img from user info
+            "picture": picture
         }
         insert_user(user_data)
+        user_id = retrieve_user_id_by_sub(session["user"]["user_sub"])
 
-        return redirect(url_for("user_profile", user=session.get('user')))
+        return redirect(url_for("user_profile",user_id=user_id,user=session.get('user')))
 
     return render_template("complete_profile.html")
 
@@ -197,8 +210,6 @@ def logout():
         + "/v2/logout?"
         + urlencode(
             {
-                # replace hello_world with actual function for homepage endpoint
-
                 "returnTo": url_for("home", _external=True),
                 "client_id": os.environ['AUTH0_CLIENT_ID'],
             },
@@ -210,33 +221,47 @@ def logout():
 @app.route("/")
 def home():
     new_games = get_recent_games(limit=10)
-
-    recent_reviews = []
-    game_names = ["The Last of Us", "Cyberpunk 2077", "God of War"]  #TODO; Replace with dynamic data
-
-    for name in game_names:
-        review_data = get_game_data(name)
-        if review_data:
-            recent_reviews.append(review_data)
-
+    recent_reviews = retrieve_recent_reviews(5)
     return render_template('home.html',new_games=new_games, recent_reviews=recent_reviews, user=session.get('user'))
 
 
-@app.route("/user/profile")
+@app.route('/user/id/<int:user_id>')
 @requires_auth
-def user_profile():
-    print(session)
-    profile_info = retrieve_user(session.get('user').get('user_sub'))
+def user_profile(user_id):
+    logged_in_user = retrieve_user(session.get('user').get('user_sub'))
+    if logged_in_user and logged_in_user['user_id'] == user_id:
+        profile_info = retrieve_user(logged_in_user['user_sub'])
+        review_count = count_reviews_by_user_id(user_id)
+        return render_template("user_profile.html",review_count = review_count,user=session.get('user'), profile_info=profile_info,is_own_profile =True, active_page='profile')
+    
+    else:
+        profile_info = retrieve_user_by_id(user_id)
+        if not profile_info:
+            return "User not found", 404
+        review_count = count_reviews_by_user_id(user_id)
+        
+        return render_template("user_profile.html", review_count = review_count,user=session.get('user'), profile_info=profile_info,is_own_profile =False,active_page='profile')
+
+
+
+
+
+@app.route('/user/<int:user_id>/reviews')
+def user_reviews(user_id):
+    logged_in_user = retrieve_user(session.get('user').get('user_sub'))
+    is_own_profile = False
+    if logged_in_user and logged_in_user['user_id'] == user_id:
+        is_own_profile = True
+        profile_info = retrieve_user(logged_in_user['user_sub'])
+    else:
+        profile_info = retrieve_user_by_id(user_id)
+
     if not profile_info:
         return "User not found", 404
-    return render_template("user_profile.html",user=session.get('user'), profile_info=profile_info,
-                           active_page='profile')
 
+    reviews = retrieve_reviews_by_user_id(user_id)
 
-@app.route('/user/reviews')
-@requires_auth
-def user_reviews():
-    return render_template('user_reviews.html',user=session.get('user'), active_page='reviews')
+    return render_template('user_reviews.html',profile_info=profile_info, user=session.get('user'), reviews=reviews, is_own_profile=is_own_profile, active_page='reviews')
 
 
 
@@ -253,12 +278,33 @@ def user_settings():
         new_email = request.form.get('new-email')
         descript = request.form.get('descript')
 
-        update_user_profile(user_sub, new_username, new_email, descript)
+        if not new_username or not new_email:
+            return "Username and email are required", 400
+
+        if "@" not in new_email or "." not in new_email:
+            return "Invalid email format", 400
+
+        if 'picture' in request.files:
+            profile_image = request.files['picture']
+            if profile_image.filename != '':
+                if profile_image.mimetype not in ['image/jpeg', 'image/png']:
+                    return "Unsupported image format. Only JPEG and PNG are allowed.", 400
+
+                if len(profile_image.read()) > 3 * 1024 * 1024:
+                    return "Image size must be less than 3MB.", 400
+                profile_image.seek(0)
+                image_data = profile_image.read()
+
+                update_user_profile_with_image(user_sub, new_username, new_email, descript, image_data)
+            else:
+                update_user_profile(user_sub, new_username, new_email, descript)
+        else:
+            update_user_profile(user_sub, new_username, new_email, descript)
+
         profile_info = retrieve_user(user_sub)
 
     return render_template("user_settings.html", user=session.get('user'), profile_info=profile_info,
                            active_page='settings')
-
 
 @app.route('/review/<string:id>')
 def template_review_page(id):
@@ -270,7 +316,6 @@ def template_review_page(id):
         review['replies'] = replies
     return render_template("review.html", review=review, user=session.get('user'))
 
-
 @app.route('/topic/<string:id>')
 def template_topic_page(id, user=None):
     topic = retrieve_post_by_post_id(id,"topic")
@@ -279,8 +324,7 @@ def template_topic_page(id, user=None):
     replies = build_hierarchy(replies_data,id)
     if replies:
         topic['replies'] = replies
-    return render_template("review.html", topic=topic, user=session.get('user'))
-
+    return render_template("topic.html", topic=topic, user=session.get('user'))
 
 @app.route('/game/<string:id>')
 def template_game_page(id):
@@ -294,7 +338,6 @@ def template_game_page(id):
     else:
         valid = True
     return render_template("game.html", game_data=game_data, reviews=reviews, topics=topics, user=session.get('user'),valid= valid)
-
 
 @app.route('/games')
 def games_page():
@@ -348,7 +391,7 @@ def results():
     if filter =="Review":
         results=retrieve_all_post("review",query)
         #TODO: IDK THIS is a mess
-    return render_template("results.html",results=results,filter=filter)
+    return render_template("results.html",results=results,filter=filter, user=session.get('user'))
 
 #TODO: IDK IF WE NEED FILTERS
 @app.route('/redirects', methods=['POST'])
@@ -370,7 +413,3 @@ def delete_post(post_id, delete_id):
         return redirect(url_for('home'))
     
     return redirect(url_for('template_review_page', id=post_id))
-
-
-
-# app.run(host='0.0.0.0', port =2000)
