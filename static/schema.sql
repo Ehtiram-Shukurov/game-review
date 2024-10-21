@@ -9,7 +9,7 @@ CREATE TABLE Users (
     username TEXT NOT NULL,
     email TEXT NOT NULL,
     descript TEXT,
-    picture TEXT);
+    picture BYTEA);
 
 
 CREATE TABLE GAMES (
@@ -107,4 +107,4 @@ DELETE FROM posts
 WHERE post_id IN (SELECT post_id FROM posts_to_delete);
 
 alter table Users
-add picture text;
+add picture bytea;

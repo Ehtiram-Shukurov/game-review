@@ -7,6 +7,7 @@ import os
 import datetime
 from psycopg2.pool import ThreadedConnectionPool
 from psycopg2.extras import RealDictCursor
+import base64
 
 pool = None
 
@@ -65,13 +66,35 @@ def retrieve_user(user_sub):
     query = "SELECT * FROM users where user_sub = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_sub,))
-        return cursor.fetchone()
+        user = cursor.fetchone()
 
+        if user and user.get('picture'):
+            user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
+        else:
+            user['picture'] = None
+        return user
+def retrieve_user_by_id(user_id):
+    query = "SELECT * FROM users where user_id = %s"
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (user_id,))
+        user = cursor.fetchone()
+
+        if user and user.get('picture'):
+            user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
+        else:
+            user['picture'] = None
+        return user
+    
 def retrieve_user_by_name(username):
     query = "SELECT * FROM users WHERE username = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (username,))
-        return cursor.fetchone()
+        user = cursor.fetchone()
+
+        if user and user.get('picture'):
+            user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
+
+        return user
 
 def retrieve_user_id_by_sub(sub):
     query = "SELECT user_id FROM users WHERE user_sub = %s"
@@ -211,3 +234,92 @@ def update_user_profile(user_sub, username, email, descript):
     """
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (username, email, descript, user_sub))
+
+
+def delete_profile_image(user_sub):
+    query = """
+        UPDATE users
+        SET picture = NULL
+        WHERE user_sub = %s
+    """
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (user_sub,))
+
+def update_user_profile_with_image(user_sub, username, email, descript, image_data):
+    query = """
+        UPDATE users
+        SET username = %s, email = %s, descript = %s, picture = %s
+        WHERE user_sub = %s
+    """
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query, (username, email, descript, image_data, user_sub))
+
+
+def get_user_picture(user_sub):
+    query = """
+        SELECT picture
+        FROM users
+        WHERE user_sub = %s
+    """
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (user_sub,))
+        result = cursor.fetchone()
+
+        if result and result.get('picture'):
+            return base64.b64encode(result['picture']).decode('utf-8')
+        return None
+
+
+def retrieve_reviews_by_user_id(user_id):
+    query = """
+        SELECT POSTS.*, GAMES.name as game_name, GAMES.image_url as game_image, 
+               USERS.username, USERS.picture as user_picture
+        FROM POSTS 
+        JOIN GAMES ON POSTS.game_id = GAMES.game_id 
+        JOIN USERS ON POSTS.user_id = USERS.user_id
+        WHERE POSTS.user_id = %s AND post = 'review'
+        ORDER BY POSTS.created DESC
+    """
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (user_id,))
+        reviews = cursor.fetchall()
+
+    for review in reviews:
+        if review['user_picture']:
+            review['user_picture'] = base64.b64encode(review['user_picture']).decode('utf-8')
+
+    return reviews
+
+
+def retrieve_recent_reviews(limit=5):
+    query = """
+        SELECT POSTS.*, GAMES.name as game_name, GAMES.image_url as game_image, 
+               USERS.username, USERS.picture as user_picture
+        FROM POSTS 
+        JOIN GAMES ON POSTS.game_id = GAMES.game_id 
+        JOIN USERS ON POSTS.user_id = USERS.user_id
+        WHERE POSTS.post = 'review'
+        ORDER BY POSTS.created DESC
+        LIMIT %s
+    """
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (limit,))
+        reviews = cursor.fetchall()
+
+    for review in reviews:
+        if review['user_picture']:
+            review['user_picture'] = base64.b64encode(review['user_picture']).decode('utf-8')
+
+    return reviews
+
+
+def count_reviews_by_user_id(user_id):
+    query = """
+        SELECT COUNT(*) as review_count
+        FROM POSTS
+        WHERE user_id = %s AND post = 'review'
+    """
+    with get_db_cursor() as cursor:
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+        return result['review_count']
