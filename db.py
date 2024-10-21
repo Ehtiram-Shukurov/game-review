@@ -11,10 +11,12 @@ import base64
 
 pool = None
 
+
 def setup():
     global pool
     DATABASE_URL = os.environ['DATABASE_URL']
     pool = ThreadedConnectionPool(1, 100, dsn=DATABASE_URL, sslmode='require')
+
 
 @contextmanager
 def get_db_connection():
@@ -23,6 +25,7 @@ def get_db_connection():
         yield connection
     finally:
         pool.putconn(connection)
+
 
 @contextmanager
 def get_db_cursor(commit=False):
@@ -36,55 +39,67 @@ def get_db_cursor(commit=False):
         finally:
             cursor.close()
 
+
 def insert_user(user_data):
     query = "INSERT INTO users (user_sub, username, email,descript, picture) VALUES (%s, %s, %s,%s, %s)"
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (user_data['user_sub'], user_data['username'], user_data['email'], user_data['descript'], user_data['picture']))
+        cursor.execute(query, (
+        user_data['user_sub'], user_data['username'], user_data['email'], user_data['descript'], user_data['picture']))
+
 
 def insert_review(review_data):
     game_id = review_data['game_id']
     query = "INSERT INTO POSTS (game_id, title, rating, content, post, user_id) VALUES (%s, %s, %s, %s, %s, %s)"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (
-        game_id, review_data['title'], review_data['rating'], review_data['content'], 'review', review_data['user_id']))
+            game_id, review_data['title'], review_data['rating'], review_data['content'], 'review',
+            review_data['user_id']))
+
 
 def insert_topic(topic_data):
     game_id = topic_data['game_id']
     query = "INSERT INTO POSTS (game_id, title, rating, content, post, user_id) VALUES (%s, %s, %s, %s, %s, %s)"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (
-        game_id, topic_data['title'], topic_data['rating'], topic_data['content'], 'topic', topic_data['user_id']))
+            game_id, topic_data['title'], topic_data['rating'], topic_data['content'], 'topic', topic_data['user_id']))
+
 
 def insert_reply(reply_data):
     query = "INSERT INTO POSTS (title, rating, content, post, parent_id, user_id) VALUES (%s, %s, %s, %s, %s, %s)"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (
-        reply_data['title'], reply_data['rating'], reply_data['content'], 'topic', reply_data['parent_id'],
-        reply_data['user_id']))
+            reply_data['title'], reply_data['rating'], reply_data['content'], 'topic', reply_data['parent_id'],
+            reply_data['user_id']))
+
 
 def retrieve_user(user_sub):
     query = "SELECT * FROM users where user_sub = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_sub,))
         user = cursor.fetchone()
-
+        if not user:
+            return None
         if user and user.get('picture'):
             user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
         else:
             user['picture'] = None
         return user
+
+
 def retrieve_user_by_id(user_id):
     query = "SELECT * FROM users where user_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         user = cursor.fetchone()
-
+        if not user:
+            return None
         if user and user.get('picture'):
             user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
         else:
             user['picture'] = None
         return user
-    
+
+
 def retrieve_user_by_name(username):
     query = "SELECT * FROM users WHERE username = %s"
     with get_db_cursor() as cursor:
@@ -96,11 +111,13 @@ def retrieve_user_by_name(username):
 
         return user
 
+
 def retrieve_user_id_by_sub(sub):
     query = "SELECT user_id FROM users WHERE user_sub = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (sub,))
         return cursor.fetchone()
+
 
 def retrieve_topics_by_game_id(game_id):
     query = "SELECT * FROM POSTS WHERE game_id = %s AND post = 'topic'"
@@ -108,17 +125,20 @@ def retrieve_topics_by_game_id(game_id):
         cursor.execute(query, (game_id,))
         return cursor.fetchall()
 
+
 def retrieve_reviews_by_game_id(game_id):
     query = "SELECT *, username FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post = 'review' AND game_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (game_id,))
         return cursor.fetchall()
 
-def retrieve_post_by_post_id(post_id,type):
+
+def retrieve_post_by_post_id(post_id, type):
     query = "SELECT POSTS.*, username, user_sub FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post_id = %s AND post = %s"
     with get_db_cursor() as cursor:
-        cursor.execute(query, (post_id,type))
+        cursor.execute(query, (post_id, type))
         return cursor.fetchone()
+
 
 def retrieve_replies_by_post_id(review_id):
     query = """WITH RECURSIVE replies AS (
@@ -134,6 +154,7 @@ def retrieve_replies_by_post_id(review_id):
     with get_db_cursor() as cursor:
         cursor.execute(query, (review_id,))
         return cursor.fetchall()
+
 
 ## This will delete the content of the post and all of its replies
 def delete_content(post_id):
@@ -154,26 +175,31 @@ def delete_content(post_id):
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (post_id,))
 
+
 def update_post(post_data):
     query = "UPDATE POSTS SET title = %s, rating = %s, content = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (post_data['title'], post_data['rating'], post_data['content'], post_data['post_id']))
+
 
 def update_reply_content(reply_data):
     query = "UPDATE POSTS SET content = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (reply_data['content'], reply_data['post_id']))
 
+
 def insert_post(title, game_id, content, post_type, rating, user_id, parent_id):
     query = "INSERT INTO POSTS (game_id, title, rating, content, post, parent_id, user_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (game_id, title, rating, content, post_type, parent_id, user_id))
+
 
 def get_user_most_recent_post(user_id):
     query = "SELECT post_id FROM POSTS WHERE user_id = %s ORDER BY created DESC;"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (user_id,))
         return cursor.fetchone()
+
 
 def get_post_by_id(id):
     query = "SELECT * FROM POSTS WHERE post_id = %s"
@@ -184,30 +210,34 @@ def get_post_by_id(id):
 
     return post
 
+
 def update_post_db(title, content, rating, post_id):
     query = "UPDATE POSTS SET title = %s, content = %s, rating = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (title, content, rating, post_id))
+
 
 def get_user_by_sub(sub):
     query = "SELECT * FROM Users where user_sub = (%s)"
     with get_db_cursor() as cursor:
         cursor.execute(query, (sub,))
         return cursor.fetchone()
-        
-def retrieve_all_post(type,search):
+
+
+def retrieve_all_post(type, search):
     fuzzy = f"%{search}%"
     query = "SELECT * FROM POSTS WHERE post = %s AND (title ILIKE %s OR content ILIKE %s)"
     with get_db_cursor() as cursor:
-        cursor.execute(query, (type,fuzzy,fuzzy))
+        cursor.execute(query, (type, fuzzy, fuzzy))
         data = cursor.fetchall()
         res = {}
         for d in data:
             parent = d["parent_id"]
             # checks for none i.e. parent post
             if parent == None:
-                res[d["post_id"]] =d["title"]
+                res[d["post_id"]] = d["title"]
         return res
+
 
 def get_game_by_id_database(game_id):
     query = "SELECT * FROM Games where game_id = (%s)"
@@ -215,17 +245,21 @@ def get_game_by_id_database(game_id):
         cursor.execute(query, (game_id,))
         return cursor.fetchone()
 
+
 def save_game_data(game_data):
     query = "INSERT INTO GAMES (game_id, image_url, summary, name) VALUES (%s, %s, %s, %s);"
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (game_data.get('id'), game_data.get('cover').get('url'), game_data.get('summary'), game_data.get('name')))
+        cursor.execute(query, (
+        game_data.get('id'), game_data.get('cover').get('url'), game_data.get('summary'), game_data.get('name')))
+
 
 def retrieve_all_users():
     query = "SELECT * FROM Users"
     with get_db_cursor() as cursor:
         cursor.execute(query)
         return cursor.fetchall()
-    
+
+
 def update_user_profile(user_sub, username, email, descript):
     query = """
         UPDATE users
@@ -244,6 +278,7 @@ def delete_profile_image(user_sub):
     """
     with get_db_cursor(commit=True) as cursor:
         cursor.execute(query, (user_sub,))
+
 
 def update_user_profile_with_image(user_sub, username, email, descript, image_data):
     query = """

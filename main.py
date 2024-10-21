@@ -64,6 +64,7 @@ def requires_auth(f):
 @app.errorhandler(Exception)
 @app.route('/error')
 def basic_error(e):
+    print(e)
     message = str(e)
     return render_template("error.html",message =message)
 
@@ -138,7 +139,7 @@ def update_post():
 
         update_post_db(title, content, rating, post_id)
 
-        return redirect(url_for('template_review_page', id=post_id, user=session.get('user')))
+        return redirect(url_for('template_review_page', id=post_id))
 
 
 @app.route("/callback", methods=["GET", "POST"])
@@ -153,7 +154,9 @@ def callback():
 
     if not user_sub:
         return "User ID is missing", 400
+
     saved_user_info = retrieve_user(user_sub)
+
     if not saved_user_info:
         session["user"] = {
             "user_sub": user_sub,
@@ -161,7 +164,8 @@ def callback():
             "email": email,
             "picture": picture
         }
-        return redirect(url_for("complete_profile", user=session.get('user')))
+        return redirect(url_for("complete_profile"))
+
     session['user'] = saved_user_info
     return redirect("/")
 
@@ -182,14 +186,15 @@ def complete_profile():
         user_data = {
             "user_sub": session["user"]["user_sub"],
             "username": request.form.get("username"),
-            "email":session["user"]["email"],
+            "email": session["user"]["email"],
             "descript": request.form.get("descript"),
             "picture": picture
         }
         insert_user(user_data)
-        user_id = retrieve_user_id_by_sub(session["user"]["user_sub"])
-
-        return redirect(url_for("user_profile",user_id=user_id,user=session.get('user')))
+        user_id = retrieve_user_id_by_sub(session["user"]["user_sub"])['user_id']
+        user_data['user_id'] = user_id
+        session['user'] = user_data
+        return redirect(url_for("user_profile", user_id=user_id))
 
     return render_template("complete_profile.html")
 
@@ -222,28 +227,23 @@ def logout():
 def home():
     new_games = get_recent_games(limit=10)
     recent_reviews = retrieve_recent_reviews(5)
-    return render_template('home.html',new_games=new_games, recent_reviews=recent_reviews, user=session.get('user'))
+    return render_template('home.html', new_games=new_games, recent_reviews=recent_reviews, user=session.get('user'))
 
 
 @app.route('/user/id/<int:user_id>')
 @requires_auth
 def user_profile(user_id):
-    logged_in_user = retrieve_user(session.get('user').get('user_sub'))
-    if logged_in_user and logged_in_user['user_id'] == user_id:
-        profile_info = retrieve_user(logged_in_user['user_sub'])
+    current_user = session.get('user')
+    if current_user and current_user['user_id'] == user_id:
         review_count = count_reviews_by_user_id(user_id)
-        return render_template("user_profile.html",review_count = review_count,user=session.get('user'), profile_info=profile_info,is_own_profile =True, active_page='profile')
-    
+        return render_template("user_profile.html", review_count=review_count, user=session.get('user'), profile_info=current_user, is_own_profile=True, active_page='profile')
     else:
         profile_info = retrieve_user_by_id(user_id)
         if not profile_info:
             return "User not found", 404
         review_count = count_reviews_by_user_id(user_id)
         
-        return render_template("user_profile.html", review_count = review_count,user=session.get('user'), profile_info=profile_info,is_own_profile =False,active_page='profile')
-
-
-
+        return render_template("user_profile.html", review_count=review_count, user=session.get('user'), profile_info=profile_info, is_own_profile=False, active_page='profile')
 
 
 @app.route('/user/<int:user_id>/reviews')
