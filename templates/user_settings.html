@@ -1,25 +1,46 @@
 {% extends 'base.html' %} {% block title %}Settings{% endblock %} {% block
 content %}
 
-<div class="user-menu">
-  <a
-    href="{{ url_for('user_profile', user_id=user.get('user_id')) }}"
-    class="menu-item {% if active_page == 'profile' %}active{% endif %}"
-    >Profile</a
-  >
-  <a
-    href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
-    class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
-    >Reviews</a
-  >
-  <a
-    href="/user/settings"
-    class="menu-item {% if active_page == 'settings' %}active{% endif %}"
-    >Settings</a
-  >
+<div class="pure-menu pure-menu-horizontal center user-menu">
+  <ul class="pure-menu-list">
+    <li
+      class="pure-menu-item {% if active_page == 'profile' %}pure-menu-selected{% endif %}"
+    >
+      <a
+        href="{{ url_for('user_profile', user_id=user.get('user_id')) }}"
+        class="pure-menu-link"
+        style="color: #fff"
+      >
+        Profile
+      </a>
+    </li>
+    <li
+      class="pure-menu-item {% if active_page == 'reviews' %}pure-menu-selected{% endif %}"
+    >
+      <a
+        href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
+        class="pure-menu-link"
+        style="color: #fff"
+      >
+        Reviews
+      </a>
+    </li>
+    <li
+      class="pure-menu-item {% if active_page == 'settings' %}pure-menu-selected{% endif %}"
+    >
+      <a href="/user/settings" class="pure-menu-link" style="color: #fff">
+        Settings
+      </a>
+    </li>
+  </ul>
 </div>
 
 <div class="settings-container">
+  {% if error_message %}
+  <div class="alert alert-danger">{{ error_message }}</div>
+  {% endif %} {% if success_message %}
+  <div class="alert alert-success">{{ success_message }}</div>
+  {% endif %}
   <div
     class="profile-image-container"
     style="text-align: center; margin-bottom: 20px"
@@ -61,21 +82,18 @@ content %}
           name="new-email"
           type="email"
           value="{{ profile_info.get('email') }}"
-          required
+          readonly
         />
       </div>
 
       <div class="pure-control-group">
         <label for="descript">Description:</label>
         <textarea id="descript" name="descript" rows="4" cols="50">
-  {{ profile_info.get('descript') }}</textarea
+{{ profile_info.get('descript') }}</textarea
         >
       </div>
 
-      <div class="pure-controls">
-        <button type="button" class="pure-button delete-button">
-          Delete Account
-        </button>
+      <div class="save">
         <button
           type="submit"
           class="pure-button pure-button-primary save-button"
@@ -85,6 +103,22 @@ content %}
       </div>
     </fieldset>
   </form>
+  <form
+    action="{{ url_for('delete_account') }}"
+    method="POST"
+    onsubmit="return confirmDelete()"
+  >
+    <button type="submit" class="pure-button delete-button">
+      Delete Account
+    </button>
+  </form>
 </div>
+<script>
+  function confirmDelete() {
+    return confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+  }
+</script>
 
 {% endblock %}

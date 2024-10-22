@@ -358,3 +358,14 @@ def count_reviews_by_user_id(user_id):
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
         return result['review_count']
+
+def delete_user_account(user_id):
+    query_delete_posts = """
+        DELETE FROM POSTS WHERE user_id = %s
+    """
+    query_delete_user = """
+        DELETE FROM USERS WHERE user_id = %s
+    """
+    with get_db_cursor(commit=True) as cursor:
+        cursor.execute(query_delete_posts, (user_id,))
+        cursor.execute(query_delete_user, (user_id,))

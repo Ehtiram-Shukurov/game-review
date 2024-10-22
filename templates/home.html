@@ -9,7 +9,11 @@ content %}
       class="game-card pure-u-1 pure-u-md-1-6"
     >
       <div class="game-cover">
-        <img src="{{ game.cover }}" alt="{{ game.name }}" />
+        <img
+          src="{{ game.cover if game.cover else static/images/default_game_cover.png}}"
+          alt="{{ game.name }}"
+          onerror="this.src='static/images/default_game_cover.png';"
+        />
       </div>
       <div class="game_info">
         <span class="title">{{ game.name }}</span>
@@ -27,7 +31,11 @@ content %}
     {% for review in recent_reviews %}
     <div class="review-card">
       <div class="review-image">
-        <img src="{{ review.game_image }}" alt="{{ review.game_name }}" />
+        <img
+          src="{{ review.game_image }}"
+          alt="{{ review.game_name }}"
+          onerror="this.src='static/images/default_game_cover.png';"
+        />
       </div>
       <div class="review-content">
         <div class="user-info">
@@ -56,8 +64,6 @@ content %}
             {% for n in range(review.rating) %} ★ {% endfor %} {% for n in
             range(5 - review.rating) %} ☆ {% endfor %}
           </span>
-          <span class="comment-count">{{ review.comment_count }} reviews</span>
-          <!-- Replace this with actual comment count if available -->
         </div>
         <div class="review-text">
           <p>{{ review.content[:100] }}...</p>

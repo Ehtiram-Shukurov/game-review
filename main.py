@@ -179,10 +179,6 @@ def complete_profile():
         return redirect(url_for("user_profile", user_id=existing_user["user_id"]))
     if request.method == "POST":
         picture = None
-        if 'picture' in request.files:
-            image_file = request.files['picture']
-            if image_file.filename != '':
-                picture = image_file.read()
         user_data = {
             "user_sub": session["user"]["user_sub"],
             "username": request.form.get("username"),
@@ -233,7 +229,7 @@ def home():
 @app.route('/user/id/<int:user_id>')
 @requires_auth
 def user_profile(user_id):
-    current_user = session.get('user')
+    current_user = retrieve_user(session.get('user').get('user_sub'))
     if current_user and current_user['user_id'] == user_id:
         review_count = count_reviews_by_user_id(user_id)
         return render_template("user_profile.html", review_count=review_count, user=session.get('user'), profile_info=current_user, is_own_profile=True, active_page='profile')
@@ -270,6 +266,8 @@ def user_reviews(user_id):
 def user_settings():
     user_sub = session.get('user').get('user_sub')
     profile_info = retrieve_user(user_sub)
+    error_message = None
+    success_message = None
     if not profile_info:
         return "User not found", 404
 
@@ -279,32 +277,53 @@ def user_settings():
         descript = request.form.get('descript')
 
         if not new_username or not new_email:
+            
             return "Username and email are required", 400
 
         if "@" not in new_email or "." not in new_email:
             return "Invalid email format", 400
 
-        if 'picture' in request.files:
-            profile_image = request.files['picture']
-            if profile_image.filename != '':
-                if profile_image.mimetype not in ['image/jpeg', 'image/png']:
-                    return "Unsupported image format. Only JPEG and PNG are allowed.", 400
-
-                if len(profile_image.read()) > 3 * 1024 * 1024:
-                    return "Image size must be less than 3MB.", 400
-                profile_image.seek(0)
-                image_data = profile_image.read()
-
-                update_user_profile_with_image(user_sub, new_username, new_email, descript, image_data)
+        if not new_username or not new_email:
+            error_message = "Username and email are required."
+        elif "@" not in new_email or "." not in new_email:
+            error_message = "Invalid email format."
+        else:
+            if 'picture' in request.files:
+                profile_image = request.files['picture']
+                if profile_image.filename != '':
+                    if profile_image.mimetype not in ['image/jpeg', 'image/png']:
+                        error_message = "Unsupported image format. Only JPEG and PNG are allowed."
+                    elif len(profile_image.read()) > 3 * 1024 * 1024:
+                        error_message = "Image size must be less than 3MB."
+                    else:
+                        profile_image.seek(0)
+                        image_data = profile_image.read()
+                        update_user_profile_with_image(user_sub, new_username, new_email, descript, image_data)
+                        success_message = "Profile updated successfully."
+                else:
+                    update_user_profile(user_sub, new_username, new_email, descript)
+                    success_message = "Profile updated successfully."
             else:
                 update_user_profile(user_sub, new_username, new_email, descript)
-        else:
-            update_user_profile(user_sub, new_username, new_email, descript)
+                success_message = "Profile updated successfully."
 
         profile_info = retrieve_user(user_sub)
 
     return render_template("user_settings.html", user=session.get('user'), profile_info=profile_info,
-                           active_page='settings')
+                           active_page='settings',error_message=error_message, 
+        success_message=success_message)
+
+@app.route("/delete_account", methods=["POST"])
+@requires_auth 
+def delete_account():
+    user_sub = session.get('user').get('user_sub')
+    user_info = retrieve_user(user_sub)
+    
+    if not user_info:
+        return "User not found", 404
+    user_id = user_info["user_id"]
+    delete_user_account(user_id)
+    return redirect(url_for('logout'))
 
 @app.route('/review/<string:id>')
 def template_review_page(id):

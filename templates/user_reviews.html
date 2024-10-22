@@ -1,24 +1,41 @@
 {% extends 'base.html' %} {% block title %}User Reviews{% endblock %} {% block
 content %}
-<div class="user-menu">
-  <a
-    href="{{ url_for('user_profile', user_id=user.get('user_id')) }}"
-    class="menu-item {% if active_page == 'profile' %}active{% endif %}"
-    >Profile</a
-  >
-  <a
-    href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
-    class="menu-item {% if active_page == 'reviews' %}active{% endif %}"
-    >Reviews</a
-  >
-  {% if is_own_profile %}
-  <a
-    href="/user/settings"
-    class="menu-item {% if active_page == 'settings' %}active{% endif %}"
-    >Settings</a
-  >
-  {% endif %}
+<div class="pure-menu pure-menu-horizontal center user-menu">
+  <ul class="pure-menu-list">
+    <li
+      class="pure-menu-item {% if active_page == 'profile' %}pure-menu-selected{% endif %}"
+    >
+      <a
+        href="{{ url_for('user_profile', user_id=profile_info.user_id) }}"
+        class="pure-menu-link"
+        style="color: #fff"
+      >
+        Profile
+      </a>
+    </li>
+    <li
+      class="pure-menu-item {% if active_page == 'reviews' %}pure-menu-selected{% endif %}"
+    >
+      <a
+        href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
+        class="pure-menu-link"
+        style="color: #fff"
+      >
+        Reviews
+      </a>
+    </li>
+    {% if is_own_profile %}
+    <li
+      class="pure-menu-item {% if active_page == 'settings' %}pure-menu-selected{% endif %}"
+    >
+      <a href="/user/settings" class="pure-menu-link" style="color: #fff">
+        Settings
+      </a>
+    </li>
+    {% endif %}
+  </ul>
 </div>
+
 <div class="recent-reviews-section">
   <h2 class="section-title">Recent Reviews</h2>
   <div class="reviews-list">
