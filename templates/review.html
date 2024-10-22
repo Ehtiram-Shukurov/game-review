@@ -3,11 +3,15 @@
 <div class="pure-g">
     <div class="pure-u-2-24">
         <p>{{ review.game_id }}</p>
-        <p>by <em>{{ review.username }}</em></p>
+        
     </div>
     <div class="pure-u-18-24">
         <h1 class="review_title">{{ review.title }}</h1>
+        <p>by <em>{{ review.username }}</em></p>
     </div>
+
+    <hr class="solid">
+
     <div class="pure-u-2-24">
         <p>
             {%for n in range(review.rating) %}
