@@ -821,3 +821,15 @@ p {
 .one, .two, .three, .four, .five {
     color: rgb(255, 106, 0);
 }
+
+hr.solid {
+    border-top: 3px solid #676767;
+}
+
+.rating {
+    font-size: 1.5em;
+}
+
+.post_content {
+    font-size: 1.25em;
+}
