@@ -98,7 +98,9 @@ def submit_post():
         insert_post(title, game_id, content, post_type, rating, user_id, parent_id)
         post_id = get_user_most_recent_post(user_id)['post_id']
 
-        return redirect(url_for('template_review_page', id=post_id))
+        if post_type == 'review':
+            return redirect(url_for('template_review_page', id=post_id))
+        return redirect(url_for('template_topic_page', id=post_id))
 
 
 @app.route('/editReview/<string:id>', methods=['GET'])
@@ -336,7 +338,7 @@ def template_review_page(id):
     return render_template("review.html", review=review, user=session.get('user'))
 
 @app.route('/topic/<string:id>')
-def template_topic_page(id, user=None):
+def template_topic_page(id):
     topic = retrieve_post_by_post_id(id,"topic")
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure

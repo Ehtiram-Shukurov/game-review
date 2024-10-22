@@ -3,13 +3,16 @@
 <div class="pure-g">
     <div class="pure-u-2-24">
         <p>{{ review.game_id }}</p>
-        <p>by <em>{{ review.username }}</em></p>
+        
     </div>
     <div class="pure-u-18-24">
         <h1 class="review_title">{{ review.title }}</h1>
+        <p>by <em>{{ review.username }}</em></p>
+        
     </div>
+
     <div class="pure-u-2-24">
-        <p>
+        <p class="rating">
             {%for n in range(review.rating) %}
             &#9733;
             {%endfor%}
@@ -18,6 +21,7 @@
             {%endfor%}
         </p>
     </div>
+
     <div class="pure-u-2-24">
         {% if user_sub == review.user_sub %}
         <div class="pure-menu pure-menu-horizontal">
@@ -35,13 +39,23 @@
         {%endif%}
     </div>
 </div>
+
+<div>
+    <hr class="solid">
+</div>
+
 <div class="pure-g">
-    <div class="pure-u-1" style="margin-left: 1em">
-        <p>{{review.content}}</p>
+    <div class="pure-u-1" style="margin: 1em 2em 1em 2em;">
+        <p class="post_content">{{review.content}}</p>
     </div>
 </div>
+
+<div>
+    <hr class="solid">
+</div>
+
 <div class="pure-g">
-    <div class="pure-u-1">
+    <div class="pure-u-1" style="margin: 1em 2em 2.5em 2em">
         <form class="pure-form" action="/reply/{{review.post_id}}" method="POST">
             <input
                     type="text"

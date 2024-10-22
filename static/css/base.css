@@ -817,7 +817,6 @@ p {
     color: rgb(255, 106, 0);
 }
 
-
 .alert {
     padding: 10px;
     margin-bottom: 20px;
@@ -832,4 +831,16 @@ p {
 .alert-success {
     background-color: #4CAF50;
     color: white;
+}
+=======
+hr.solid {
+    border-top: 3px solid #676767;
+}
+
+.rating {
+    font-size: 1.5em;
+}
+
+.post_content {
+    font-size: 1.25em;
 }
