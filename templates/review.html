@@ -8,9 +8,8 @@
     <div class="pure-u-18-24">
         <h1 class="review_title">{{ review.title }}</h1>
         <p>by <em>{{ review.username }}</em></p>
+        
     </div>
-
-    <hr class="solid">
 
     <div class="pure-u-2-24">
         <p>
@@ -21,6 +20,9 @@
             &#9734;
             {%endfor%}
         </p>
+    </div>
+    <div class="pure-u-1">
+        <hr class="solid">
     </div>
     <div class="pure-u-2-24">
         {% if user_sub == review.user_sub %}
