@@ -34,13 +34,14 @@ function rate(value) {
     }
 }
 
-function editReply(commentId, originalContent, parent_id) {
-    const commentContentElement = document.getElementById(`comment-content-${commentId}`);
+function editReply(post_id, originalContent, parent_id, type) {
+    const commentContentElement = document.getElementById(`comment-content-${parent_id}`);
     commentContentElement.innerHTML = `
-        <form class = "pure-form" method="POST" action="/updateReply/${parent_id}/${commentId}">
-            <textarea type="text" id="edit-comment-${commentId}" name="editArea"> ${originalContent} </textarea>
-            <button class="pure-button pure-button-primary" onclick="cancelEdit(${commentId}, '${originalContent}')">Cancel</button>
+        <form class = "pure-form" method="POST" action="/updateReply/${post_id}/${parent_id}">
+            <textarea type="text" id="edit-comment-${parent_id}" name="editArea"> ${originalContent} </textarea>
+            <button class="pure-button pure-button-primary" onclick="cancelEdit(${parent_id}, '${originalContent}')">Cancel</button>
             <input class="pure-button pure-button-primary" type="submit" id="submit" name="submit" value="save">
+            <input type="hidden" name="type" value="${type}">
         </form>
     `;
 }
@@ -77,13 +78,14 @@ function hideDiv(divName) {
     buttonToRemove.classList.remove("pure-menu-selected");
 }
 
-function replyTo(review_id, parent_id){
+function replyTo(review_id, parent_id,type){
     const replyBox = document.getElementById(`comment-reply-${parent_id}`);
     replyBox.innerHTML = `
         <form class = "pure-form" method="POST" action="/inlineReply/${review_id}/${parent_id}">
         <textarea type="text" id="inline_reply" name="reply"></textarea>
         <button class="pure-button pure-button-primary" onclick="cancelReply(${parent_id})">Cancel</button>
         <input class="pure-button pure-button-primary" type="submit" id="submit" name="submit" value="Reply">
+        <input type="hidden" name="type" value="${type}">
         </form>
     `;
 }

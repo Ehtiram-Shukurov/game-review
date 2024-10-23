@@ -1,34 +1,3 @@
-{% macro renderComments(comments, inset) %}
-{%  for comment in comments %}
-<div style="margin-left: {{ inset }}em">
-    <p><em>{{ comment.username }}</em></p>
-    <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
-    <div id="comment-reply-{{comment.post_id}}"></div>
-    <div class="pure-menu pure-menu-horizontal">
-        <ul class="pure-menu-list">
-            <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-                <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
-                <ul class="pure-menu-children">
-                    {% if user_sub == comment.user_sub %}
-                    <li class="pure-menu-item"><a href="#"
-                                                  onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
-                                                  class="pure-menu-link">Edit</a></li>
-                    <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id=topic.post_id, delete_id = comment.post_id)}}" class="pure-menu-link">Delete</a></li>
-                    {%endif%}
-                    <li class="pure-menu-item"><a href="#"
-                                                  onclick="replyTo({{topic.post_id}}, {{comment.post_id}})"
-                                                  class="pure-menu-link">Reply</a></li>
-                </ul>
-            </li>
-    </div>
-
-    {% set inset = inset + 1 %}
-    <p>{{renderComments(comment.replies, inset)}}</p>
-</div>
-{% endfor %}
-{% endmacro %}
-
-
 {% extends "base.html" %} {% block title %}Game Review{% endblock %}
 {% block content %}
 <div class="pure-g">
@@ -54,7 +23,14 @@
                     <ul class="pure-menu-children">
                         <li class="pure-menu-item"><a href="{{url_for('edit_topic', id=topic.post_id)}}"
                                                       class="pure-menu-link">Edit</a></li>
-                        <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id= topic.post_id, delete_id = topic.post_id)}}" class="pure-menu-link">Delete</a></li>
+                        <li class="pure-menu-item">
+                            <form class = "pure-form" method="POST" action="/deletePost">
+                                <input type="hidden" name="type" value="topic" hidden>
+                                <input type="hidden" name="post_id" value="{{topic.post_id}}" hidden>
+                                <input type="hidden" name="delete_id" value="{{topic.post_id}}" hidden>
+                                <input class="pure-button pure-button-primary" type="submit" id="delete" name="submit" value="Delete">
+                            </form>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -88,6 +64,7 @@
                         name = "reply"
                     placeholder="Add new discussion comment"
             />
+            <input type="text" name="type" value="topic" hidden>
             <button type="submit" class="pure-button pure-button-primary">
                 Post
             </button>
@@ -118,12 +95,19 @@
                 <ul class="pure-menu-children">
                     {% if user_sub == comment.user_sub %}
                     <li class="pure-menu-item"><a href="#"
-                                                  onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
+                                                  onclick="editReply({{topic.post_id}}, '{{comment.content}}', {{comment.post_id}}, 'topic')"
                                                   class="pure-menu-link">Edit</a></li>
-                    <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id=topic.post_id, delete_id = comment.post_id)}}" class="pure-menu-link">Delete</a></li>
+                <li class="pure-menu-item">        
+                    <form class = "pure-form" method="POST" action="/deletePost">
+                        <input type="hidden" name="type" value="topic" hidden>
+                        <input type="hidden" name="post_id" value="{{topic.post_id}}" hidden>
+                        <input type="hidden" name="delete_id" value="{{comment.post_id}}" hidden>
+                        <input class="pure-button pure-button-primary" type="submit" id="delete" name="submit" value="Delete">
+                    </form>
+                </li>
                     {%endif%}
                     <li class="pure-menu-item"><a href="#"
-                                                  onclick="replyTo({{topic.post_id}}, {{comment.post_id}})"
+                                                  onclick="replyTo({{topic.post_id}}, '{{comment.post_id}}','topic')"
                                                   class="pure-menu-link">Reply</a></li>
                 </ul>
             </li>

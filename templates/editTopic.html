@@ -5,7 +5,7 @@
 {% block action %}{{ url_for('update_post') }}{% endblock %}
 
 {% block label %}Topic Title: {% endblock %}
-{% block postTitle %}{{ post[2] }}{% endblock %}
-{% block textArea %}{{ post[5] }}{% endblock %}
+{% block postTitle %}{{ post.title }}{% endblock %}
+{% block textArea %}{{ post.content }}{% endblock %}
 {% block type %}topic{% endblock %}
 {% block postID %}<input type="hidden" name="post_id" value="{{ post.id }}"> {% endblock %}
