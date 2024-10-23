@@ -382,6 +382,7 @@ def update_reply(parent_id, post_id):
 
 
 @app.route('/reply/<int:parent_id>', methods=['POST'])
+@requires_auth
 def reply(parent_id):
     #todo: can we pass parent id in the form?
     data = request.form
