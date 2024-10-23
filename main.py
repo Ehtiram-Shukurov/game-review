@@ -394,7 +394,6 @@ def update_reply(post_id, parent_id):
 def reply(parent_id):
     #todo: can we pass parent id in the form?
     data = request.form
-    print(data)
     type = data['type']
     id = retrieve_user_id_by_sub(session.get('user').get('user_sub'))['user_id']
     insert_post(None, None, data['reply'], 'reply', None, id,parent_id)
@@ -408,7 +407,6 @@ def reply(parent_id):
 def inline_reply(review_id, parent_id):
     data = request.form
     type = data['type']
-    print(data)
     id = retrieve_user_id_by_sub(session.get('user').get('user_sub'))['user_id']
     insert_post(None, None, data['reply'], 'reply', None, id, parent_id)
 
