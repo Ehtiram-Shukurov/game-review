@@ -1,5 +1,5 @@
 /*  Base style, navbar */
-body{
+body {
     background-color: #333;
     color: white;
     font-family: Roboto, sans-serif;
@@ -43,12 +43,12 @@ body{
 }
 
 .pure-button-primary {
-    background-color: #1f8dd6;
+    background-color: #098770;
     color: white;
 }
 
 .pure-button-secondary {
-    background-color: #1f8dd6;
+    background-color: #098770;
     color: white;
 }
 
@@ -57,10 +57,10 @@ body{
 }
 
 .nav-link {
-    margin-left: 15px;
     color: white;
     text-decoration: none;
     font-weight: bold;
+    margin-right: .5em;
 }
 
 .nav-link:hover {
@@ -187,8 +187,8 @@ body{
         margin-top: 10px;
     }
 }
-.content{
-    margin-top:2em;
+.content {
+    margin-top:.5em;
 }
 
 
@@ -365,8 +365,8 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
 }
+
 @media (max-width: 768px){
     .pure-u-1{
         display: flex;
@@ -580,6 +580,7 @@ body{
 }
 
 .review-card {
+    cursor: pointer;
     display: flex;
     background-color: #2e2e2e;
     border-radius: 10px;
@@ -763,9 +764,6 @@ body{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s;
 }
-.pure-button-primary {
-    background-color: #098770;
-}
 
 .post-button:hover {
     background-color: #02bdde;
@@ -835,7 +833,7 @@ p {
     background-color: #4CAF50;
     color: white;
 }
-=======
+
 hr.solid {
     border-top: 3px solid #676767;
 }

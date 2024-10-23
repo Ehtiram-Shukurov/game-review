@@ -92,17 +92,27 @@ def broad_search(name, limit=99):
     search "{name}";
     limit {limit};
   """
-  #limit {limit};
+    response = wrapper.api_request('games', query)
+    games = json.loads(response.decode('utf-8'))
+    # list of dict
+    return games
+
+def game_search(name, limit=99):
+    query = f"""
+      fields name, summary, cover.url;
+      search "{name}";
+      limit {limit};
+    """
     response = wrapper.api_request('games', query)
     games = json.loads(response.decode('utf-8'))
     # list of dict
     return games
 
 
-def get_game_by_id(name):
+def get_game_by_id(id):
     query = f"""
     fields name, summary, cover.url;
-    where id = ({name});
+    where id = ({id});
     """
     response = wrapper.api_request('games', query)
     game = json.loads(response.decode('utf-8'))

@@ -61,12 +61,12 @@ def requires_auth(f):
         return f(*args, **kwargs) #do the normal behavior -- return as it does.
     return decorated
 
-@app.errorhandler(Exception)
-@app.route('/error')
-def basic_error(e):
-    print(e)
-    message = str(e)
-    return render_template("error.html",message =message)
+# @app.errorhandler(Exception)
+# @app.route('/error')
+# def basic_error(e):
+#     print(e)
+#     message = str(e)
+#     return render_template("error.html",message =message)
 
 @app.route('/postReview/<int:gameid>')
 @requires_auth
@@ -401,19 +401,11 @@ def inline_reply(review_id, parent_id):
 
 @app.route('/results', methods=['POST'])
 def results():
-    filter = request.form.get("searchOption")
     query = request.form.get('query')
-    if filter =="Topic":
-        results=retrieve_all_post("topic",query)
-    if filter =="Game":
-        data = broad_search(query)
-        results={}
-        for d in data:
-            results[d["id"]] =d["name"]
-    if filter =="Review":
-        results=retrieve_all_post("review",query)
-        #TODO: IDK THIS is a mess
-    return render_template("results.html",results=results,filter=filter, user=session.get('user'))
+    posts = retrieve_all_posts(query)
+    games = game_search(query, 10)
+
+    return render_template("results.html", games=games, posts=posts, user=session.get('user'))
 
 #TODO: IDK IF WE NEED FILTERS
 @app.route('/redirects', methods=['POST'])

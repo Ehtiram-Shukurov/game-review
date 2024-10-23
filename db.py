@@ -223,20 +223,12 @@ def get_user_by_sub(sub):
         cursor.execute(query, (sub,))
         return cursor.fetchone()
 
-
-def retrieve_all_post(type, search):
+def retrieve_all_posts(search):
     fuzzy = f"%{search}%"
-    query = "SELECT * FROM POSTS WHERE post = %s AND (title ILIKE %s OR content ILIKE %s)"
+    query = "SELECT * FROM POSTS WHERE (title ILIKE %s OR content ILIKE %s) AND parent_id is null"
     with get_db_cursor() as cursor:
-        cursor.execute(query, (type, fuzzy, fuzzy))
-        data = cursor.fetchall()
-        res = {}
-        for d in data:
-            parent = d["parent_id"]
-            # checks for none i.e. parent post
-            if parent == None:
-                res[d["post_id"]] = d["title"]
-        return res
+        cursor.execute(query, (fuzzy, fuzzy))
+        return cursor.fetchall()
 
 
 def get_game_by_id_database(game_id):

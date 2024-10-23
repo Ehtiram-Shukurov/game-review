@@ -29,7 +29,7 @@ content %}
   <h2 class="section-title">Recent Reviews</h2>
   <div class="reviews-list">
     {% for review in recent_reviews %}
-    <div class="review-card">
+    <div class="review-card" onclick="location.href='/review/{{ review.post_id }}';">
       <div class="review-image">
         <img
           src="{{ review.game_image }}"
