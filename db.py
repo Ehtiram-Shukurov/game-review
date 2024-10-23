@@ -185,7 +185,7 @@ def update_post(post_data):
 def update_reply_content(reply_data):
     query = "UPDATE POSTS SET content = %s WHERE post_id = %s"
     with get_db_cursor(commit=True) as cursor:
-        cursor.execute(query, (reply_data['content'], reply_data['post_id']))
+        cursor.execute(query, (reply_data['content'], reply_data['parent_id']))
 
 
 def insert_post(title, game_id, content, post_type, rating, user_id, parent_id):

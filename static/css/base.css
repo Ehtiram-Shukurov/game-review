@@ -811,6 +811,11 @@ p {
     font-weight: bold;
 }
 
+#delete {
+    background-color: #de5252;
+    font-weight: bold;
+}
+
 .button-container {
     text-align:right;
 }

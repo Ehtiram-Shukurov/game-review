@@ -34,7 +34,14 @@
                     <ul class="pure-menu-children">
                         <li class="pure-menu-item"><a href="{{url_for('edit_review', id=review.post_id)}}"
                                                       class="pure-menu-link">Edit</a></li>
-                        <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id= review.post_id, delete_id = review.post_id)}}" class="pure-menu-link">Delete</a></li>
+                        <li class="pure-menu-item">
+                            <form class = "pure-form" method="POST" action="/deletePost">
+                                <input type="hidden" name="type" value="review" hidden>
+                                <input type="hidden" name="post_id" value="{{review.post_id}}" hidden>
+                                <input type="hidden" name="delete_id" value="{{review.post_id}}" hidden>
+                                <input class="pure-button pure-button-primary" type="submit" id="delete" name="submit" value="Delete">
+                            </form>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -68,6 +75,7 @@
                         name = "reply"
                     placeholder="Add new discussion comment"
             />
+            <input type="text" name="type" value="review" hidden>
             <button type="submit" class="pure-button pure-button-primary">
                 Post
             </button>
@@ -98,12 +106,19 @@
                 <ul class="pure-menu-children">
                     {% if user_sub == comment.user_sub %}
                     <li class="pure-menu-item"><a href="#"
-                                                  onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
+                                                  onclick="editReply({{review.post_id}}, '{{comment.content}}', {{comment.post_id}}, 'review')"
                                                   class="pure-menu-link">Edit</a></li>
-                    <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id=review.post_id, delete_id = comment.post_id)}}" class="pure-menu-link">Delete</a></li>
+                    <li class="pure-menu-item">
+                        <form class = "pure-form" method="POST" action="/deletePost">
+                            <input type="hidden" name="type" value="review" hidden>
+                            <input type="hidden" name="post_id" value="{{review.post_id}}" hidden>
+                            <input type="hidden" name="delete_id" value="{{comment.post_id}}" hidden>
+                            <input class="pure-button pure-button-primary" type="submit" id="delete" name="submit" value="Delete">
+                        </form>
+                    </li>
                     {%endif%}
                     <li class="pure-menu-item"><a href="#"
-                                                  onclick="replyTo({{review.post_id}}, {{comment.post_id}})"
+                                                  onclick="replyTo({{review.post_id}}, {{comment.post_id}},'review')"
                                                   class="pure-menu-link">Reply</a></li>
                 </ul>
             </li>

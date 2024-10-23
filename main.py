@@ -141,7 +141,10 @@ def update_post():
 
         update_post_db(title, content, rating, post_id)
 
-        return redirect(url_for('template_review_page', id=post_id))
+        if post_type == 'review':
+            return redirect(url_for('template_review_page', id=post_id))
+        
+        return redirect(url_for('template_topic_page', id=post_id))
 
 
 @app.route("/callback", methods=["GET", "POST"])
@@ -371,16 +374,19 @@ def games_page():
         return games
     return render_template("games.html", games=get_games, user=session.get('user'))
 
-@app.route('/updateReply/<int:parent_id>/<int:post_id>', methods=['POST'])
+@app.route('/updateReply/<int:post_id>/<int:parent_id>', methods=['POST'])
 @requires_auth
-def update_reply(parent_id, post_id):
+def update_reply(post_id, parent_id):
     data = request.form
     update_data = {
-        'post_id': post_id,
+        'parent_id': parent_id,
         'content': data['editArea']
     }
+    type = data['type']
     update_reply_content(update_data)
-    return redirect(url_for('template_review_page', id=parent_id))
+    if type == 'review':
+        return redirect(url_for('template_review_page', id=post_id))
+    return redirect(url_for('template_topic_page', id=post_id))
 
 
 @app.route('/reply/<int:parent_id>', methods=['POST'])
@@ -388,18 +394,25 @@ def update_reply(parent_id, post_id):
 def reply(parent_id):
     #todo: can we pass parent id in the form?
     data = request.form
+    type = data['type']
     id = retrieve_user_id_by_sub(session.get('user').get('user_sub'))['user_id']
     insert_post(None, None, data['reply'], 'reply', None, id,parent_id)
-    return redirect(url_for('template_review_page', id=parent_id))
 
+    if type == 'review':
+        return redirect(url_for('template_review_page', id=parent_id))
+    return redirect(url_for('template_topic_page', id=parent_id))
 
 @app.route('/inlineReply/<int:review_id>/<int:parent_id>', methods=['POST'])
 @requires_auth
 def inline_reply(review_id, parent_id):
     data = request.form
+    type = data['type']
     id = retrieve_user_id_by_sub(session.get('user').get('user_sub'))['user_id']
     insert_post(None, None, data['reply'], 'reply', None, id, parent_id)
-    return redirect(url_for('template_review_page', id=review_id))
+
+    if type == 'review':
+        return redirect(url_for('template_review_page', id=review_id))
+    return redirect(url_for('template_topic_page', id=review_id))
 
 @app.route('/results', methods=['POST'])
 def results():
@@ -408,11 +421,19 @@ def results():
     games = game_search(query, 10)
     return render_template("results.html", games=games, posts=posts, user=session.get('user'))
 
-@app.route('/deletePost/<int:post_id>/<int:delete_id>')
+@app.route('/deletePost', methods=['POST'])
 @requires_auth
-def delete_post(post_id, delete_id):
+def delete_post():
+    data = request.form
+    post_id = data['post_id']
+    delete_id = data['delete_id']
+    type = data['type']
+
     delete_content(delete_id)
     if post_id == delete_id:
         return redirect(url_for('home'))
     
-    return redirect(url_for('template_review_page', id=post_id))
+    if type == 'review':
+        return redirect(url_for('template_review_page', id=post_id))
+    
+    return redirect(url_for('template_topic_page', id=post_id))
