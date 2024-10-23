@@ -38,7 +38,26 @@ CSCI 5117, Fall 2024, [assignment description](https://canvas.umn.edu/courses/46
 **[Add a screenshot of each key page (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository)
 along with a very brief caption:**
 
-![](https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif)
+
+Home page showing recently reviewed and added games. The added games would be new search queries that user has inputed and clicked on that has not previosuly been seen in the database
+![home](./screenshots/home.png?raw=true)
+
+
+Game page displaying the cover art, title, and summary of the game from IGDB APi. Along with sub section for users to look and post review/topics.
+![game](./screenshots/game.png?raw=true)
+
+
+Profile page showing an default image is the user decides to not have a profile image, and brief descriptions about the user as well as how many reviews they left on the website.
+![profile](./screenshots/profile.png?raw=true)
+
+
+Result page displaying the fuzzy search results where the website is searching through both its database for topics/reviews and IGDB API based on the user query
+![result](./screenshots/result.png?raw=true)
+
+
+Review page showing a rating and review of a game left by users, as well as the child parent post chain.
+![review](./screenshots/review.png?raw=true)
+
 
 
 ## Mock-up 
