@@ -1,5 +1,5 @@
 /*  Base style, navbar */
-body{
+body {
     background-color: #333;
     color: white;
     font-family: Roboto, sans-serif;
@@ -43,12 +43,12 @@ body{
 }
 
 .pure-button-primary {
-    background-color: #1f8dd6;
+    background-color: #098770;
     color: white;
 }
 
 .pure-button-secondary {
-    background-color: #1f8dd6;
+    background-color: #098770;
     color: white;
 }
 
@@ -57,10 +57,10 @@ body{
 }
 
 .nav-link {
-    margin-left: 15px;
     color: white;
     text-decoration: none;
     font-weight: bold;
+    margin-right: .5em;
 }
 
 .nav-link:hover {
@@ -88,7 +88,7 @@ body{
     right: 0;
     background-color: #333;
     min-width: 140px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 1;
     border-radius: 5px;
 }
@@ -187,8 +187,8 @@ body{
         margin-top: 10px;
     }
 }
-.content{
-    margin-top:2em;
+.content {
+    margin-top:.5em;
 }
 
 
@@ -351,7 +351,6 @@ body{
     font-weight: bold;
     font-size: 18px;
     position: relative;
-    font-weight: bold;
 }
 
 .menu-item.active {
@@ -365,8 +364,8 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
 }
+
 @media (max-width: 768px){
     .pure-u-1{
         display: flex;
@@ -580,6 +579,7 @@ body{
 }
 
 .review-card {
+    cursor: pointer;
     display: flex;
     background-color: #2e2e2e;
     border-radius: 10px;
@@ -732,6 +732,12 @@ body{
 }
 
 .game-sec {
+    margin-left: 1em;
+    background-color: #444;
+    border-radius: 1em;
+    width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
     cursor: pointer;
 }
 
@@ -762,9 +768,6 @@ body{
     font-size: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s;
-}
-.pure-button-primary {
-    background-color: #098770;
 }
 
 .post-button:hover {
@@ -835,7 +838,7 @@ p {
     background-color: #4CAF50;
     color: white;
 }
-=======
+
 hr.solid {
     border-top: 3px solid #676767;
 }
@@ -846,4 +849,30 @@ hr.solid {
 
 .post_content {
     font-size: 1.25em;
+}
+
+.game-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 1em;
+    cursor: pointer;
+    background-color: #444;
+    border-radius: 1em;
+    width: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.game-img {
+    border-radius: 1em;
+}
+
+.comment {
+    margin-left: 1em;
+    background-color: #444;
+    border-radius: 1em;
+    width: 85%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }

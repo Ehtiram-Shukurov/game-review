@@ -333,9 +333,10 @@ def template_review_page(id):
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
+    game = get_game_by_id_database(review['game_id'])
     if replies:
         review['replies'] = replies
-    return render_template("review.html", review=review, user=session.get('user'))
+    return render_template("review.html", review=review, user=session.get('user'), game=game)
 
 @app.route('/topic/<string:id>')
 def template_topic_page(id):
@@ -343,9 +344,10 @@ def template_topic_page(id):
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
+    game = get_game_by_id_database(topic['game_id'])
     if replies:
         topic['replies'] = replies
-    return render_template("topic.html", topic=topic, user=session.get('user'))
+    return render_template("topic.html", topic=topic, user=session.get('user'), game=game)
 
 @app.route('/game/<string:id>')
 def template_game_page(id):
@@ -401,31 +403,10 @@ def inline_reply(review_id, parent_id):
 
 @app.route('/results', methods=['POST'])
 def results():
-    filter = request.form.get("searchOption")
     query = request.form.get('query')
-    if filter =="Topic":
-        results=retrieve_all_post("topic",query)
-    if filter =="Game":
-        data = broad_search(query)
-        results={}
-        for d in data:
-            results[d["id"]] =d["name"]
-    if filter =="Review":
-        results=retrieve_all_post("review",query)
-        #TODO: IDK THIS is a mess
-    return render_template("results.html",results=results,filter=filter, user=session.get('user'))
-
-#TODO: IDK IF WE NEED FILTERS
-@app.route('/redirects', methods=['POST'])
-def redirects():
-    filter = request.form.get("filter")
-    id = request.form.get("selectedResult")
-    if filter =="Topic":
-        return redirect(url_for("template_topic_page",id=id))
-    if filter =="Game":
-        return redirect(url_for('template_game_page', id=id))
-    if filter =="Review":
-        return redirect(url_for('template_review_page', id=id))
+    posts = retrieve_all_posts(query)
+    games = game_search(query, 10)
+    return render_template("results.html", games=games, posts=posts, user=session.get('user'))
 
 @app.route('/deletePost/<int:post_id>/<int:delete_id>')
 @requires_auth

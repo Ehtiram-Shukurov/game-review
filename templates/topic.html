@@ -1,11 +1,47 @@
+{% macro renderComments(comments, inset) %}
+{%  for comment in comments %}
+<div style="margin-left: {{ inset }}em">
+    <p><em>{{ comment.username }}</em></p>
+    <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
+    <div id="comment-reply-{{comment.post_id}}"></div>
+    <div class="pure-menu pure-menu-horizontal">
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
+                <ul class="pure-menu-children">
+                    {% if user_sub == comment.user_sub %}
+                    <li class="pure-menu-item"><a href="#"
+                                                  onclick="editReply({{comment.post_id}}, '{{comment.content}}', {{comment.parent_id}})"
+                                                  class="pure-menu-link">Edit</a></li>
+                    <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id=topic.post_id, delete_id = comment.post_id)}}" class="pure-menu-link">Delete</a></li>
+                    {%endif%}
+                    <li class="pure-menu-item"><a href="#"
+                                                  onclick="replyTo({{topic.post_id}}, {{comment.post_id}})"
+                                                  class="pure-menu-link">Reply</a></li>
+                </ul>
+            </li>
+    </div>
+
+    {% set inset = inset + 1 %}
+    <p>{{renderComments(comment.replies, inset)}}</p>
+</div>
+{% endfor %}
+{% endmacro %}
+
+
 {% extends "base.html" %} {% block title %}Game Review{% endblock %}
 {% block content %}
 <div class="pure-g">
-    <div class="pure-u-2-24">
-        <p>{{ topic.game_id }}</p>
+    <div class="pure-u-1">
+        <div class="game-button" onclick="location.href='/game/{{game.game_id}}';">
+            <img src="http:{{game.image_url | replace('thumb', 'micro')}}" alt="Thumbnail of game cover" class="game-img">
+            <p style="padding-left:.5em;">{{ game.name }}</p>
+        </div>
     </div>
-    <div class="pure-u-18-24">
-        <h1 class="topic_title">{{ topic.title }}</h1>
+    <div class="pure-u-2-24">
+    </div>
+    <div class="pure-u-20-24">
+        <h1 class="review_title">{{ topic.title }}</h1>
         <p>by <em>{{ topic.username }}</em></p>
     </div>
 
@@ -14,10 +50,9 @@
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
                 <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-                    <a href="#" id="comment" class="pure-menu-link">&#10247;</a>
+                    <a href="#" id="comment-form" class="pure-menu-link">&#10247;</a>
                     <ul class="pure-menu-children">
-                        <!-- TODO: have an update_topic page or we can resturcutre the code to account for topic -->
-                        <li class="pure-menu-item"><a href="{{url_for('edit_review', id=topic.post_id)}}"
+                        <li class="pure-menu-item"><a href="{{url_for('edit_topic', id=topic.post_id)}}"
                                                       class="pure-menu-link">Edit</a></li>
                         <li class="pure-menu-item"><a href="{{url_for('delete_post', post_id= topic.post_id, delete_id = topic.post_id)}}" class="pure-menu-link">Delete</a></li>
                     </ul>
@@ -33,7 +68,8 @@
 </div>
 
 <div class="pure-g">
-    <div class="pure-u-1" style="margin: 1em 2em 1em 2em;">
+    <div class="pure-u-3-24"></div>
+    <div class="pure-u-21-24">
         <p class="post_content">{{topic.content}}</p>
     </div>
 </div>
@@ -43,7 +79,8 @@
 </div>
 
 <div class="pure-g">
-    <div class="pure-u-1" style="margin: 1em 2em 2.5em 2em">
+    <div class="pure-u-3-24"></div>
+    <div class="pure-u-21-24" style="margin: 1em">
         <form class="pure-form" action="/reply/{{topic.post_id}}" method="POST">
             <input
                     type="text"
@@ -59,7 +96,8 @@
 </div>
 
 <div class="pure-g">
-    <div class="pure-u-1">
+    <div class="pure-u-2-24"></div>
+    <div class="pure-u-22-24">
         {{ renderComments(topic.replies, 1)}}
     </div>
 </div>
@@ -67,9 +105,11 @@
 
 {% macro renderComments(comments, inset) %}
 {%  for comment in comments %}
-<div style="margin-left: {{ inset }}em">
-    <p><em>{{ comment.username }}</em></p>
-    <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
+<div class="comment" style="margin-left: {{ inset }}em;">
+    <div style="padding-top: .25em; padding-left:.5em;">
+        <p><em>{{ comment.username }}</em></p>
+        <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
+    </div>
     <div id="comment-reply-{{comment.post_id}}"></div>
     <div class="pure-menu pure-menu-horizontal">
         <ul class="pure-menu-list">
