@@ -40,7 +40,7 @@ content %}
   <div class="profile-image">
     {%if profile_info.picture %}
     <img
-      src="data:image/jpeg;base64,{{ profile_info.picture}}"
+      src="{{ profile_info.picture}}"
       alt="Profile Image"
     />
     {%else%}

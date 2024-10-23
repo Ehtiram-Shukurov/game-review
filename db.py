@@ -77,12 +77,6 @@ def retrieve_user(user_sub):
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_sub,))
         user = cursor.fetchone()
-        if not user:
-            return None
-        if user and user.get('picture'):
-            user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
-        else:
-            user['picture'] = None
         return user
 
 
@@ -91,12 +85,6 @@ def retrieve_user_by_id(user_id):
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_id,))
         user = cursor.fetchone()
-        if not user:
-            return None
-        if user and user.get('picture'):
-            user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
-        else:
-            user['picture'] = None
         return user
 
 
@@ -105,10 +93,6 @@ def retrieve_user_by_name(username):
     with get_db_cursor() as cursor:
         cursor.execute(query, (username,))
         user = cursor.fetchone()
-
-        if user and user.get('picture'):
-            user['picture'] = base64.b64encode(user['picture']).decode('utf-8')
-
         return user
 
 
@@ -290,12 +274,7 @@ def get_user_picture(user_sub):
     """
     with get_db_cursor() as cursor:
         cursor.execute(query, (user_sub,))
-        result = cursor.fetchone()
-
-        if result and result.get('picture'):
-            return base64.b64encode(result['picture']).decode('utf-8')
-        return None
-
+        return cursor.fetchone()
 
 def retrieve_reviews_by_user_id(user_id):
     query = """
