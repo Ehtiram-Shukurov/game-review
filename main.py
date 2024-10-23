@@ -183,13 +183,12 @@ def complete_profile():
     if existing_user:
         return redirect(url_for("user_profile", user_id=existing_user["user_id"]))
     if request.method == "POST":
-        picture = None
         user_data = {
             "user_sub": session["user"]["user_sub"],
             "username": request.form.get("username"),
             "email": session["user"]["email"],
             "descript": request.form.get("descript"),
-            "picture": picture
+            "picture": session["user"]['picture']
         }
         insert_user(user_data)
         user_id = retrieve_user_id_by_sub(session["user"]["user_sub"])['user_id']
@@ -280,7 +279,7 @@ def user_settings():
         new_username = request.form.get('new-username')
         new_email = request.form.get('new-email')
         descript = request.form.get('descript')
-
+        picture = request.form.get('picture')
         if not new_username or not new_email:
             
             return "Username and email are required", 400
@@ -293,17 +292,9 @@ def user_settings():
         elif "@" not in new_email or "." not in new_email:
             error_message = "Invalid email format."
         else:
-            if 'picture' in request.files:
-                profile_image = request.files['picture']
-                if profile_image.filename != '':
-                    if profile_image.mimetype not in ['image/jpeg', 'image/png']:
-                        error_message = "Unsupported image format. Only JPEG and PNG are allowed."
-                    elif len(profile_image.read()) > 3 * 1024 * 1024:
-                        error_message = "Image size must be less than 3MB."
-                    else:
-                        profile_image.seek(0)
-                        image_data = profile_image.read()
-                        update_user_profile_with_image(user_sub, new_username, new_email, descript, image_data)
+            if picture:
+                if picture != '':
+                        update_user_profile_with_image(user_sub, new_username, new_email, descript, picture)
                         success_message = "Profile updated successfully."
                 else:
                     update_user_profile(user_sub, new_username, new_email, descript)
@@ -312,9 +303,9 @@ def user_settings():
                 update_user_profile(user_sub, new_username, new_email, descript)
                 success_message = "Profile updated successfully."
 
-        profile_info = retrieve_user(user_sub)
+        session['user'] = retrieve_user(user_sub)
 
-    return render_template("user_settings.html", user=session.get('user'), profile_info=profile_info,
+    return render_template("user_settings.html", user=session.get('user'),
                            active_page='settings',error_message=error_message, 
         success_message=success_message)
 

@@ -18,7 +18,7 @@ content %}
       class="pure-menu-item {% if active_page == 'reviews' %}pure-menu-selected{% endif %}"
     >
       <a
-        href="{{ url_for('user_reviews', user_id=profile_info.user_id) }}"
+        href="{{ url_for('user_reviews', user_id=user.user_id) }}"
         class="pure-menu-link"
         style="color: #fff"
       >
@@ -46,7 +46,7 @@ content %}
     style="text-align: center; margin-bottom: 20px"
   >
     <img
-      src="{% if profile_info.picture %}data:image/jpeg;base64,{{ profile_info.picture }}{% else %}/static/images/avatar.png{% endif %}"
+      src="{% if user.picture %}{{ user.picture }}{% else %}/static/images/avatar.png{% endif %}"
       alt="Profile Image"
       class="profile-image"
     />
@@ -61,7 +61,7 @@ content %}
     <fieldset>
       <div class="pure-control-group">
         <label for="picture">Change Profile Image:</label>
-        <input id="picture" name="picture" type="file" accept="image/*" />
+        <input id="picture" name="picture" type="text" value={{user.get('picture')}} />
       </div>
 
       <div class="pure-control-group">
@@ -70,7 +70,7 @@ content %}
           id="new-username"
           name="new-username"
           type="text"
-          value="{{ profile_info.get('username') }}"
+          value="{{ user.get('username') }}"
           required
         />
       </div>
@@ -81,7 +81,7 @@ content %}
           id="new-email"
           name="new-email"
           type="email"
-          value="{{ profile_info.get('email') }}"
+          value="{{ user.get('email') }}"
           readonly
         />
       </div>
@@ -89,7 +89,7 @@ content %}
       <div class="pure-control-group">
         <label for="descript">Description:</label>
         <textarea id="descript" name="descript" rows="4" cols="50">
-{{ profile_info.get('descript') }}</textarea
+          {{ user.get('descript') }}</textarea
         >
       </div>
 

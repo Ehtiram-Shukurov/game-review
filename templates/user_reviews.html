@@ -49,7 +49,7 @@ content %}
           {% if review.user_picture %}
           <img
             class="user-avatar"
-            src="data:image/jpeg;base64,{{ review.user_picture }}"
+            src="{{ review.user_picture }}"
             alt="User Avatar"
           />
           {% else %}
