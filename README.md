@@ -5,7 +5,7 @@ CSCI 5117, Fall 2024, [assignment description](https://canvas.umn.edu/courses/46
 ## App Info:
 
 * Team Name: Big Chungus
-* App Name: TODO
+* App Name: GameReview
 * App Link: [<https://project-1-big-chungus.onrender.com/>]()
 
 ### Students
@@ -22,7 +22,9 @@ CSCI 5117, Fall 2024, [assignment description](https://canvas.umn.edu/courses/46
 **Describe the most challenging features you implemented
 (one sentence per bullet, maximum 4 bullets):**
 
-* ...
+* Child Parent topic/review chain (i.e. reddit thread)
+* Incorporating and extracting data from IGDB API
+* Fuzzy Search
 
 ## Testing Notes
 
@@ -77,7 +79,7 @@ https://www.figma.com/design/yl4nxmAKSPm4ww1B2vN6j5/GameReview?node-id=49-2361&t
 Please do not document required libraries. or libraries that are mentioned in the product requirements**
 
 * Library or service name: description of use
-* ...
+* IGDB API: used to grab relevant game data (i.e. name, genre, summary, cover art)
 
 **If there's anything else you would like to disclose about how your project
 relied on external code, expertise, or anything else, please disclose that
