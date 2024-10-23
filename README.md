@@ -39,7 +39,7 @@ CSCI 5117, Fall 2024, [assignment description](https://canvas.umn.edu/courses/46
 along with a very brief caption:**
 
 
-Home page showing recently reviewed and added games. The added games would be new search queries that user has inputed and clicked on that has not previosuly been seen in the database
+Home page showing recently reviewed and added games. The added games would be new games that was added from IGDB API.
 ![home](./screenshots/home.png?raw=true)
 
 
