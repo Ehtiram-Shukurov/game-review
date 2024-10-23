@@ -1,14 +1,17 @@
 {% extends "base.html" %} {% block title %}Game Review{% endblock %}
 {% block content %}
 <div class="pure-g">
+    <div class="pure-u-1">
+        <div class="game-button" onclick="location.href='/game/{{game.game_id}}';">
+            <img src="http:{{game.image_url | replace('thumb', 'micro')}}" alt="Thumbnail of game cover" class="game-img">
+            <p style="padding-left:.5em;">{{ game.name }}</p>
+        </div>
+    </div>
     <div class="pure-u-2-24">
-        <p>{{ review.game_id }}</p>
-        
     </div>
     <div class="pure-u-17-24">
         <h1 class="review_title">{{ review.title }}</h1>
         <p>by <em>{{ review.username }}</em></p>
-        
     </div>
 
     <div class="pure-u-3-24">
@@ -45,7 +48,8 @@
 </div>
 
 <div class="pure-g">
-    <div class="pure-u-1" style="margin: 1em 2em 1em 2em;">
+    <div class="pure-u-3-24"></div>
+    <div class="pure-u-21-24">
         <p class="post_content">{{review.content}}</p>
     </div>
 </div>
@@ -55,7 +59,8 @@
 </div>
 
 <div class="pure-g">
-    <div class="pure-u-1" style="margin: 1em 2em 2.5em 2em">
+    <div class="pure-u-3-24"></div>
+    <div class="pure-u-21-24" style="margin: 1em">
         <form class="pure-form" action="/reply/{{review.post_id}}" method="POST">
             <input
                     type="text"
@@ -71,7 +76,8 @@
 </div>
 
 <div class="pure-g">
-    <div class="pure-u-1">
+    <div class="pure-u-2-24"></div>
+    <div class="pure-u-22-24">
         {{ renderComments(review.replies, 1)}}
     </div>
 </div>
@@ -79,9 +85,11 @@
 
 {% macro renderComments(comments, inset) %}
 {%  for comment in comments %}
-<div style="margin-left: {{ inset }}em">
-    <p><em>{{ comment.username }}</em></p>
-    <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
+<div class="comment" style="margin-left: {{ inset }}em;">
+    <div style="padding-top: .25em; padding-left:.5em;">
+        <p><em>{{ comment.username }}</em></p>
+        <p id="comment-content-{{comment.post_id}}">{{ comment.content }}</p>
+    </div>
     <div id="comment-reply-{{comment.post_id}}"></div>
     <div class="pure-menu pure-menu-horizontal">
         <ul class="pure-menu-list">

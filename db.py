@@ -120,7 +120,7 @@ def retrieve_user_id_by_sub(sub):
 
 
 def retrieve_topics_by_game_id(game_id):
-    query = "SELECT * FROM POSTS WHERE game_id = %s AND post = 'topic'"
+    query = "SELECT *, username FROM POSTS JOIN USERS ON POSTS.user_id = USERS.user_id WHERE post = 'topic' AND game_id = %s"
     with get_db_cursor() as cursor:
         cursor.execute(query, (game_id,))
         return cursor.fetchall()

@@ -732,6 +732,12 @@ body {
 }
 
 .game-sec {
+    margin-left: 1em;
+    background-color: #444;
+    border-radius: 1em;
+    width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
     cursor: pointer;
 }
 
@@ -843,4 +849,30 @@ hr.solid {
 
 .post_content {
     font-size: 1.25em;
+}
+
+.game-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 1em;
+    cursor: pointer;
+    background-color: #444;
+    border-radius: 1em;
+    width: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.game-img {
+    border-radius: 1em;
+}
+
+.comment {
+    margin-left: 1em;
+    background-color: #444;
+    border-radius: 1em;
+    width: 85%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }

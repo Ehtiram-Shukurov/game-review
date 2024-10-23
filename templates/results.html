@@ -18,7 +18,7 @@
 
     .pure-menu-list {
         columns: 2 auto;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         justify-content: space-evenly;
         width: 100%;
         align-items: center;
@@ -74,7 +74,11 @@
             {% if games %}
             {% for game in games %}
                 <li class="pure-menu-item game-item" onclick="location.href='/game/{{game.id}}';">
+                    {% if game['cover'] %}
                     <img src="http:{{ game.get('cover').get('url')}}" alt="Cover image for {{ game.name }}"/>
+                    {% else %}
+                    <img src="static/images/default_game_cover.png" height=90 width=90 alt="No image found"/>
+                    {% endif %}
                     <p style="margin-left:1em">{{game.name}}</p>
                 </li>
             {% endfor%}

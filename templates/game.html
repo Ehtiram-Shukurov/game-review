@@ -34,10 +34,19 @@
             <div id="reviews">
                 {% for review in reviews %}
                 <div class="game-sec" onclick="location.href='/review/{{review.post_id}}';">
-                    <h2 style="margin-bottom: .2em">{{ review.title }} {{ review.rating }}</h2>
+                    <div style="padding:.25em; margin: 1em;">
+                        <h2 style="margin-bottom: .2em; margin-top: .2em">{{ review.title }}
+                        {%for n in range(review.rating) %}
+                            &#9733;
+                        {%endfor%}
+                        {%for n in range(5 - review.rating) %}
+                            &#9734;
+                        {%endfor%}
+                    </h2>
                     <h6 class="author">By: {{ review.username }}</h6>
                     <p style="text-indent: 3em;">{{ review.description }}</p>
                     <p style="text-indent: 3em;">{{ review.likes }}</p>
+                    </div>
                 </div>
 
             {% endfor %}
@@ -52,12 +61,13 @@
             <div id="topics" hidden>
                 {% for topic in topics %}
                 <div class="game-sec" onclick="location.href='/topic/{{topic.post_id}}';">
-                    <h2 style="margin-bottom: .2em">{{ topic.title }}</h2>
-                    <h6 class="author">By: {{ topic.author }}</h6>
+                    <div style="padding:.25em; margin: 1em;">
+                        <h2 style="margin-bottom: .2em; margin-top: .2em">{{ topic.title }}</h2>
+                    <h6 class="author">By: {{ topic.username }}</h6>
                     <p style="text-indent: 3em;">{{ topic.description }}</p>
                     <p style="text-indent: 3em;">{{ topic.likes }}</p>
+                    </div>
                 </div>
-
             {% endfor %}
             </div>
             {% else %}

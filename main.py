@@ -333,9 +333,10 @@ def template_review_page(id):
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
+    game = get_game_by_id_database(review['game_id'])
     if replies:
         review['replies'] = replies
-    return render_template("review.html", review=review, user=session.get('user'))
+    return render_template("review.html", review=review, user=session.get('user'), game=game)
 
 @app.route('/topic/<string:id>')
 def template_topic_page(id):
@@ -343,9 +344,10 @@ def template_topic_page(id):
     replies_data = retrieve_replies_by_post_id(id)
     # recursively put replies into hierarchy structure
     replies = build_hierarchy(replies_data,id)
+    game = get_game_by_id_database(topic['game_id'])
     if replies:
         topic['replies'] = replies
-    return render_template("topic.html", topic=topic, user=session.get('user'))
+    return render_template("topic.html", topic=topic, user=session.get('user'), game=game)
 
 @app.route('/game/<string:id>')
 def template_game_page(id):
@@ -404,7 +406,6 @@ def results():
     query = request.form.get('query')
     posts = retrieve_all_posts(query)
     games = game_search(query, 10)
-
     return render_template("results.html", games=games, posts=posts, user=session.get('user'))
 
 #TODO: IDK IF WE NEED FILTERS
