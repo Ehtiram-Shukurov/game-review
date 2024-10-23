@@ -755,13 +755,16 @@ body{
 
 .post-button {
     padding: 10px 20px;
-    background-color: #00d9ff;
+    background-color: #098770;
     border-radius: 25px;
     color: black;
     text-decoration: none;
     font-size: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s;
+}
+.pure-button-primary {
+    background-color: #098770;
 }
 
 .post-button:hover {
@@ -801,7 +804,7 @@ p {
 }
 
 #submit {
-    background-color: aqua;
+    background-color: #7DAFD3;
     font-weight: bold;
 }
 
