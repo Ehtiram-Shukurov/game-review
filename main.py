@@ -408,18 +408,6 @@ def results():
     games = game_search(query, 10)
     return render_template("results.html", games=games, posts=posts, user=session.get('user'))
 
-#TODO: IDK IF WE NEED FILTERS
-@app.route('/redirects', methods=['POST'])
-def redirects():
-    filter = request.form.get("filter")
-    id = request.form.get("selectedResult")
-    if filter =="Topic":
-        return redirect(url_for("template_topic_page",id=id))
-    if filter =="Game":
-        return redirect(url_for('template_game_page', id=id))
-    if filter =="Review":
-        return redirect(url_for('template_review_page', id=id))
-
 @app.route('/deletePost/<int:post_id>/<int:delete_id>')
 @requires_auth
 def delete_post(post_id, delete_id):
