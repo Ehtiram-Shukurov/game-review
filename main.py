@@ -61,12 +61,12 @@ def requires_auth(f):
         return f(*args, **kwargs) #do the normal behavior -- return as it does.
     return decorated
 
-# @app.errorhandler(Exception)
-# @app.route('/error')
-# def basic_error(e):
-#     print(e)
-#     message = str(e)
-#     return render_template("error.html",message =message)
+@app.errorhandler(Exception)
+@app.route('/error')
+def basic_error(e):
+    print(e)
+    message = str(e)
+    return render_template("error.html",message =message)
 
 @app.route('/postReview/<int:gameid>')
 @requires_auth
