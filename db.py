@@ -290,10 +290,6 @@ def retrieve_reviews_by_user_id(user_id):
         cursor.execute(query, (user_id,))
         reviews = cursor.fetchall()
 
-    for review in reviews:
-        if review['user_picture']:
-            review['user_picture'] = base64.b64encode(review['user_picture']).decode('utf-8')
-
     return reviews
 
 
