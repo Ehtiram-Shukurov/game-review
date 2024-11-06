@@ -314,7 +314,7 @@ def retrieve_recent_reviews(limit=5):
 
     for review in reviews:
         if review['user_picture']:
-            review['user_picture'] = base64.b64encode(review['user_picture']).decode('utf-8')
+            review['user_picture'] = review['user_picture']
 
     return reviews
 
