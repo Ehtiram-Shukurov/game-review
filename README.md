@@ -1,107 +1,47 @@
-# Module 1 Group Assignment
+# Game Review
 
-CSCI 5117, Fall 2024, [assignment description](https://canvas.umn.edu/courses/460699/pages/project-1)
+A game review and discussion platform built with a team of five for CSCI 5117 at the University of Minnesota. Think Reddit but for games — users can post reviews and start threaded discussions on any game in the IGDB database.
 
-## App Info:
+> **Note:** The live demo is no longer active as it was hosted on Render's free tier during the course.
 
-* Team Name: Big Chungus
-* App Name: GameReview
-* App Link: [<https://project-1-big-chungus.onrender.com/>]()
+---
 
-### Students
+## What it does
 
-* Daniel Bielejeski, biele026@umn.edu
-* Ezra Blake, shuku010@umn.edu
-* Crystal Wen, wen00015@umn.edu
-* William Yang, yang7313@umn.edu
-* Jinming Chen, chen6386@umn.edu
+Search for any game and pull data straight from IGDB — cover art, summary, and genre. From there users can post rated reviews, start discussion topics, and reply in nested threads. The fuzzy search covers both the site's own content and the full IGDB catalog simultaneously. User profiles track review history and display a custom avatar.
 
+## Stack
 
-## Key Features
+Node.js, Express, PostgreSQL, IGDB API
 
-**Describe the most challenging features you implemented
-(one sentence per bullet, maximum 4 bullets):**
+---
 
-* Child Parent topic/review chain (i.e. reddit thread)
-* Incorporating and extracting data from IGDB API
-* Fuzzy Search
+## Figma
 
-## Testing Notes
+https://www.figma.com/design/yl4nxmAKSPm4ww1B2vN6j5/GameReview?node-id=49-2361
 
-**Is there anything special we need to know in order to effectively test your app? (optional):**
+---
 
-* ...
+## Screenshots
 
+<img src="./screenshots/home.png" width="650"/>
 
-## Screenshots of Site
+<p><em>Home — recently reviewed and newly added games</em></p>
 
-**[Add a screenshot of each key page (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository)
-along with a very brief caption:**
+<br/>
 
+<img src="./screenshots/game.png" width="650"/>
 
-Home page showing recently reviewed and added games. The added games would be new games that was added from IGDB API.
-![home](./screenshots/home.png?raw=true)
+<p><em>Game page — IGDB data alongside user reviews and discussion threads</em></p>
 
+<br/>
 
-Game page displaying the cover art, title, and summary of the game from IGDB APi. Along with sub section for users to look and post review/topics.
-![game](./screenshots/game.png?raw=true)
+<img src="./screenshots/review.png" width="650"/>
 
+<p><em>Review page — rating, written review, and nested reply chain</em></p>
 
-Profile page showing an default image is the user decides to not have a profile image, and brief descriptions about the user as well as how many reviews they left on the website.
-![profile](./screenshots/profile.png?raw=true)
+<br/>
 
+<img src="./screenshots/result.png" width="650"/>
 
-Result page displaying the fuzzy search results where the website is searching through both its database for topics/reviews and IGDB API based on the user query
-![result](./screenshots/result.png?raw=true)
-
-
-Review page showing a rating and review of a game left by users, as well as the child parent post chain.
-![review](./screenshots/review.png?raw=true)
-
-
-
-## Mock-up 
-
-There are a few tools for mock-ups. Paper prototypes (low-tech, but effective and cheap), Digital picture edition software (gimp / photoshop / etc.), or dedicated tools like moqups.com (I'm calling out moqups here in particular since it seems to strike the best balance between "easy-to-use" and "wants your money" -- the free teir isn't perfect, but it should be sufficient for our needs with a little "creative layout" to get around the page-limit)
-
-In this space please either provide images (around 4) showing your prototypes, OR, a link to an online hosted mock-up tool like moqups.com
-
-**[Add images/photos that show your paper prototype (around 4)](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository) along with a very brief caption:**
-
-
-The home page of the website, displaying general user content
-![Home Page](./mockups/homePage.png?raw=true)
-
-A login page for users to login or create an account if needed
-![Login Page](./mockups/loginandsignup.png?raw=true)
-
-A page for the individual reviews/topics created by the users, has
-discussion responses as well
-![Review Page](./mockups/reviewandtopic.png?raw=true)
-
-A page for a specific game, includes different reviews and topics about the 
-game
-![Game Page](./mockups/gamepage.png?raw=true)
-
-A page for the user profile
-![User Profile](./mockups/userProfile.png?raw=true)
-
-A page for the user settings
-![User Settings](./mockups/settings.png?raw=true)
-
-Link to Figma project:
-https://www.figma.com/design/yl4nxmAKSPm4ww1B2vN6j5/GameReview?node-id=49-2361&t=hzYgSGKvHp1r1xso-1
-
-## External Dependencies
-
-**Document integrations with 3rd Party code or services here.
-Please do not document required libraries. or libraries that are mentioned in the product requirements**
-
-* Library or service name: description of use
-* IGDB API: used to grab relevant game data (i.e. name, genre, summary, cover art)
-
-**If there's anything else you would like to disclose about how your project
-relied on external code, expertise, or anything else, please disclose that
-here:**
-
-...
+<p><em>Search — fuzzy match across site content and IGDB at once</em></p>
